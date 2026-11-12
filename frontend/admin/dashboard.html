@@ -1,0 +1,2051 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Bến Tre Admin</title>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --sidebar-bg: #FFFFFF;
+            --sidebar-border: #E5E7EB;
+            --sidebar-active-bg: #064E3B;
+            --sidebar-active-sub: #E8FAF0;
+            --sidebar-active-text: #065F46;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-dark: #111827;
+            --text-muted: #64748B;
+            --primary-emerald: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13px;
+        }
+
+        /* GREEN SIDEBAR */
+        .sidebar {
+            width: 255px !important;
+            min-width: 255px !important;
+            max-width: 255px !important;
+            background: #065F46 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: 1px solid #064E3B !important;
+            scrollbar-width: thin;
+            scrollbar-color: #34D399 #065F46;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #34D399; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none !important;
+            color: inherit;
+        }
+
+        .brand-logo-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 2px solid #059669;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+        }
+
+        .brand-title-box { display: flex; flex-direction: column; }
+        .brand-title-text { font-size: 18px; font-weight: 900; color: #FFFFFF; letter-spacing: -0.3px; line-height: 1.1; }
+        .brand-sub-text { font-size: 12px; color: #A7F3D0; font-weight: 600; margin-top: 2px; }
+
+        .sidebar-nav-list {
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 14px !important;
+            border-radius: 10px !important;
+            color: #ECFDF5 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .sidebar-item-link:hover {
+            background: #047857 !important;
+            color: #FFFFFF !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link.active {
+            background: #10B981 !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-icon-svg {
+            width: 18px !important;
+            height: 18px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-arrow-icon {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-sub-container {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            padding: 4px 0 6px 8px !important;
+        }
+
+        .sidebar-sub-item {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #D1FAE5 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+        }
+
+        .sidebar-sub-item:hover {
+            background: #047857 !important;
+            color: #FFFFFF !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-item.active {
+            background: #10B981 !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-icon-svg {
+            width: 16px !important;
+            height: 16px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        /* MAIN WRAPPER */
+        .main-wrapper {
+            margin-left: 250px !important;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #FAFAFB;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            height: 72px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #EDEDF2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .header-left { display: flex; flex-direction: column; }
+        .page-title { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.4px; }
+        .page-sub { font-size: 13px; color: #64748B; margin-top: 2px; }
+
+        .header-right { display: flex; align-items: center; gap: 16px; }
+
+        /* INTERACTIVE DATE RANGE PILL */
+        .date-filter-pill-btn {
+            background: #FFFFFF;
+            border: 1.5px solid #E2E8F0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1E293B;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            transition: all 0.15s;
+        }
+        .date-filter-pill-btn:hover {
+            border-color: #059669;
+            background: #F0FDF4;
+        }
+
+        .notif-bell {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 17px;
+            transition: all 0.15s;
+        }
+        .notif-bell:hover { background: #F1F5F9; }
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #EF4444;
+            color: #FFF;
+            font-size: 10.5px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 1px 6px;
+            border: 2px solid #FFF;
+        }
+
+        .user-profile {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            cursor: pointer !important;
+        }
+
+        .user-avatar {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid #E2E8F0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .user-info { display: flex !important; flex-direction: column !important; }
+        .user-name { font-size: 13.5px !important; font-weight: 700 !important; color: #111827 !important; line-height: 1.2 !important; }
+        .user-role { font-size: 11.5px !important; color: #64748B !important; line-height: 1.2 !important; }
+
+        /* CONTENT CONTAINER */
+        .content-container {
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            min-width: 0;
+            overflow-x: hidden;
+        }
+
+        /* 8 STAT CARDS - 4 COLUMNS (4 TOP, 4 BOTTOM) */
+        .stats-grid-8 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            width: 100%;
+            margin: 0;
+            min-width: 0;
+        }
+
+        .stats-section-heading {
+            width: 100%;
+            margin: 0 0 -6px;
+        }
+
+        .stats-section-heading h2 {
+            color: #111827;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .stats-section-heading p {
+            margin-top: 2px;
+            color: #64748B;
+            font-size: 11.5px;
+        }
+
+        @keyframes statCardLoadAnimation {
+            0% {
+                opacity: 0;
+                transform: translateY(16px) scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes burgundyGlowLoang {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .stat-card-clean {
+            background: #FFFFFF;
+            border: 1.5px solid rgba(190, 18, 60, 0.3);
+            border-radius: 16px;
+            padding: 18px 18px;
+            min-height: 92px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            box-shadow: 0 4px 18px rgba(165, 13, 56, 0.12), 0 1px 3px rgba(0, 0, 0, 0.02);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: statCardLoadAnimation 0.45s cubic-bezier(0.16, 1, 0.3, 1) ease-out both;
+            cursor: pointer;
+            min-width: 0;
+        }
+        .stat-card-clean:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 10px 26px rgba(165, 13, 56, 0.22), 0 2px 6px rgba(0, 0, 0, 0.04);
+            border-color: #A50D38;
+        }
+
+        .stat-card-highlight-burgundy {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background:
+                radial-gradient(circle at 20% 30%, #C81446 0%, transparent 45%),
+                radial-gradient(circle at 85% 75%, #8B0A2B 0%, transparent 55%),
+                linear-gradient(135deg, #A50D38 0%, #7B0728 50%, #52021A 100%);
+            background-size: 140% 140%;
+            border: 1px solid rgba(240, 80, 120, 0.38);
+            border-radius: 16px;
+            padding: 18px 18px;
+            min-height: 92px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 22px rgba(100, 10, 35, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+            transition: transform 0.22s ease-in-out, box-shadow 0.22s ease-in-out, border-color 0.22s ease-in-out;
+            animation: statCardLoadAnimation 0.45s cubic-bezier(0.16, 1, 0.3, 1) ease-out both, burgundyGlowLoang 7s ease infinite;
+            cursor: pointer;
+            min-width: 0;
+        }
+
+        .stat-card-highlight-burgundy:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 14px 28px rgba(120, 12, 42, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            border-color: rgba(245, 90, 130, 0.55);
+        }
+
+        .stats-grid-8 > div:nth-child(1) { animation-delay: 0.04s; }
+        .stats-grid-8 > div:nth-child(2) { animation-delay: 0.08s; }
+        .stats-grid-8 > div:nth-child(3) { animation-delay: 0.12s; }
+        .stats-grid-8 > div:nth-child(4) { animation-delay: 0.16s; }
+        .stats-grid-8 > div:nth-child(5) { animation-delay: 0.20s; }
+        .stats-grid-8 > div:nth-child(6) { animation-delay: 0.24s; }
+        .stats-grid-8 > div:nth-child(7) { animation-delay: 0.28s; }
+        .stats-grid-8 > div:nth-child(8) { animation-delay: 0.32s; }
+
+        .stat-label-light {
+            display: block;
+            font-size: 13px;
+            color: #FFE9EE;
+            font-weight: 700;
+            order: 2;
+        }
+
+        .stat-value-light {
+            display: block;
+            margin: 6px 0 4px;
+            font-size: 28px;
+            line-height: 1.05;
+            color: #FFFFFF;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            order: 1;
+        }
+
+        .stat-growth-tag-light {
+            display: flex;
+            gap: 4px;
+            font-size: 11px;
+            color: #FFD2DC;
+            font-weight: 700;
+            order: 3;
+        }
+
+        .stat-icon-circle-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* PASTEL ICON BACKGROUNDS */
+        .stat-icon-circle-box.users { background: #E8FAF0; color: #059669; }
+        .stat-icon-circle-box.guides { background: #EFF6FF; color: #2563EB; }
+        .stat-icon-circle-box.places { background: #ECFDF5; color: #059669; }
+        .stat-icon-circle-box.bookings { background: #F3E8FF; color: #9333EA; }
+        .stat-icon-circle-box.revenue { background: #FFF7ED; color: #EA580C; }
+        .stat-icon-circle-box.health { background: #FEE2E2; color: #EF4444; }
+        .stat-icon-circle-box.rating { background: #FEF3C7; color: #D97706; }
+        .stat-icon-circle-box.eco { background: #ECFDF5; color: #059669; }
+
+        .stat-body-content {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .stat-body-label {
+            font-size: 13px;
+            color: #4B5563;
+            font-weight: 600;
+            order: 2;
+        }
+        .stat-body-value {
+            font-size: 28px;
+            font-weight: 900;
+            color: #111827;
+            line-height: 1.05;
+            margin: 6px 0 4px;
+            letter-spacing: -0.5px;
+            order: 1;
+        }
+        .stat-body-subtext {
+            font-size: 10.5px;
+            color: #059669;
+            font-weight: 600;
+            order: 3;
+        }
+
+        .stat-card-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            min-width: 0;
+        }
+
+        /* 3 CHARTS SECTION */
+        .charts-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            min-width: 0;
+        }
+
+        .charts-grid-3 .chart-box-card:nth-child(1) { order: 2; }
+        .charts-grid-3 .chart-box-card:nth-child(2) { order: 1; }
+        .charts-grid-3 .chart-box-card:nth-child(3) { order: 3; }
+
+        .chart-box-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 20px 22px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .chart-box-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .chart-title-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 800;
+            color: #111827;
+            min-width: 0;
+        }
+
+        .chart-title-left span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .chart-icon-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            display: none;
+        }
+        .chart-icon-box.green { background: #ECFDF5; color: #059669; }
+        .chart-icon-box.orange { background: #FFF7ED; color: #EA580C; }
+        .chart-icon-box.darkgreen { background: #E8FAF0; color: #064E3B; }
+
+        .chart-select-small {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #E2E8F0;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #4B5563;
+            outline: none;
+            background: #FFF;
+            cursor: pointer;
+        }
+
+        .chart-unit-sub {
+            font-size: 11px;
+            color: #9CA3AF;
+            margin-top: -6px;
+        }
+
+        .chart-pills-switcher {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #F1F5F9;
+            padding: 2px;
+            border-radius: 6px;
+        }
+        .chart-pill-btn {
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: none;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748B;
+            background: transparent;
+            cursor: pointer;
+        }
+        .chart-pill-btn.active {
+            background: #FFFFFF;
+            color: #111827;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        }
+
+        .chart-canvas-wrapper {
+            position: relative;
+            width: 100%;
+            height: 210px;
+            min-width: 0;
+        }
+
+        /* 3 BOTTOM CARDS */
+        .bottom-sections-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(240px, 340px);
+            gap: 20px;
+            min-width: 0;
+        }
+
+        @media (max-width: 1280px) {
+            .top-navbar,
+            .content-container {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            .stats-grid-8 {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .charts-grid-3 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .charts-grid-3 .chart-box-card:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .sidebar {
+                transform: translateX(-100%) !important;
+            }
+
+            .main-wrapper {
+                margin-left: 0 !important;
+            }
+
+            .top-navbar {
+                height: auto;
+                min-height: 72px;
+                padding-top: 14px;
+                padding-bottom: 14px;
+                gap: 12px;
+            }
+
+            .header-right {
+                gap: 8px;
+            }
+
+            .date-filter-pill-btn {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+
+            .user-info {
+                display: none !important;
+            }
+
+            .content-container {
+                padding: 16px;
+                gap: 16px;
+            }
+
+            .stats-grid-8,
+            .charts-grid-3,
+            .bottom-sections-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .charts-grid-3 .chart-box-card:last-child {
+                grid-column: auto;
+            }
+        }
+
+        .bottom-data-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 20px 22px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .bottom-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bottom-card-title {
+            font-size: 15.5px;
+            font-weight: 800;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title-icon-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            display: none;
+        }
+        .card-title-icon-badge.pink { background: #FDF2F8; color: #DB2777; }
+        .card-title-icon-badge.gold { background: #FEF3C7; color: #D97706; }
+        .card-title-icon-badge.blue { background: #EFF6FF; color: #2563EB; }
+
+        .btn-view-all-green {
+            color: #059669;
+            font-weight: 700;
+            font-size: 12.5px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-view-all-green:hover { text-decoration: underline; }
+
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ranking-row-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F1F5F9;
+        }
+        .ranking-row-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .ranking-left-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rank-number-bold {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #374151;
+            width: 14px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .rank-thumb-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+        }
+
+        .rank-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .rank-item-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .rank-item-sub {
+            font-size: 11.5px;
+            color: #64748B;
+        }
+
+        .rank-right-metrics {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+
+        .metric-label-gray {
+            font-size: 11px;
+            color: #64748B;
+            font-weight: 600;
+        }
+
+        .metric-large-number {
+            font-size: 17px;
+            font-weight: 900;
+            color: #059669;
+            line-height: 1;
+        }
+
+        .metric-stars-gold {
+            font-size: 15px;
+            font-weight: 800;
+            color: #D97706;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .metric-reviews-count {
+            font-size: 11px;
+            color: #64748B;
+        }
+
+        .activities-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .activity-timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .act-icon-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 1px;
+            display: none;
+        }
+        .act-icon-circle.yellow { background: #FEF3C7; color: #D97706; }
+        .act-icon-circle.pink { background: #FCE7F3; color: #DB2777; }
+        .act-icon-circle.purple { background: #F5F3FF; color: #7C3AED; }
+        .act-icon-circle.green { background: #ECFDF5; color: #059669; }
+        .act-icon-circle.orange { background: #FFF7ED; color: #EA580C; }
+
+        .act-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .act-title { font-weight: 700; color: #111827; }
+        .act-desc { color: #64748B; font-size: 11.5px; }
+
+        /* MODAL DATE PICKER POPUP */
+        .modal-datepicker-popup {
+            position: absolute !important;
+            top: 64px !important;
+            right: 210px !important;
+            width: 330px !important;
+            background: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 16px !important;
+            padding: 18px !important;
+            box-shadow: 0 14px 35px rgba(0,0,0,0.14) !important;
+            z-index: 9999 !important;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeInDown 0.18s ease-out;
+        }
+        @keyframes fadeInDown {
+            from { transform: translateY(-8px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .date-preset-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #374151;
+            transition: all 0.15s;
+        }
+        .date-preset-item:hover {
+            background: #F3F4F6;
+            color: #064E3B;
+        }
+        .date-preset-item.active {
+            background: #E8FAF0;
+            color: #064E3B;
+            font-weight: 700;
+        }
+
+        /* TOAST */
+        .toast-notif {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 99999;
+            animation: slideUp 0.2s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    
+        
+        /* EXACT PIXEL-MATCHED DARK GREEN SIDEBAR */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Rich Dark Emerald Green */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: none !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Vibrant Emerald Green Pill */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        .sidebar-bottom-banner {
+            margin-top: auto !important;
+            padding: 14px !important;
+        }
+        .sidebar-banner-img {
+            width: 100% !important;
+            height: 160px !important;
+            object-fit: cover !important;
+            border-radius: 12px !important;
+            display: block !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+        }
+
+        
+        .main-wrapper, .main-content, .admin-main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container {
+            margin-left: 0 !important;
+        }
+    
+
+    
+        /* ======================================================= */
+        /* MASTER UNIFIED DARK GREEN SIDEBAR (CHUẨN 100% ĐỒNG BỘ)  */
+        /* ======================================================= */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Xanh lá đậm chuẩn */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 999 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: 1px solid rgba(0, 0, 0, 0.15) !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+            background: transparent !important;
+            border: none !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Xanh ngọc nổi bật chuẩn */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        /* KHẮC PHỤC TRIỆT ĐỂ THỤT LỀ & KHOẢNG TRẮNG */
+        .main-wrapper, .main-content, .admin-main, .main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container, .main-wrapper .content-container {
+            margin-left: 0 !important;
+        }
+
+    </style>
+</head>
+<body>
+
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+    <aside class="sidebar">
+        <!-- BRAND HEADER -->
+        <a href="dashboard.html" class="sidebar-brand">
+            <div class="brand-logo-circle">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre">
+            </div>
+            <div class="brand-title-wrap">
+                <div class="brand-title-main">HỆ SINH THÁI DU LỊCH</div>
+                <div class="brand-sub-main">VÀ CHĂM SÓC SỨC KHỎE XANH TẠI BẾN TRE</div>
+            </div>
+        </a>
+
+        <!-- MENU ITEMS -->
+        <nav class="sidebar-nav">
+            <!-- 1. Tổng quan -->
+            <a href="dashboard.html" class="sidebar-item-link active">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Tổng quan</span>
+                </div>
+            </a>
+
+            <!-- 2. Du lịch -->
+            <a href="dia-diem.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    <span>Du lịch</span>
+                </div>
+            </a>
+
+            <!-- 3. Đặt tour -->
+            <a href="dat-tour.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Đặt tour</span>
+                </div>
+            </a>
+
+            <!-- 4. Người dùng -->
+            <a href="nguoi-dung.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Người dùng</span>
+                </div>
+            </a>
+
+            <!-- 5. Chăm sóc sức khỏe -->
+            <a href="co-so-y-te.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span>Chăm sóc sức khỏe</span>
+                </div>
+            </a>
+
+            <!-- 6. Tin tức & sự kiện -->
+            <a href="tin-tuc.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span>Tin tức & sự kiện</span>
+                </div>
+            </a>
+
+            <!-- 7. Đánh giá -->
+            <a href="danh-gia.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Đánh giá</span>
+                </div>
+            </a>
+        </nav>
+
+        <!-- BOTTOM LOGOUT BUTTON -->
+        <div style="margin-top: auto; padding: 14px 14px 16px;">
+            <a href="../khach-hang/dang-nhap.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #FFFFFF; color: #DC2626; font-weight: 700; font-size: 13px; padding: 10px; border-radius: 10px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.15s ease;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span>Đăng xuất</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar">
+            <div class="header-left">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-sub">Tổng quan tình hình hoạt động du lịch và chăm sóc sức khỏe tại thành phố Bến Tre</p>
+            </div>
+            <div class="header-right">
+                <!-- INTERACTIVE DATE RANGE PILL -->
+                <button class="date-filter-pill-btn" onclick="toggleDatePickerPopup(event)">
+                    <span id="displayDateRange">20/08/2026 - 20/08/2026</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </button>
+
+            </div>
+        </header>
+
+        <!-- DATE PICKER POPUP MODAL -->
+        <div id="datePickerPopup" class="modal-datepicker-popup">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #F1F5F9; padding-bottom:10px;">
+                <div style="font-weight:800; font-size:13.5px; color:#111827; display:flex; align-items:center; gap:6px;">
+                    <span>📅</span>
+                    <span>Chọn thời gian xem doanh thu</span>
+                </div>
+                <span onclick="document.getElementById('datePickerPopup').style.display='none'" style="cursor:pointer; font-size:16px; color:#9CA3AF; font-weight:700;">✕</span>
+            </div>
+
+            <!-- PRESET CHOOSER -->
+            <div style="display:flex; flex-direction:column; gap:3px;">
+                <div class="date-preset-item active" onclick="selectDatePreset('today', '20/08/2026 - 20/08/2026', this)">
+                    <span>⚡ Hôm nay</span>
+                    <span style="font-size:11px; opacity:0.75;">20/08/2026</span>
+                </div>
+                <div class="date-preset-item" onclick="selectDatePreset('yesterday', '19/08/2026 - 19/08/2026', this)">
+                    <span>⚡ Hôm qua</span>
+                    <span style="font-size:11px; opacity:0.75;">19/08/2026</span>
+                </div>
+                <div class="date-preset-item" onclick="selectDatePreset('7days', '14/08/2026 - 20/08/2026', this)">
+                    <span>⚡ 7 ngày qua</span>
+                    <span style="font-size:11px; opacity:0.75;">14/08 - 20/08</span>
+                </div>
+                <div class="date-preset-item" onclick="selectDatePreset('month', '01/08/2026 - 20/08/2026', this)">
+                    <span>⚡ Tháng 8/2026</span>
+                    <span style="font-size:11px; opacity:0.75;">Tháng này</span>
+                </div>
+                <div class="date-preset-item" onclick="selectDatePreset('lastmonth', '01/07/2026 - 31/07/2026', this)">
+                    <span>⚡ Tháng 7/2026</span>
+                    <span style="font-size:11px; opacity:0.75;">Tháng trước</span>
+                </div>
+                <div class="date-preset-item" onclick="selectDatePreset('year', '01/01/2026 - 31/12/2026', this)">
+                    <span>⚡ Cả năm 2026</span>
+                    <span style="font-size:11px; opacity:0.75;">Năm 2026</span>
+                </div>
+            </div>
+
+            <!-- CUSTOM DATE RANGE -->
+            <div style="border-top:1px solid #F1F5F9; padding-top:12px; display:flex; flex-direction:column; gap:8px;">
+                <div style="font-size:11.5px; font-weight:700; color:#64748B;">Hoặc chọn khoảng ngày tùy chỉnh:</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <div>
+                        <label style="font-size:10.5px; color:#64748B; display:block; margin-bottom:2px;">Từ ngày:</label>
+                        <input type="date" id="customFromDate" value="2026-08-01" style="width:100%; padding:6px 8px; border:1px solid #D1D5DB; border-radius:8px; font-size:11.5px; outline:none; background:#F8FAFC;">
+                    </div>
+                    <div>
+                        <label style="font-size:10.5px; color:#64748B; display:block; margin-bottom:2px;">Đến ngày:</label>
+                        <input type="date" id="customToDate" value="2026-08-20" style="width:100%; padding:6px 8px; border:1px solid #D1D5DB; border-radius:8px; font-size:11.5px; outline:none; background:#F8FAFC;">
+                    </div>
+                </div>
+                <button onclick="applyCustomDateRange()" style="width:100%; padding:8px 12px; background:#064E3B; color:#FFFFFF; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; margin-top:2px;">
+                    <span>🔍</span>
+                    <span>Xem doanh thu theo ngày</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT CONTAINER -->
+        <main class="content-container">
+            <div class="stats-grid-8">
+                <!-- HÀNG 1: 4 THẺ TRÊN -->
+                <!-- 1. TỔNG KHÁCH HÀNG (ĐỎ ĐÔ GRADIENT LOANG MÀU) -->
+                <div class="stat-card-highlight-burgundy" onclick="window.location.href='nguoi-dung.html'">
+                    <div class="stat-card-inner">
+                        <span class="stat-label-light">Tổng khách hàng</span>
+                        <span class="stat-value-light" id="statVisitors">12.568</span>
+                        <div class="stat-growth-tag-light">
+                            <span>↑ 18.6%</span>
+                            <span style="opacity:0.85; font-weight:500;">so với tháng trước</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. DOANH THU (ĐỎ ĐÔ GRADIENT LOANG MÀU) -->
+                <div class="stat-card-highlight-burgundy" onclick="window.location.href='dat-tour.html'">
+                    <div class="stat-card-inner">
+                        <span class="stat-label-light">Doanh thu</span>
+                        <span class="stat-value-light" id="statRevenue" style="font-size:26px;">568.545.000 đ</span>
+                        <div class="stat-growth-tag-light">
+                            <span>↑ 23.5%</span>
+                            <span style="opacity:0.85; font-weight:500;">so với tháng trước</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Tổng hướng dẫn viên (Card Trắng Clean) -->
+                <div class="stat-card-clean" onclick="window.location.href='huong-dan-vien.html'">
+                    <div class="stat-card-inner">
+                        <span class="stat-body-label">Tổng hướng dẫn viên</span>
+                        <span class="stat-body-value" id="statGuides">156</span>
+                        <div class="stat-body-subtext">↑ 12.4% <span style="color:#64748B; font-weight:500;">so với tháng trước</span></div>
+                    </div>
+                </div>
+
+                <!-- 4. Tổng địa điểm (Card Trắng Clean) -->
+                <div class="stat-card-clean" onclick="window.location.href='dia-diem.html'">
+                    <div class="stat-card-inner">
+                        <span class="stat-body-label">Tổng địa điểm</span>
+                        <span class="stat-body-value" id="statPlaces">248</span>
+                        <div class="stat-body-subtext">↑ 9.7% <span style="color:#64748B; font-weight:500;">so với tháng trước</span></div>
+                    </div>
+                </div>
+
+                <!-- 5. Tổng booking (Card Trắng Clean) -->
+                <div class="stat-card-clean" onclick="window.location.href='dat-tour.html'">
+                    <div class="stat-card-inner">
+                        <span class="stat-body-label">Tổng booking</span>
+                        <span class="stat-body-value" id="statTours">3.685</span>
+                        <div class="stat-body-subtext">↑ 21.3% <span style="color:#64748B; font-weight:500;">so với tháng trước</span></div>
+                    </div>
+                </div>
+
+                <!-- 6. Cơ sở y tế (Card Trắng Clean) -->
+                <div class="stat-card-clean" onclick="window.location.href='co-so-y-te.html'">
+                    <div class="stat-card-inner">
+                        <span class="stat-body-label">Cơ sở y tế</span>
+                        <span class="stat-body-value" id="statHealth">68</span>
+                        <div class="stat-body-subtext">↑ 8.4% <span style="color:#64748B; font-weight:500;">so với tháng trước</span></div>
+                    </div>
+                </div>
+
+                <!-- 7. Đánh giá trung bình (Card Trắng Clean) -->
+                <div class="stat-card-clean" onclick="window.location.href='danh-gia.html'">
+                    <div class="stat-card-inner">
+                        <span class="stat-body-label">Đánh giá trung bình</span>
+                        <span class="stat-body-value" id="statRating">4.6 <span style="font-size:16px; color:#64748B; font-weight:600;">/ 5</span></span>
+                        <div class="stat-body-subtext">↑ 0.3 điểm <span style="color:#64748B; font-weight:500;">so với tháng trước</span></div>
+                    </div>
+                </div>
+
+                <!-- 8. Điểm bền vững trung bình (Card Trắng Clean) -->
+                <div class="stat-card-clean" onclick="showToast('🌿 Chỉ số phát triển du lịch bền vững toàn tỉnh đạt chuẩn xanh')">
+                    <div class="stat-card-inner">
+                        <span class="stat-body-label">Điểm bền vững trung bình</span>
+                        <span class="stat-body-value" id="statEco">4.2 <span style="font-size:16px; color:#64748B; font-weight:600;">/ 5</span></span>
+                        <div class="stat-body-subtext">↑ 0.4 điểm <span style="color:#64748B; font-weight:500;">so với tháng trước</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 CHARTS -->
+            <div class="charts-grid-3">
+                <!-- BIỂU ĐỒ 1: LƯỢT KHÁCH THEO THÁNG -->
+                <div class="chart-box-card">
+                    <div class="chart-box-header">
+                        <div class="chart-title-left">
+                            <div class="chart-icon-box green">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            </div>
+                            <span>Lượt khách theo tháng</span>
+                        </div>
+                        <select class="chart-select-small" onchange="updateVisitorsChartYear(this.value)">
+                            <option value="2026">Năm 2026</option>
+                            <option value="2025">Năm 2025</option>
+                        </select>
+                    </div>
+                    <div class="chart-unit-sub">Đơn vị: Lượt khách</div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="visitorsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- BIỂU ĐỒ 2: DOANH THU THEO THÁNG -->
+                <div class="chart-box-card">
+                    <div class="chart-box-header">
+                        <div class="chart-title-left">
+                            <div class="chart-icon-box orange">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.12h-2.01c-.13-.77-.66-1.54-2.17-1.54-1.53 0-2.1.8-2.1 1.5 0 .7.51 1.36 2.42 1.8 2.69.64 4.43 1.63 4.43 3.81 0 1.95-1.49 3.09-3.41 3.45z"/></svg>
+                            </div>
+                            <span>Doanh thu theo tháng</span>
+                        </div>
+                        <select class="chart-select-small" onchange="updateRevenueChartYear(this.value)">
+                            <option value="2026">Năm 2026</option>
+                            <option value="2025">Năm 2025</option>
+                        </select>
+                    </div>
+                    <div class="chart-unit-sub">Đơn vị: Triệu VNĐ</div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- BIỂU ĐỒ 3: CHẤT LƯỢNG & BỀN VỮNG -->
+                <div class="chart-box-card">
+                    <div class="chart-box-header">
+                        <div class="chart-title-left">
+                            <div class="chart-icon-box darkgreen">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5c0 2.2 1.8 4 4 4 .43 0 .84-.07 1.23-.2 1.62-1.78 4.24-5.23 9.77-9.3z"/></svg>
+                            </div>
+                            <span>Chất lượng & Bền vững</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <div class="chart-pills-switcher">
+                                <button class="chart-pill-btn active" onclick="switchQualityView('quarter', this)">Quý</button>
+                                <button class="chart-pill-btn" onclick="switchQualityView('month', this)">Tháng</button>
+                            </div>
+                            <select class="chart-select-small">
+                                <option>2026</option>
+                                <option>2025</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:12px; font-size:11.5px; font-weight:700; margin-top:-4px;">
+                        <span style="color:#881337; display:inline-flex; align-items:center; gap:4px;"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#881337;"></span> Hài lòng</span>
+                        <span style="color:#064E3B; display:inline-flex; align-items:center; gap:4px;"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#064E3B;"></span> Bền vững</span>
+                    </div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="qualityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 BOTTOM CARDS -->
+            <div class="bottom-sections-grid">
+                <!-- CARD 1: TOUR ĐƯỢC ĐẶT NHIỀU NHẤT -->
+                <div class="bottom-data-card">
+                    <div class="bottom-card-header">
+                        <div class="bottom-card-title">
+                            <div class="card-title-icon-badge pink">🎟</div>
+                            <span>Tour được đặt nhiều nhất</span>
+                        </div>
+                    </div>
+
+                    <div class="ranking-list">
+                        <!-- 1 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">1</span>
+                                <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Tour Một ngày khám phá xứ Dừa</div>
+                                    <div class="rank-item-sub">1 ngày | Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <span class="metric-label-gray">Đã đặt</span>
+                                <span class="metric-large-number">562</span>
+                            </div>
+                        </div>
+
+                        <!-- 2 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">2</span>
+                                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Trải nghiệm sông nước miệt vườn</div>
+                                    <div class="rank-item-sub">2 ngày 1 đêm | Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <span class="metric-label-gray">Đã đặt</span>
+                                <span class="metric-large-number">487</span>
+                            </div>
+                        </div>
+
+                        <!-- 3 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">3</span>
+                                <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Cồn Phụng - Cù Lao - Làng nghề</div>
+                                    <div class="rank-item-sub">1 ngày | Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <span class="metric-label-gray">Đã đặt</span>
+                                <span class="metric-large-number">426</span>
+                            </div>
+                        </div>
+
+                        <!-- 4 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">4</span>
+                                <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Tour sinh thái rừng ngập mặn</div>
+                                    <div class="rank-item-sub">2 ngày 1 đêm | Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <span class="metric-label-gray">Đã đặt</span>
+                                <span class="metric-large-number">398</span>
+                            </div>
+                        </div>
+
+                        <!-- 5 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">5</span>
+                                <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Khám phá ẩm thực Bến Tre</div>
+                                    <div class="rank-item-sub">1 ngày | Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <span class="metric-label-gray">Đã đặt</span>
+                                <span class="metric-large-number">365</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: ĐỊA ĐIỂM ĐƯỢC YÊU THÍCH NHẤT -->
+                <div class="bottom-data-card">
+                    <div class="bottom-card-header">
+                        <div class="bottom-card-title">
+                            <div class="card-title-icon-badge gold">⭐</div>
+                            <span>Địa điểm được yêu thích nhất</span>
+                        </div>
+                    </div>
+
+                    <div class="ranking-list">
+                        <!-- 1 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">1</span>
+                                <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Cồn Phụng</div>
+                                    <div class="rank-item-sub">Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <div class="metric-stars-gold">★ 4.8</div>
+                                <span class="metric-reviews-count">1.256 đánh giá</span>
+                            </div>
+                        </div>
+
+                        <!-- 2 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">2</span>
+                                <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Làng nghề kẹo dừa</div>
+                                    <div class="rank-item-sub">Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <div class="metric-stars-gold">★ 4.7</div>
+                                <span class="metric-reviews-count">1.132 đánh giá</span>
+                            </div>
+                        </div>
+
+                        <!-- 3 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">3</span>
+                                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Khu du lịch Lan Vương</div>
+                                    <div class="rank-item-sub">Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <div class="metric-stars-gold">★ 4.6</div>
+                                <span class="metric-reviews-count">1.024 đánh giá</span>
+                            </div>
+                        </div>
+
+                        <!-- 4 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">4</span>
+                                <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Sân chim Vàm Hồ</div>
+                                    <div class="rank-item-sub">Ba Tri, Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <div class="metric-stars-gold">★ 4.5</div>
+                                <span class="metric-reviews-count">856 đánh giá</span>
+                            </div>
+                        </div>
+
+                        <!-- 5 -->
+                        <div class="ranking-row-item">
+                            <div class="ranking-left-box">
+                                <span class="rank-number-bold">5</span>
+                                <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=120&h=120&fit=crop" class="rank-thumb-img" alt="thumb">
+                                <div class="rank-item-info">
+                                    <div class="rank-item-name">Vườn trái cây Chợ Lách</div>
+                                    <div class="rank-item-sub">Chợ Lách, Bến Tre</div>
+                                </div>
+                            </div>
+                            <div class="rank-right-metrics">
+                                <div class="metric-stars-gold">★ 4.5</div>
+                                <span class="metric-reviews-count">742 đánh giá</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: HOẠT ĐỘNG GẦN ĐÂY -->
+                <div class="bottom-data-card">
+                    <div class="bottom-card-header">
+                        <div class="bottom-card-title">
+                            <div class="card-title-icon-badge blue">🔔</div>
+                            <span>Hoạt động gần đây</span>
+                        </div>
+                    </div>
+
+                    <div class="activities-timeline">
+                        <div class="activity-timeline-item">
+                            <div class="act-icon-circle yellow">★</div>
+                            <div class="act-details">
+                                <div class="act-title">Đánh giá mới cho Cồn Phụng</div>
+                                <div class="act-desc">Nguyễn Văn A • 5 sao • 5 phút trước</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-timeline-item">
+                            <div class="act-icon-circle pink">💖</div>
+                            <div class="act-details">
+                                <div class="act-title">Đặt tour mới #BT2026-089</div>
+                                <div class="act-desc">Trần Thị B • 2 khách • 12 phút trước</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-timeline-item">
+                            <div class="act-icon-circle purple">👤</div>
+                            <div class="act-details">
+                                <div class="act-title">HDV hoàn thành tour</div>
+                                <div class="act-desc">Lê Văn C • Tour Một ngày xanh • 25 phút trước</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-timeline-item">
+                            <div class="act-icon-circle green">🏥</div>
+                            <div class="act-details">
+                                <div class="act-title">Cơ sở y tế cập nhật thông tin</div>
+                                <div class="act-desc">Bệnh viện Đa khoa Minh Đức • 1 giờ trước</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-timeline-item">
+                            <div class="act-icon-circle orange">💬</div>
+                            <div class="act-details">
+                                <div class="act-title">Phản hồi khách hàng mới</div>
+                                <div class="act-desc">Phạm Thị D • Đã xử lý • 2 giờ trước</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toastNotif" class="toast-notif">
+        <span>✅</span>
+        <span id="toastMsg">Thao tác thành công!</span>
+    </div>
+
+    <script>
+        let visitorsChartInstance = null;
+        let revenueChartInstance = null;
+        let qualityChartInstance = null;
+
+        const visitorsData = {
+            '2026': [8200, 9100, 11400, 13200, 15800, 17200, 16900, 12568, 14200, 15300, 16800, 18500],
+            '2025': [6500, 7200, 8900, 10500, 12400, 13800, 13200, 10800, 11500, 12600, 13400, 14900]
+        };
+
+        const revenueData = {
+            '2026': [380, 420, 510, 580, 690, 750, 720, 568, 630, 680, 740, 820],
+            '2025': [290, 320, 390, 450, 520, 580, 560, 480, 510, 550, 590, 650]
+        };
+
+        const monthsLabels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
+
+        function initCharts() {
+            // 1. VISITORS CHART (Gradients loang từ đậm đỉnh xuống nhạt đáy)
+            const ctxVisitors = document.getElementById('visitorsChart').getContext('2d');
+            const gradientVisitors = ctxVisitors.createLinearGradient(0, 0, 0, 210);
+            gradientVisitors.addColorStop(0, '#047857');   // Đậm đỉnh
+            gradientVisitors.addColorStop(0.45, '#10B981'); // Đỏ/Xanh vừa
+            gradientVisitors.addColorStop(1, '#A7F3D0');   // Nhạt đáy
+
+            const gradientVisitorsHover = ctxVisitors.createLinearGradient(0, 0, 0, 210);
+            gradientVisitorsHover.addColorStop(0, '#065F46');
+            gradientVisitorsHover.addColorStop(1, '#6EE7B7');
+
+            visitorsChartInstance = new Chart(ctxVisitors, {
+                type: 'bar',
+                data: {
+                    labels: monthsLabels,
+                    datasets: [{
+                        label: 'Lượt khách',
+                        data: visitorsData['2026'],
+                        backgroundColor: gradientVisitors,
+                        borderRadius: 6,
+                        hoverBackgroundColor: gradientVisitorsHover
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: {
+                            grid: { color: '#F1F5F9' },
+                            ticks: { callback: v => (v / 1000) + 'k' }
+                        }
+                    }
+                }
+            });
+
+            // 2. REVENUE CHART
+            const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+            revenueChartInstance = new Chart(ctxRevenue, {
+                type: 'line',
+                data: {
+                    labels: monthsLabels,
+                    datasets: [{
+                        label: 'Doanh thu (Triệu đ)',
+                        data: revenueData['2026'],
+                        borderColor: '#EA580C',
+                        backgroundColor: 'rgba(234, 88, 12, 0.08)',
+                        fill: true,
+                        tension: 0.35,
+                        pointBackgroundColor: '#EA580C',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: {
+                            grid: { color: '#F1F5F9' },
+                            ticks: { callback: v => v + ' Tr' }
+                        }
+                    }
+                }
+            });
+
+            // 3. QUALITY & SUSTAINABILITY CHART (Gradients loang Đỏ Đô & Xanh Lá từ đậm xuống nhạt)
+            const ctxQuality = document.getElementById('qualityChart').getContext('2d');
+
+            const gradientSatisfaction = ctxQuality.createLinearGradient(0, 0, 0, 210);
+            gradientSatisfaction.addColorStop(0, '#881337');   // Đỏ đô đậm đỉnh
+            gradientSatisfaction.addColorStop(0.5, '#BE123C'); // Đỏ đô tươi
+            gradientSatisfaction.addColorStop(1, '#FECDD3');   // Đỏ nhạt đáy
+
+            const gradientSatisfactionHover = ctxQuality.createLinearGradient(0, 0, 0, 210);
+            gradientSatisfactionHover.addColorStop(0, '#4C0519');
+            gradientSatisfactionHover.addColorStop(1, '#FDA4AF');
+
+            const gradientSustainability = ctxQuality.createLinearGradient(0, 0, 0, 210);
+            gradientSustainability.addColorStop(0, '#064E3B');   // Xanh đậm đỉnh
+            gradientSustainability.addColorStop(0.5, '#047857'); // Xanh vừa
+            gradientSustainability.addColorStop(1, '#A7F3D0');   // Xanh nhạt đáy
+
+            const gradientSustainabilityHover = ctxQuality.createLinearGradient(0, 0, 0, 210);
+            gradientSustainabilityHover.addColorStop(0, '#022C22');
+            gradientSustainabilityHover.addColorStop(1, '#6EE7B7');
+
+            qualityChartInstance = new Chart(ctxQuality, {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [
+                        {
+                            label: 'Hài lòng',
+                            data: [4.5, 4.6, 4.6, 4.8],
+                            backgroundColor: gradientSatisfaction,
+                            hoverBackgroundColor: gradientSatisfactionHover,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Bền vững',
+                            data: [4.0, 4.1, 4.2, 4.4],
+                            backgroundColor: gradientSustainability,
+                            hoverBackgroundColor: gradientSustainabilityHover,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: {
+                            min: 3,
+                            max: 5,
+                            grid: { color: '#F1F5F9' },
+                            ticks: { stepSize: 0.5 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateVisitorsChartYear(year) {
+            if (visitorsChartInstance && visitorsData[year]) {
+                visitorsChartInstance.data.datasets[0].data = visitorsData[year];
+                visitorsChartInstance.update();
+                showToast('Đã cập nhật biểu đồ Lượt khách năm ' + year);
+            }
+        }
+
+        function updateRevenueChartYear(year) {
+            if (revenueChartInstance && revenueData[year]) {
+                revenueChartInstance.data.datasets[0].data = revenueData[year];
+                revenueChartInstance.update();
+                showToast('Đã cập nhật biểu đồ Doanh thu năm ' + year);
+            }
+        }
+
+        function switchQualityView(mode, btnEl) {
+            document.querySelectorAll('.chart-pill-btn').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+
+            if (mode === 'month') {
+                qualityChartInstance.data.labels = monthsLabels;
+                qualityChartInstance.data.datasets[0].data = [4.4, 4.5, 4.5, 4.6, 4.6, 4.7, 4.6, 4.6, 4.7, 4.7, 4.8, 4.8];
+                qualityChartInstance.data.datasets[1].data = [3.9, 4.0, 4.0, 4.1, 4.1, 4.2, 4.2, 4.2, 4.3, 4.3, 4.4, 4.4];
+            } else {
+                qualityChartInstance.data.labels = ['Q1', 'Q2', 'Q3', 'Q4'];
+                qualityChartInstance.data.datasets[0].data = [4.5, 4.6, 4.6, 4.8];
+                qualityChartInstance.data.datasets[1].data = [4.0, 4.1, 4.2, 4.4];
+            }
+            qualityChartInstance.update();
+        }
+
+        function toggleDatePickerPopup(e) {
+            e.stopPropagation();
+            const p = document.getElementById('datePickerPopup');
+            p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function selectDatePreset(presetKey, labelText, el) {
+            document.querySelectorAll('.date-preset-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('displayDateRange').textContent = labelText;
+            document.getElementById('datePickerPopup').style.display = 'none';
+            showToast('📅 Đã lọc doanh thu: ' + labelText);
+        }
+
+        function applyCustomDateRange() {
+            const f = document.getElementById('customFromDate').value;
+            const t = document.getElementById('customToDate').value;
+            if (!f || !t) return;
+            const fmt = f.split('-').reverse().join('/') + ' - ' + t.split('-').reverse().join('/');
+            document.getElementById('displayDateRange').textContent = fmt;
+            document.getElementById('datePickerPopup').style.display = 'none';
+            showToast('📅 Đã áp dụng khoảng ngày: ' + fmt);
+        }
+
+        function toggleSidebarMenu(menuId, btnEl) {
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+            const isHidden = (menu.style.display === 'none' || !menu.style.display);
+            menu.style.display = isHidden ? 'flex' : 'none';
+            const arrow = btnEl.querySelector('.sidebar-arrow-icon');
+            if (arrow) arrow.textContent = isHidden ? '⌃' : '⌄';
+        }
+
+        let toastTimeout;
+        function showToast(msg) {
+            const t = document.getElementById('toastNotif');
+            document.getElementById('toastMsg').textContent = msg;
+            t.style.display = 'flex';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+
+        function animateCountersOnLoad() {
+            const items = [
+                { id: 'statVisitors', target: 12568, format: v => v.toLocaleString('vi-VN') },
+                { id: 'statRevenue', target: 568545000, format: v => v.toLocaleString('vi-VN') + ' đ' },
+                { id: 'statGuides', target: 156, format: v => v.toLocaleString('vi-VN') },
+                { id: 'statPlaces', target: 248, format: v => v.toLocaleString('vi-VN') },
+                { id: 'statTours', target: 3685, format: v => v.toLocaleString('vi-VN') },
+                { id: 'statHealth', target: 68, format: v => v.toLocaleString('vi-VN') },
+                { id: 'statRating', target: 4.6, isDecimal: true, suffix: ' <span style="font-size:16px; color:#64748B; font-weight:600;">/ 5</span>' },
+                { id: 'statEco', target: 4.2, isDecimal: true, suffix: ' <span style="font-size:16px; color:#64748B; font-weight:600;">/ 5</span>' }
+            ];
+
+            const duration = 1100;
+            const startTime = performance.now();
+
+            function step(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+
+                items.forEach(item => {
+                    const el = document.getElementById(item.id);
+                    if (!el) return;
+                    if (item.isDecimal) {
+                        const val = (ease * item.target).toFixed(1);
+                        el.innerHTML = val + (item.suffix || '');
+                    } else {
+                        const val = Math.floor(ease * item.target);
+                        el.innerHTML = item.format ? item.format(val) : val;
+                    }
+                });
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        document.addEventListener('click', (e) => {
+            const p = document.getElementById('datePickerPopup');
+            const btn = document.querySelector('.date-filter-pill-btn');
+            if (p && p.style.display === 'flex' && !p.contains(e.target) && !btn.contains(e.target)) {
+                p.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            animateCountersOnLoad();
+        });
+    </script>
+    <script src="../assets/js/api-client.js?v=20260831-10"></script>
+</body>
+</html>

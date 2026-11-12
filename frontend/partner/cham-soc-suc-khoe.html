@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bến Tre Tour Guide - Chăm sóc sức khỏe</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { margin: 0; font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f4f7f5; color: #1e293b; font-size: 13.5px; }
+
+    /* CUSTOM RED PIN MARKER WITH PULSE EFFECT */
+    .custom-map-pin { background: transparent !important; border: none !important; }
+    .pin-pulse-container { position: relative; width: 36px; height: 46px; }
+    .pin-pulse-ring {
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 10px;
+      background: rgba(239, 68, 68, 0.45);
+      border-radius: 50%;
+      animation: pinPulse 1.8s infinite ease-out;
+    }
+    @keyframes pinPulse {
+      0% { transform: translateX(-50%) scale(0.6); opacity: 0.9; }
+      100% { transform: translateX(-50%) scale(2.2); opacity: 0; }
+    }
+    .pin-head {
+      position: absolute;
+      top: 0; left: 0;
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #EF4444, #B91C1C);
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.7);
+      border: 3px solid #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pin-inner-dot {
+      width: 12px; height: 12px;
+      background: #FFFFFF;
+      border-radius: 50%;
+      transform: rotate(45deg);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* SIDEBAR */
+    .sidebar { position: fixed; inset: 0 auto 0 0; width: 250px; background: linear-gradient(180deg, #07552f, #032f1d); padding: 24px 16px; color: #fff; overflow-y: auto; z-index: 100; }
+    .brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 800; margin-bottom: 28px; }
+    .brand img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .menu-link, .menu-summary { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-radius: 10px; color: #d7eee3; text-decoration: none; font-weight: 650; font-size: 13.5px; cursor: pointer; }
+    .menu-link:hover, .menu-summary:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+    details summary { list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+    .arrow { margin-left: auto; font-size: 11px; }
+    .sub { display: flex; flex-direction: column; gap: 3px; padding: 5px 0 5px 22px; }
+    .sub a { padding: 8px 12px; border-radius: 8px; color: #c7e4d5; text-decoration: none; font-size: 13px; font-weight: 600; }
+    .sub a.active, .sub a:hover { background: #19bf89; color: #fff; }
+
+    /* MAIN */
+    .main { margin-left: 250px; min-height: 100vh; padding: 16px 20px; }
+    .header { height: 170px; border-radius: 20px; padding: 22px 28px; position: relative; overflow: hidden; color: #fff; background: linear-gradient(90deg, rgba(20,35,28,.85), rgba(20,35,28,.35)), url('../assets/images/tour-tri-lieu-ngam-chan-thao-duoc.png') center 54%/cover no-repeat; box-shadow: 0 8px 24px rgba(15,23,42,.12); margin-bottom: 18px; }
+    .header-copy { position: absolute; left: 28px; bottom: 58px; }
+    .header h1 { font-size: 24px; margin: 0 0 4px; text-shadow: 0 2px 5px rgba(0,0,0,.3); display: flex; align-items: center; gap: 10px; font-weight: 800; }
+    .header p { margin: 0; color: rgba(255,255,255,0.92); font-size: 13px; font-weight: 600; text-shadow: 0 1px 4px rgba(0,0,0,.35); }
+    .health-icon { display: inline-flex; width: 42px; height: 42px; align-items: center; justify-content: center; border-radius: 12px; background: #dff9e9; color: #07945d; font-size: 20px; }
+    
+    .tabs { position: absolute; left: 28px; right: 28px; bottom: 14px; display: flex; gap: 10px; }
+    .tab { border: 1px solid rgba(255,255,255,.5); background: #fff; color: #415047; padding: 7px 16px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 12.5px; box-shadow: 0 2px 7px rgba(0,0,0,.12); transition: all 0.15s ease; }
+    .tab.active { background: #0A4D2E; border-color: #0A4D2E; color: #fff; }
+
+    .content { padding: 0; }
+
+    /* TOOLBAR ROW (MATCHING SCREENSHOT 100%) */
+    .toolbar-card { background: #ffffff; border-radius: 30px; padding: 10px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); flex-wrap: wrap; }
+    .filter-pills-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .filter-pill-btn { border: 1px solid #E2E8F0; background: #FFFFFF; color: #334155; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 7px; transition: all 0.2s ease; font-family: inherit; }
+    .filter-pill-btn:hover { background: #F8FAFC; border-color: #CBD5E1; color: #0F172A; }
+    .filter-pill-btn.active { background: #0A4D2E !important; color: #FFFFFF !important; border-color: #0A4D2E !important; box-shadow: 0 4px 12px rgba(10,77,46,0.25); }
+
+    .search-map-group { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+    .search-pill-box { display: flex; align-items: center; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; padding: 7px 16px; gap: 8px; width: 280px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); }
+    .search-pill-box input { border: none; outline: none; background: transparent; font-size: 12.5px; width: 100%; color: #1E293B; font-family: inherit; }
+    .search-pill-box input::placeholder { color: #94A3B8; }
+
+    .btn-map-pill { background: #FFFFFF; border: 1px solid #E2E8F0; color: #1E293B; padding: 7px 16px; border-radius: 20px; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; font-family: inherit; }
+    .btn-map-pill:hover { background: #F8FAFC; border-color: #CBD5E1; }
+
+    /* CARD TABLE MAIN */
+    .table-card { background: #ffffff; border-radius: 20px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid #E2E8F0; position: relative; overflow: hidden; }
+    .card-head-custom { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+    .head-icon-circle { width: 44px; height: 44px; border-radius: 12px; background: #E8F5E9; display: flex; align-items: center; justify-content: center; color: #059669; flex-shrink: 0; border: 1px solid #C8E6C9; }
+    .head-title-wrap h2 { margin: 0; font-size: 19px; font-weight: 800; color: #0F172A; letter-spacing: -0.2px; }
+    .title-underline { width: 32px; height: 3px; background: #059669; border-radius: 3px; margin-top: 4px; }
+
+    /* TABLE DESIGN MATCHING SCREENSHOT 100% */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 820px; }
+    th { text-align: left; padding: 12px 14px; background: #F8FAFC; color: #475569; font-size: 12.5px; font-weight: 800; border-bottom: 1px solid #E2E8F0; }
+    th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+    th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; text-align: center; }
+
+    td { padding: 14px 14px; border-bottom: 1px solid #F1F5F9; font-size: 13px; vertical-align: middle; color: #334155; }
+    tbody tr { cursor: pointer; transition: all 0.2s ease; }
+    tbody tr:hover td { background: #F8FAF9; }
+    tbody tr.row-selected td {
+      background-color: #EAF7EE !important;
+      border-top: 2px solid #0A4D2E !important;
+      border-bottom: 2px solid #0A4D2E !important;
+    }
+    tbody tr.row-selected td:first-child {
+      border-left: 4px solid #0A4D2E !important;
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+    tbody tr.row-selected td:last-child {
+      border-right: 2px solid #0A4D2E !important;
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+    tbody tr.row-selected {
+      box-shadow: 0 6px 20px rgba(10, 77, 46, 0.18) !important;
+      transform: translateY(-2px);
+    }
+
+    /* CELL STYLES MATCHING SCREENSHOT */
+    .facility-cell-name { display: flex; align-items: center; gap: 12px; }
+    .facility-icon-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .facility-icon-circle.hospital { background: #E0F2FE; color: #0284C7; }
+    .facility-icon-circle.clinic { background: #E8F5E9; color: #059669; }
+    .facility-icon-circle.station { background: #E0F7FA; color: #00838F; }
+    .facility-icon-circle.pharmacy { background: #F3E8FF; color: #7C3AED; }
+
+    .fac-name-text { font-weight: 800; color: #0F172A; font-size: 13.5px; line-height: 1.3; }
+    .fac-type-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-top: 3px; }
+    .fac-type-badge.hospital { background: #E0F2FE; color: #0284C7; }
+    .fac-type-badge.clinic { background: #F3E8FF; color: #7C3AED; }
+    .fac-type-badge.station { background: #FEF3C7; color: #D97706; }
+    .fac-type-badge.pharmacy { background: #FCE7F3; color: #DB2777; }
+
+    .meta-with-icon { display: flex; align-items: center; gap: 7px; color: #334155; font-size: 12.5px; font-weight: 600; }
+    .meta-icon-svg { stroke: #059669; flex-shrink: 0; }
+
+    .status-pill-green { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 16px; background: #E8F5E9; color: #166534; font-size: 11.5px; font-weight: 700; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #16A34A; }
+
+    .btn-action-detail { background: #0A4D2E; color: #FFFFFF; border: none; padding: 8px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; font-family: inherit; box-shadow: 0 2px 6px rgba(10,77,46,0.2); }
+    .btn-action-detail:hover { background: #06371B; transform: translateX(2px); }
+
+    /* MODAL POPUP & SATELLITE MAP */
+    .facility-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .facility-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .facility-modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 920px;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      transform: translateY(20px) scale(0.96);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .facility-modal-overlay.active .facility-modal-card {
+      transform: translateY(0) scale(1);
+    }
+    .modal-header {
+      padding: 18px 24px;
+      background: linear-gradient(135deg, #0A4D2E, #05361F);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .modal-header-left { display: flex; align-items: center; gap: 14px; }
+    .btn-modal-close {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #ffffff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .btn-modal-close:hover { background: rgba(255,255,255,0.3); }
+
+    .modal-body {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      overflow-y: auto;
+    }
+    @media(max-width: 768px) {
+      .modal-body { grid-template-columns: 1fr; }
+    }
+
+    .modal-info-col { display: flex; flex-direction: column; gap: 14px; }
+    .info-block {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 16px;
+      padding: 12px 16px;
+    }
+    .info-block-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #64748B;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-block-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0F172A;
+      line-height: 1.4;
+    }
+    .services-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .service-tag {
+      background: #E8F5E9;
+      color: #166534;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      border: 1px solid #C8E6C9;
+    }
+
+    .modal-map-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .map-col-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 13.5px;
+      color: #0F172A;
+    }
+    .satellite-badge {
+      background: #0F172A;
+      color: #38BDF8;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: auto;
+      letter-spacing: 0.5px;
+    }
+    .map-iframe-wrapper {
+      width: 100%;
+      height: 310px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid #0A4D2E;
+      background: #1E293B;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .map-iframe-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .btn-open-gmaps {
+      background: #0A4D2E;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 11px 18px;
+      border-radius: 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(10, 77, 46, 0.25);
+    }
+    .btn-open-gmaps:hover {
+      background: #06371B;
+      transform: translateY(-1px);
+    }
+
+    /* EMBEDDED MODE OVERRIDES FOR PARTNER DASHBOARD */
+    body.embedded .sidebar { display: none; }
+    body.embedded .main { margin-left: 0; padding: 12px 14px 0; }
+    body.embedded .header { display: none; }
+
+    @media(max-width: 800px) {
+      .sidebar { position: static; width: 100%; }
+      .main { margin-left: 0; padding: 10px; }
+      .search-pill-box { width: 100%; }
+      .search-map-group { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="dashboard.html?view=schedule"><img src="../assets/images/logo-ben-tre-moi.png" alt="Logo"><span>Bến Tre Tour Guide</span></a>
+    <a class="menu-link" href="dashboard.html?view=schedule">Lịch tour</a>
+    <a class="menu-link" href="dashboard.html?view=customers">Khách hàng</a>
+    <a class="menu-link" href="dashboard.html?view=operation">Điều hành tour</a>
+    <details open>
+      <summary class="menu-summary">♡ Chăm sóc sức khỏe <span class="arrow">⌃</span></summary>
+      <div class="sub">
+        <a data-tab="facilities" href="?tab=facilities">Cơ sở y tế</a>
+        <a data-tab="services" href="?tab=services">Dịch vụ sức khỏe</a>
+        <a data-tab="activities" href="?tab=activities">Hoạt động sức khỏe</a>
+      </div>
+    </details>
+    <a class="menu-link" href="dashboard.html?view=reviews">Đánh giá</a>
+    <a class="menu-link" href="dashboard.html?view=notif">Thông báo</a>
+    <a class="menu-link" href="dashboard.html?view=profile">Hồ sơ</a>
+    <a class="menu-link logout" href="#" id="logoutBtn">Đăng xuất</a>
+  </aside>
+  <main class="main">
+    <header class="header">
+      <div class="header-copy">
+        <h1><span class="health-icon">♡</span><span id="pageTitle">Chăm sóc sức khỏe</span></h1>
+        <p>Thông tin hỗ trợ hướng dẫn viên trong quá trình dẫn tour</p>
+      </div>
+      <nav class="tabs">
+        <a class="tab" data-tab="facilities" href="?tab=facilities">Cơ sở y tế</a>
+        <a class="tab" data-tab="services" href="?tab=services">Dịch vụ sức khỏe</a>
+        <a class="tab" data-tab="activities" href="?tab=activities">Hoạt động sức khỏe</a>
+      </nav>
+    </header>
+
+    <div class="content">
+      <!-- TOP FILTER / SEARCH TOOLBAR (MATCHING SCREENSHOT 100%) -->
+      <div class="toolbar-card" id="toolbarCard">
+        <div class="filter-pills-group" id="filterPillsGroup">
+          <button class="filter-pill-btn active" onclick="filterSubCategory('all', this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Tất cả</span>
+          </button>
+          <button class="filter-pill-btn" onclick="filterSubCategory('hospital', this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h1"/><path d="M9 13h1"/></svg>
+            <span>Bệnh viện</span>
+          </button>
+          <button class="filter-pill-btn" onclick="filterSubCategory('clinic', this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <span>Phòng khám</span>
+          </button>
+          <button class="filter-pill-btn" onclick="filterSubCategory('station', this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>Trạm y tế</span>
+          </button>
+          <button class="filter-pill-btn" onclick="filterSubCategory('pharmacy', this)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M10.5 20.5l10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg>
+            <span>Nhà thuốc</span>
+          </button>
+        </div>
+
+        <div class="search-map-group">
+          <div class="search-pill-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="facilitySearchInput" placeholder="Tìm theo tên cơ sở, địa chỉ..." oninput="handleSearch(this.value)">
+          </div>
+          <button class="btn-map-pill" onclick="openFacilityDetail(currentDataList[0] || (sampleFallback.facilities && sampleFallback.facilities[0]))">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Xem bản đồ</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- MAIN TABLE CARD -->
+      <section class="table-card">
+        <div class="card-head-custom">
+          <div class="head-icon-circle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h1"/><path d="M9 13h1"/></svg>
+          </div>
+          <div class="head-title-wrap">
+            <h2 id="tableTitle">Danh sách cơ sở y tế</h2>
+            <div class="title-underline"></div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody">
+              <tr><td colspan="6" style="text-align:center; padding:30px; color:#64748B;">Đang tải dữ liệu...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- FACILITY DETAIL MODAL WITH SATELLITE MAP -->
+  <div class="facility-modal-overlay" id="facilityModalOverlay" onclick="closeFacilityModal(event)">
+    <div class="facility-modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-header-left" id="modalHeaderLeft"></div>
+        <button class="btn-modal-close" onclick="closeFacilityModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-info-col" id="modalInfoCol"></div>
+        <div class="modal-map-col">
+          <div class="map-col-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            <span>Bản đồ vệ tinh Vị trí</span>
+            <span class="satellite-badge">SATELLITE 🛰️</span>
+          </div>
+          <div class="map-iframe-wrapper" id="mapIframeWrapper"></div>
+          <a class="btn-open-gmaps" id="btnOpenGmaps" target="_blank" href="#">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>Mở chỉ đường Google Maps</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/api-client.js?v=20260831-11"></script>
+  <script>
+    const sampleFallback = {
+      facilities: [
+        { 
+          id: 1, 
+          name: 'Bệnh viện Đa khoa Bến Tre', 
+          type: 'hospital', 
+          typeName: 'Bệnh viện', 
+          address: 'Số 1, Nguyễn Văn Tư, P.7, TP. Bến Tre', 
+          phone: '0275 3821 111', 
+          opening_hours: '00:00 - 23:59 (24/7)', 
+          status: 'active', 
+          statusName: 'Đang hoạt động',
+          lat: 10.2355,
+          lng: 106.3755,
+          services_list: ['Cấp cứu 24/7', 'Khám nội - ngoại khoa', 'Xét nghiệm khẩn cấp', 'Chẩn đoán hình ảnh (CT/X-quang)', 'Điều trị du khách có bảo hiểm'],
+          note: 'Bệnh viện tuyến tỉnh lớn nhất Bến Tre, trang bị hiện đại và hỗ trợ 24/7 cho các tình huống cấp cứu du khách khẩn cấp.'
+        },
+        { 
+          id: 2, 
+          name: 'Phòng khám Đa khoa Minh Tâm', 
+          type: 'clinic', 
+          typeName: 'Phòng khám', 
+          address: '123A, Hùng Vương, P. An Hội, TP. Bến Tre', 
+          phone: '0275 3822 222', 
+          opening_hours: '07:00 - 20:00', 
+          status: 'active', 
+          statusName: 'Đang hoạt động',
+          lat: 10.2440,
+          lng: 106.3770,
+          services_list: ['Khám đa khoa nhanh', 'Băng bó vết thương', 'Cấp thuốc theo đơn', 'Siêu âm & Xét nghiệm nhanh'],
+          note: 'Vị trí ngay trung tâm thành phố Bến Tre, phục vụ khám nhanh không phải chờ đợi lâu.'
+        },
+        { 
+          id: 3, 
+          name: 'Trạm Y tế Phường Phú Khương', 
+          type: 'station', 
+          typeName: 'Trạm y tế', 
+          address: 'Ấp 2, Phú Khương, TP. Bến Tre', 
+          phone: '0275 3866 333', 
+          opening_hours: '07:30 - 17:00', 
+          status: 'active', 
+          statusName: 'Đang hoạt động',
+          lat: 10.2520,
+          lng: 106.3810,
+          services_list: ['Sơ cứu ban đầu', 'Tiêm ngừa & Cấp phát thuốc', 'Tư vấn sức khỏe du lịch địa phương'],
+          note: 'Trạm y tế phường thích hợp hỗ trợ sơ cứu nhanh cho các sự cố nhỏ trên đường tour.'
+        },
+        { 
+          id: 4, 
+          name: 'Nhà thuốc An Khang Bến Tre', 
+          type: 'pharmacy', 
+          typeName: 'Nhà thuốc', 
+          address: '45A, Đồng Khởi, P. Phú Khương, TP. Bến Tre', 
+          phone: '0275 3823 444', 
+          opening_hours: '06:30 - 22:00', 
+          status: 'active', 
+          statusName: 'Đang hoạt động',
+          lat: 10.2480,
+          lng: 106.3790,
+          services_list: ['Dược phẩm chính hãng', 'Dụng cụ y tế cá nhân', 'Thuốc chống say xe', 'Kem chống muỗi & côn trùng miền Tây'],
+          note: 'Cung cấp đầy đủ các loại thuốc say xe, dầu gió, thuốc tiêu hóa cho đoàn khách du lịch.'
+        },
+        { 
+          id: 5, 
+          name: 'Phòng khám Y học Cổ truyền Bến Tre', 
+          type: 'clinic', 
+          typeName: 'Phòng khám', 
+          address: '67, Nguyễn Huệ, P. Phú Tân, TP. Bến Tre', 
+          phone: '0275 3825 555', 
+          opening_hours: '07:30 - 17:00', 
+          status: 'active', 
+          statusName: 'Đang hoạt động',
+          lat: 10.2410,
+          lng: 106.3730,
+          services_list: ['Châm cứu & Bấm huyệt', 'Bắt mạch kê đơn đông y', 'Ngâm chân thảo dược Bến Tre', 'Trị liệu nhức mỏi du lịch'],
+          note: 'Chuyên về y học cổ truyền và vật lý trị liệu, hỗ trợ du khách bị mệt mỏi hoặc đau nhức khớp sau chuyến đi.'
+        }
+      ],
+      services: [
+        { id: 101, name: 'Ngâm chân thảo dược lá dừa Bến Tre', type: 'clinic', typeName: 'Thảo dược', description: 'Giúp thư giãn đôi chân sau chuyến tham quan làng nghề', duration_minutes: 30, price_from: 150000, status: 'active', statusName: 'Đang hoạt động', lat: 10.2450, lng: 106.3780 },
+        { id: 102, name: 'Massage trị liệu y học cổ truyền', type: 'clinic', typeName: 'Trị liệu', description: 'Giải tỏa mệt mỏi, bấm huyệt lưu thông khí huyết toàn thân', duration_minutes: 60, price_from: 350000, status: 'active', statusName: 'Đang hoạt động', lat: 10.2420, lng: 106.3760 },
+        { id: 103, name: 'Khám sức khỏe tổng quát cho du khách', type: 'hospital', typeName: 'Khám bệnh', description: 'Kiểm tra huyết áp, nhịp tim và tư vấn sức khỏe chuyến đi', duration_minutes: 20, price_from: 100000, status: 'active', statusName: 'Đang hoạt động', lat: 10.2355, lng: 106.3755 },
+        { id: 104, name: 'Tắm xông hơi thảo dược thiên nhiên', type: 'pharmacy', typeName: 'Xông hơi', description: 'Sử dụng tinh dầu bưởi, dừa và các loại lá thuốc miền Tây', duration_minutes: 45, price_from: 250000, status: 'active', statusName: 'Đang hoạt động', lat: 10.2470, lng: 106.3800 }
+      ],
+      activities: [
+        { id: 201, title: 'Thiền & Yoga sáng bên sông Hàm Luông', type: 'station', typeName: 'Yoga & Thiền', location: 'Công viên Hùng Vương, TP. Bến Tre', starts_at: '15/09/2026 06:00', capacity: 25, status: 'active', statusName: 'Đang hoạt động', lat: 10.2390, lng: 106.3780 },
+        { id: 202, title: 'Đi bộ vì sức khỏe cộng đồng Bến Tre', type: 'hospital', typeName: 'Đi bộ', location: 'Công viên Đồng Khởi, TP. Bến Tre', starts_at: '20/09/2026 06:30', capacity: 100, status: 'active', statusName: 'Đang hoạt động', lat: 10.2430, lng: 106.3770 },
+        { id: 203, title: 'Trải nghiệm hái rau sạch & nấu ăn dưỡng sinh', type: 'clinic', typeName: 'Dưỡng sinh', location: 'Khu du lịch sinh thái miệt vườn Bến Tre', starts_at: '22/09/2026 09:00', capacity: 15, status: 'active', statusName: 'Đang hoạt động', lat: 10.2280, lng: 106.3650 }
+      ]
+    };
+
+    let currentTab = 'facilities';
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let currentRawData = [];
+    let currentDataList = [];
+
+    if(new URLSearchParams(location.search).get('embedded')==='1') document.body.classList.add('embedded');
+
+    function getIconCircleHtml(type) {
+      if (type === 'hospital') {
+        return '<div class="facility-icon-circle hospital"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h1"/><path d="M9 13h1"/></svg></div>';
+      } else if (type === 'clinic') {
+        return '<div class="facility-icon-circle clinic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>';
+      } else if (type === 'station') {
+        return '<div class="facility-icon-circle station"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>';
+      } else {
+        return '<div class="facility-icon-circle pharmacy"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.5 20.5l10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg></div>';
+      }
+    }
+
+    function handleRowSelect(trEl) {
+      if (!trEl) return;
+      document.querySelectorAll('#tableBody tr').forEach(r => r.classList.remove('row-selected'));
+      trEl.classList.add('row-selected');
+    }
+
+    function openFacilityDetail(item) {
+      if (!item) return;
+
+      const type = item.type || (item.type_code || 'clinic');
+      const typeName = item.typeName || item.type_name || (type === 'hospital' ? 'Bệnh viện' : (type === 'clinic' ? 'Phòng khám' : (type === 'station' ? 'Trạm y tế' : 'Nhà thuốc')));
+      const name = item.name || item.title || 'Cơ sở y tế';
+      const address = item.address || item.location || 'Bến Tre';
+      const phone = item.phone || item.contact_phone || '0275 3821 111';
+      const hours = item.opening_hours || (item.duration_minutes ? item.duration_minutes + ' phút' : (item.starts_at || '07:30 - 17:00'));
+
+      const lat = item.lat || (item.latitude ? parseFloat(item.latitude) : 10.2410);
+      const lng = item.lng || (item.longitude ? parseFloat(item.longitude) : 106.3730);
+
+      const servicesList = item.services_list || [
+        'Khám & điều trị ban đầu',
+        'Sơ cấp cứu du khách',
+        'Cung cấp thuốc thiết yếu',
+        'Tư vấn sức khỏe chuyến đi'
+      ];
+
+      document.getElementById('modalHeaderLeft').innerHTML =
+        getIconCircleHtml(type) +
+        '<div>' +
+          '<h3 style="margin:0; font-size:17px; font-weight:800; color:#fff;">' + name + '</h3>' +
+          '<span class="fac-type-badge ' + type + '" style="margin-top:4px;">' + typeName + '</span>' +
+        '</div>';
+
+      document.getElementById('modalInfoCol').innerHTML =
+        '<div class="info-block">' +
+          '<div class="info-block-title">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+            '<span>Địa chỉ cơ sở</span>' +
+          '</div>' +
+          '<div class="info-block-val">' + address + '</div>' +
+        '</div>' +
+
+        '<div class="info-block">' +
+          '<div class="info-block-title">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' +
+            '<span>Số điện thoại liên hệ</span>' +
+          '</div>' +
+          '<div class="info-block-val" style="display:flex; align-items:center; justify-content:space-between;">' +
+            '<span>' + phone + '</span>' +
+            '<a href="tel:' + phone.replace(/\s+/g, '') + '" style="background:#059669; color:#fff; padding:4px 12px; border-radius:12px; text-decoration:none; font-size:12px; font-weight:700;">📞 Gọi ngay</a>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="info-block">' +
+          '<div class="info-block-title">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+            '<span>Thời gian hoạt động</span>' +
+          '</div>' +
+          '<div class="info-block-val">' + hours + ' <span class="status-pill-green" style="font-size:10.5px; padding:2px 8px; margin-left:6px;"><span class="status-dot"></span> Đang mở cửa</span></div>' +
+        '</div>' +
+
+        '<div class="info-block">' +
+          '<div class="info-block-title">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' +
+            '<span>Chuyên khoa & Dịch vụ nổi bật</span>' +
+          '</div>' +
+          '<div class="services-tags">' +
+            servicesList.map(s => '<span class="service-tag">✓ ' + s + '</span>').join('') +
+          '</div>' +
+        '</div>' +
+
+        '<div class="info-block" style="background:#EFF6FF; border-color:#BFDBFE;">' +
+          '<div class="info-block-title" style="color:#1E40AF;">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+            '<span>Ghi chú cho Hướng dẫn viên</span>' +
+          '</div>' +
+          '<div class="info-block-val" style="font-size:12px; color:#1E3A8A; font-weight:600;">' +
+            '💡 ' + (item.note || 'Xuất trình thẻ Hướng dẫn viên Bến Tre Tour Guide để được hỗ trợ thủ tục ưu tiên khẩn cấp cho đoàn du khách.') +
+          '</div>' +
+        '</div>';
+
+      const mapWrapper = document.getElementById('mapIframeWrapper');
+      mapWrapper.innerHTML = '<div id="leafletMap" style="width:100%; height:100%; min-height:310px;"></div>';
+
+      document.getElementById('btnOpenGmaps').href = 'https://www.google.com/maps/search/?api=1&query=' + lat + ',' + lng;
+      document.getElementById('facilityModalOverlay').classList.add('active');
+
+      setTimeout(() => {
+        if (window.activeModalMap) {
+          window.activeModalMap.remove();
+          window.activeModalMap = null;
+        }
+
+        if (window.L) {
+          const map = L.map('leafletMap', { zoomControl: true }).setView([lat, lng], 16);
+          window.activeModalMap = map;
+
+          // Esri World Imagery (Satellite)
+          L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: 'Esri Satellite'
+          }).addTo(map);
+
+          // Esri Boundaries & Places (Labels)
+          L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19
+          }).addTo(map);
+
+          // Custom Red Pin Marker
+          const redPinIcon = L.divIcon({
+            className: 'custom-map-pin',
+            html: '<div class="pin-pulse-container">' +
+                    '<div class="pin-pulse-ring"></div>' +
+                    '<div class="pin-head">' +
+                      '<div class="pin-inner-dot"></div>' +
+                    '</div>' +
+                  '</div>',
+            iconSize: [36, 46],
+            iconAnchor: [18, 46],
+            popupAnchor: [0, -42]
+          });
+
+          const marker = L.marker([lat, lng], { icon: redPinIcon }).addTo(map);
+          marker.bindPopup(
+            '<div style="font-family:sans-serif; padding:4px 6px; text-align:center;">' +
+              '<b style="color:#0A4D2E; font-size:13px; display:block; margin-bottom:3px;">📍 ' + name + '</b>' +
+              '<span style="font-size:11px; color:#475569; display:block;">' + address + '</span>' +
+            '</div>'
+          ).openPopup();
+
+          map.invalidateSize();
+        } else {
+          // Fallback iframe with lat,lng pin
+          const mapQuery = lat + ',' + lng + '+(' + encodeURIComponent(name) + ')';
+          mapWrapper.innerHTML =
+            '<iframe ' +
+              'title="Bản đồ vệ tinh ' + name.replace(/"/g, '&quot;') + '" ' +
+              'src="https://maps.google.com/maps?q=' + mapQuery + '&t=k&z=16&ie=UTF8&iwloc=B&output=embed" ' +
+              'loading="lazy" allowfullscreen>' +
+            '</iframe>';
+        }
+      }, 120);
+    }
+
+    function closeFacilityModal(e) {
+      if (!e || e.target === document.getElementById('facilityModalOverlay') || e.type === 'click') {
+        document.getElementById('facilityModalOverlay').classList.remove('active');
+      }
+    }
+
+    function renderTableRows(dataList) {
+      const tbody = document.getElementById('tableBody');
+      if (!tbody) return;
+      currentDataList = dataList || [];
+
+      if (!dataList || !dataList.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:32px; color:#94A3B8; font-weight:600;">Không tìm thấy dữ liệu phù hợp.</td></tr>';
+        return;
+      }
+
+      let html = '';
+      dataList.forEach((item, index) => {
+        const type = item.type || (item.type_code || 'clinic');
+        const typeName = item.typeName || item.type_name || (type === 'hospital' ? 'Bệnh viện' : (type === 'clinic' ? 'Phòng khám' : (type === 'station' ? 'Trạm y tế' : 'Nhà thuốc')));
+        const name = item.name || item.title || 'Cơ sở y tế';
+        const address = item.address || item.location || 'Bến Tre';
+        const phone = item.phone || item.contact_phone || '0275 3821 111';
+        const hours = item.opening_hours || (item.duration_minutes ? item.duration_minutes + ' phút' : (item.starts_at || '07:30 - 17:00'));
+
+        html += '<tr onclick="handleRowSelect(this)">' +
+          '<td>' +
+            '<div class="facility-cell-name">' +
+              getIconCircleHtml(type) +
+              '<div>' +
+                '<div class="fac-name-text">' + name + '</div>' +
+                '<span class="fac-type-badge ' + type + '">' + typeName + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</td>' +
+          '<td>' +
+            '<div class="meta-with-icon">' +
+              '<svg class="meta-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+              '<span>' + address + '</span>' +
+            '</div>' +
+          '</td>' +
+          '<td>' +
+            '<div class="meta-with-icon">' +
+              '<svg class="meta-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' +
+              '<span>' + phone + '</span>' +
+            '</div>' +
+          '</td>' +
+          '<td>' +
+            '<div class="meta-with-icon">' +
+              '<svg class="meta-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+              '<span>' + hours + '</span>' +
+            '</div>' +
+          '</td>' +
+          '<td>' +
+            '<span class="status-pill-green"><span class="status-dot"></span> Đang hoạt động</span>' +
+          '</td>' +
+          '<td style="text-align:center;">' +
+            '<button class="btn-action-detail" onclick="event.stopPropagation(); handleRowSelect(this.closest(\'tr\')); openFacilityDetail(currentDataList[' + index + '])">Xem chi tiết &rarr;</button>' +
+          '</td>' +
+        '</tr>';
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function applyFilterAndSearch() {
+      let filtered = currentRawData;
+      if (currentFilter !== 'all') {
+        filtered = filtered.filter(item => (item.type === currentFilter || item.type_code === currentFilter));
+      }
+      if (currentSearch.trim()) {
+        const q = currentSearch.toLowerCase().trim();
+        filtered = filtered.filter(item => {
+          const name = (item.name || item.title || '').toLowerCase();
+          const addr = (item.address || item.location || '').toLowerCase();
+          return name.includes(q) || addr.includes(q);
+        });
+      }
+      renderTableRows(filtered);
+    }
+
+    function filterSubCategory(type, btnEl) {
+      currentFilter = type;
+      document.querySelectorAll('#filterPillsGroup .filter-pill-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      applyFilterAndSearch();
+    }
+
+    function handleSearch(val) {
+      currentSearch = val;
+      applyFilterAndSearch();
+    }
+
+    async function loadData(tabOverride) {
+      const requested = tabOverride || new URLSearchParams(location.search).get('tab');
+      currentTab = (requested === 'services' || requested === 'activities') ? requested : 'facilities';
+
+      document.querySelectorAll('[data-tab]').forEach(a => a.classList.toggle('active', a.dataset.tab === currentTab));
+      
+      const titles = {
+        facilities: 'Danh sách cơ sở y tế',
+        services: 'Danh sách dịch vụ sức khỏe',
+        activities: 'Danh sách hoạt động sức khỏe'
+      };
+      document.getElementById('tableTitle').textContent = titles[currentTab];
+
+      document.getElementById('tableHead').innerHTML = '<tr>' +
+        '<th>Tên cơ sở</th>' +
+        '<th>Địa chỉ</th>' +
+        '<th>Số điện thoại</th>' +
+        '<th>Giờ hoạt động</th>' +
+        '<th>Trạng thái</th>' +
+        '<th style="text-align:center;">Thao tác</th>' +
+      '</tr>';
+
+      const resources = { facilities: 'facilities', services: 'health-services', activities: 'health-activities' };
+
+      try {
+        const res = await BenTreAPI.list(resources[currentTab], { limit: 100 });
+        currentRawData = (Array.isArray(res?.data) && res.data.length) ? res.data : sampleFallback[currentTab];
+      } catch (err) {
+        currentRawData = sampleFallback[currentTab] || [];
+      }
+
+      currentFilter = 'all';
+      currentSearch = '';
+      document.querySelectorAll('#filterPillsGroup .filter-pill-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+      if (document.getElementById('facilitySearchInput')) document.getElementById('facilitySearchInput').value = '';
+
+      applyFilterAndSearch();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-tab]').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const tab = link.dataset.tab;
+          if (link.classList.contains('active')) return;
+          history.pushState({ tab }, '', '?tab=' + encodeURIComponent(tab));
+          loadData(tab);
+        });
+      });
+      loadData();
+    });
+
+    window.addEventListener('popstate', () => loadData());
+  </script>
+</body>
+</html>

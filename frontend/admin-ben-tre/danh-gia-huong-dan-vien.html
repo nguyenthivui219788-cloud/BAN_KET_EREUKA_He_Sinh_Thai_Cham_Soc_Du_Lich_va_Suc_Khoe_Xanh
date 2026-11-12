@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bến Tre Admin - Đánh giá Hướng Dẫn Viên</title>
+    <style>
+        :root {
+            --sidebar-bg: #032216;
+            --sidebar-card: #063925;
+            --sidebar-active: #059669;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --primary-emerald: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13px;
+        }
+
+        /* DARK SIDEBAR */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #032216 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #E5E7EB !important;
+            border-right: 1px solid #064E3B !important;
+            scrollbar-width: thin;
+            scrollbar-color: #064E3B #032216;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #064E3B; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 16px 16px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #064E3B;
+            border: 2px solid #34D399;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.3px;
+            line-height: 1.1;
+        }
+
+        .brand-sub {
+            font-size: 10.5px;
+            color: #34D399;
+            font-weight: 600;
+        }
+
+        .sidebar-section-label {
+            font-size: 9.5px;
+            font-weight: 800;
+            color: #10B981;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 10px 14px 2px;
+        }
+
+        .sidebar-nav {
+            padding: 0 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            color: #D1D5DB;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 12.5px;
+            transition: all 0.15s;
+            cursor: pointer;
+            user-select: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .nav-item:hover { background: rgba(16, 185, 129, 0.15); color: #FFFFFF; }
+        .nav-item.active { background: #059669; color: #FFFFFF; font-weight: 700; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3); }
+
+        .menu-arrow-btn {
+            margin-left: auto;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #A7F3D0;
+        }
+
+        .submenu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            width: 100%;
+            padding: 2px 0;
+        }
+
+        .nav-sub-item {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px 6px 32px;
+            border-radius: 6px;
+            color: #9CA3AF;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+            width: 100%;
+            box-sizing: border-box;
+            white-space: nowrap;
+        }
+
+        .nav-sub-item:hover { color: #34D399; background: rgba(16, 185, 129, 0.12); }
+        .nav-sub-item.active { color: #34D399; font-weight: 700; background: #064E3B; border-radius: 6px; }
+
+        .sidebar-user-box {
+            margin: 12px 10px 3px;
+            background: #063925;
+            border-radius: 10px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            cursor: pointer;
+        }
+
+        .sidebar-user-info { display: flex; align-items: center; gap: 8px; }
+        .sidebar-user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid #10B981; }
+
+        .logout-btn {
+            color: #9CA3AF;
+            background: transparent;
+            border: none;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 10px;
+            margin: 0 10px;
+            border-radius: 6px;
+            transition: all 0.15s;
+        }
+        .logout-btn:hover { color: #EF4444; background: rgba(239, 68, 68, 0.1); }
+
+        .sidebar-eco-card {
+            margin: 8px 10px 14px;
+            background: linear-gradient(180deg, #064E3B 0%, #022C22 100%);
+            border-radius: 12px;
+            padding: 10px 10px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #047857;
+        }
+
+        .sidebar-eco-title { font-size: 12px; font-weight: 800; color: #FFFFFF; }
+        .sidebar-eco-sub { font-size: 10px; color: #A7F3D0; margin-top: 2px; line-height: 1.3; max-width: 130px; }
+        .sidebar-eco-img { position: absolute; right: -8px; bottom: -4px; width: 70px; height: 50px; object-fit: cover; border-radius: 6px; opacity: 0.85; }
+
+        .main-wrapper {
+            margin-left: 250px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            height: 70px;
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .header-left { display: flex; flex-direction: column; }
+        .page-title { font-size: 18px; font-weight: 800; color: #111827; }
+        .page-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .notif-bell {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #F9FAFB;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #EF4444;
+            color: #FFF;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 2px 5px;
+        }
+        
+        .user-profile, .user-pill {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            cursor: pointer !important;
+        }
+
+        .user-avatar, .user-pill-avatar {
+            width: 38px !important;
+            height: 38px !important;
+            min-width: 38px !important;
+            max-width: 38px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid #10B981 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .user-info {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+        }
+
+        .user-name {
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            color: #111827 !important;
+            line-height: 1.2 !important;
+        }
+
+        .user-role {
+            font-size: 11px !important;
+            color: #6B7280 !important;
+            line-height: 1.2 !important;
+        }
+
+
+        /* MODALS (STRICT HIDDEN BY DEFAULT) */
+        .modal-overlay {
+            display: none !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(15, 23, 42, 0.65) !important;
+            backdrop-filter: blur(4px) !important;
+            z-index: 99999 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 20px !important;
+            box-sizing: border-box !important;
+        }
+
+        .modal-card {
+            background: #FFFFFF !important;
+            border-radius: 18px !important;
+            width: 100% !important;
+            max-width: 540px !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+            margin: auto !important;
+            position: relative !important;
+            border: 1px solid #E5E7EB !important;
+        }
+
+        .modal-header {
+            padding: 16px 20px !important;
+            background: #F9FAFB !important;
+            border-bottom: 1px solid #E5E7EB !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+
+        .modal-title { font-size: 15px !important; font-weight: 800 !important; color: #111827 !important; }
+        .modal-close-btn { background: transparent !important; border: none !important; font-size: 22px !important; color: #6B7280 !important; cursor: pointer !important; }
+        .modal-body { padding: 18px 20px !important; display: flex !important; flex-direction: column !important; gap: 12px !important; }
+        .modal-footer { padding: 12px 20px !important; background: #F9FAFB !important; border-top: 1px solid #E5E7EB !important; display: flex !important; justify-content: flex-end !important; gap: 10px !important; }
+
+        /* TOAST */
+        .toast-notif {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            z-index: 200000;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+    
+        .action-icon-btn {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 8px !important;
+            border: 1px solid transparent !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            margin-left: 6px !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            outline: none !important;
+            vertical-align: middle !important;
+        }
+
+        .action-icon-btn.btn-edit {
+            background: #EFF6FF !important;
+            border-color: #BFDBFE !important;
+        }
+        .action-icon-btn.btn-edit:hover {
+            background: #DBEAFE !important;
+            border-color: #60A5FA !important;
+            transform: translateY(-2px) scale(1.08) !important;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25) !important;
+        }
+
+        .action-icon-btn.btn-delete {
+            background: #FEF2F2 !important;
+            border-color: #FECACA !important;
+        }
+        .action-icon-btn.btn-delete:hover {
+            background: #FEE2E2 !important;
+            border-color: #F87171 !important;
+            transform: translateY(-2px) scale(1.08) !important;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25) !important;
+        }
+
+    </style>
+</head>
+<body onclick="closeAllActionDropdowns()">
+
+    <!-- DARK SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo"><img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"></div>
+            <div>
+                <div class="brand-title">Bến Tre Admin</div>
+                <div class="brand-sub">Command Center</div>
+            </div>
+        </div>
+
+        <div class="sidebar-section-label">TỔNG QUAN</div>
+        <nav class="sidebar-nav">
+            <a href="../admin/dashboard.html" class="nav-item"><span>🏠</span> Dashboard</a>
+        </nav>
+
+        <div class="sidebar-section-label">DU LỊCH</div>
+        <nav class="sidebar-nav">
+            <a href="../admin/du-lich.html" class="nav-item ">
+                <span>📍</span> Du lịch
+            </a>
+            <a href="../admin/dat-tour.html" class="nav-item ">
+                <span>🎟️</span> Đặt tour
+            </a>
+            <a href="../admin/huong-dan-vien.html" class="nav-item ">
+                <span>🧭</span> Hướng dẫn viên
+            </a>
+        </nav>
+
+        <div class="sidebar-section-label">NGƯỜI DÙNG</div>
+        <nav class="sidebar-nav">
+            <a href="../admin/nguoi-dung.html" class="nav-item ">
+                <span>👥</span> Người dùng
+            </a>
+        </nav>
+
+        <div class="sidebar-section-label">CHĂM SÓC SỨC KHỎE</div>
+        <nav class="sidebar-nav">
+            <div class="nav-item" onclick="toggleDropdownMenu('submenuSuckhoe', this)">
+                <span>💚</span> Chăm sóc sức khỏe <span class="menu-arrow-btn">▼</span>
+            </div>
+            <div class="submenu-container" id="submenuSuckhoe" style="display: none;">
+                <a href="../admin/co-so-y-te.html" class="nav-sub-item"><span>🏥</span> Cơ sở y tế</a>
+                <a href="../admin/dich-vu-suc-khoe.html" class="nav-sub-item"><span>🩺</span> Dịch vụ sức khỏe</a>
+                <a href="../admin/hoat-dong-suc-khoe.html" class="nav-sub-item"><span>🧘</span> Hoạt động sức khỏe</a>
+            </div>
+        </nav>
+
+        <div class="sidebar-section-label">TRUYỀN THÔNG & ĐÁNH GIÁ</div>
+        <nav class="sidebar-nav">
+            <div class="nav-item" onclick="toggleDropdownMenu('submenuTintuc', this)">
+                <span>📰</span> Tin tức & sự kiện <span class="menu-arrow-btn">▼</span>
+            </div>
+            <div class="submenu-container" id="submenuTintuc" style="display: none;">
+                <a href="../admin/tin-tuc.html" class="nav-sub-item"><span>📰</span> Tin tức</a>
+                <a href="../admin/su-kien.html" class="nav-sub-item"><span>🎉</span> Sự kiện</a>
+            </div>
+
+            <div class="nav-item active" onclick="toggleDropdownMenu('submenuDanhgia', this)">
+                <span>⭐</span> Đánh giá & phản hồi <span class="menu-arrow-btn">▲</span>
+            </div>
+            <div class="submenu-container" id="submenuDanhgia" style="display: flex;">
+                <a href="danh-gia-tour.html" class="nav-sub-item "><span>🏞️</span> Đánh giá tour</a>
+                <a href="danh-gia-huong-dan-vien.html" class="nav-sub-item active"><span>🧭</span> Đánh giá HDV</a>
+                <a href="danh-gia-dia-diem.html" class="nav-sub-item "><span>📍</span> Đánh giá địa điểm</a>
+                <a href="../admin/phan-hoi-khach-hang.html" class="nav-sub-item"><span>💬</span> Phản hồi khách hàng</a>
+                <a href="../admin/bao-cao-noi-dung.html" class="nav-sub-item"><span>🚩</span> Báo cáo nội dung</a>
+            </div>
+        </nav>
+
+        <div class="sidebar-user-box" onclick="showToast('Tài khoản: Admin Bến Tre')">
+            <div class="sidebar-user-info">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="sidebar-user-avatar" alt="Admin">
+                <div>
+                    <div style="font-size:11.5px; font-weight:700; color:#FFF;">Admin Bến Tre</div>
+                    <div style="font-size:10px; color:#9CA3AF;">Quản trị viên</div>
+                </div>
+            </div>
+            <span style="color:#9CA3AF; font-size:10px;">▼</span>
+        </div>
+
+        <button class="logout-btn" onclick="handleLogout(event)"><span>➔</span> Đăng xuất</button>
+
+        <div class="sidebar-eco-card">
+            <div class="sidebar-eco-title">Du lịch xanh</div>
+            <div class="sidebar-eco-sub">Bến Tre – Trải nghiệm xanh, hành trình bền vững</div>
+            <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=160&h=120&fit=crop" class="sidebar-eco-img" alt="Eco">
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        <header class="top-navbar">
+            <div class="header-left">
+                <h1 class="page-title">Đánh giá & phản hồi</h1>
+                <p class="page-sub">Quản lý đánh giá, nhận xét và điểm số của hướng dẫn viên</p>
+            </div>
+            <div class="header-right">
+                <div class="user-pill" onclick="showToast('Tài khoản: Admin Bến Tre')">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="user-pill-avatar" alt="Admin">
+                    <div><div style="font-size:13px; font-weight:700; color:#111827;">Admin Bến Tre</div><div style="font-size:11px; color:#6B7280;">Quản trị viên</div></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-container">
+            <!-- BẢNG ĐÁNH GIÁ CHÍNH -->
+            <section class="section-card">
+                <div class="filter-controls-row">
+                    <select class="filter-select"><option>Tất cả Hướng dẫn viên</option></select>
+                    <select class="filter-select"><option>Tất cả số sao</option><option>5 sao ⭐⭐⭐⭐⭐</option><option>4 sao ⭐⭐⭐⭐</option><option>1-3 sao ⭐</option></select>
+                    <input type="text" class="filter-select" placeholder="Từ ngày 08/01/2026 📅" style="width:140px;">
+                    <input type="text" class="filter-select" placeholder="Đến ngày 08/20/2026 📅" style="width:140px;">
+                    <button class="btn-add-primary" onclick="showToast('🔍 Đã lọc danh sách đánh giá!')"><span>🔍</span> Lọc</button>
+                    <button class="btn-export-excel" style="margin-left:auto;" onclick="showToast('📥 Đang xuất Excel...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Xuất Excel</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width:30px;">#</th>
+                                <th>Hướng dẫn viên</th>
+                                <th>Khách hàng</th>
+                                <th>Đánh giá / Nhận xét</th>
+                                <th>Số sao</th>
+                                <th>Ngày đánh giá</th>
+                                <th>Trạng thái</th>
+                                <th style="text-align:right; width:80px;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reviewsTableBody">
+                            <!-- Rendered by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px; color:#6B7280; margin-top:8px;">
+                    <span>Hiển thị 1 - 5 trong 1.256 đánh giá</span>
+                    <div style="display:flex; gap:4px;">
+                        <button class="action-icon-btn">‹</button>
+                        <button class="action-icon-btn" style="background:#064E3B; color:#FFF; font-weight:700;">1</button>
+                        <button class="action-icon-btn">2</button>
+                        <button class="action-icon-btn">3</button>
+                        <button class="action-icon-btn">...</button>
+                        <button class="action-icon-btn">252</button>
+                        <button class="action-icon-btn">›</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BẢNG ĐÁNH GIÁ BỊ ẨN / VI PHẠM (BOTTOM) -->
+            <section class="section-card" style="margin-top:10px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <strong style="font-size:15px; color:#111827;">Đánh giá bị ẩn / vi phạm</strong>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width:30px;">#</th>
+                                <th>Nội dung đánh giá</th>
+                                <th>Loại vi phạm</th>
+                                <th>Khách hàng</th>
+                                <th>Ngày báo cáo</th>
+                                <th>Trạng thái</th>
+                                <th style="text-align:right; width:170px;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hiddenReviewsTableBody">
+                            <!-- Rendered by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                <div style="text-align:center; margin-top:4px;">
+                    <a href="#" style="color:#059669; font-weight:700; font-size:12px; text-decoration:none;">Xem tất cả (16) →</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL 1: XEM CHI TIẾT BÌNH LUẬN (CON MẮT) -->
+    <div class="modal-overlay" id="modalViewComment" style="display: none !important;">
+        <div class="modal-card" style="max-width: 520px;">
+            <div class="modal-header">
+                <div class="modal-title"><span>👁️</span> Chi Tiết Bình Luận & Đánh Giá</div>
+                <button class="modal-close-btn" onclick="closeModal('modalViewComment')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#F8FAFC; border-radius:10px; border:1px solid #E2E8F0;">
+                    <img id="modalCommentAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&amp;h=100&amp;fit=crop" alt="Ảnh đại diện người đánh giá" style="width:46px; height:46px; border-radius:50%; object-fit:cover; border:2px solid #10B981;">
+                    <div>
+                        <div id="modalCommentAuthor" style="font-weight:800; font-size:14px; color:#111827;"></div>
+                        <div id="modalCommentPhone" style="font-size:11.5px; color:#64748B;"></div>
+                    </div>
+                    <div style="margin-left:auto; text-align:right;">
+                        <div id="modalCommentStars" style="color:#F59E0B; font-size:14px;"></div>
+                        <span id="modalCommentStatus" class="status-badge approved"></span>
+                    </div>
+                </div>
+
+                <div style="font-size:12.5px; color:#475569;">
+                    <strong style="color:#111827;">Hướng dẫn viên:</strong> <span id="modalCommentTarget"></span>
+                </div>
+                <div style="font-size:12px; color:#64748B;">
+                    <strong>Thời gian:</strong> <span id="modalCommentDate"></span>
+                </div>
+
+                <div style="margin-top:4px;">
+                    <label style="font-size:12px; font-weight:700; color:#374151; display:block; margin-bottom:4px;">Nội dung nhận xét của khách hàng:</label>
+                    <div id="modalCommentContent" style="padding:14px; background:#F0FDF4; border:1px solid #BBF7D0; border-radius:10px; font-size:13px; color:#166534; line-height:1.5; font-style:italic;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-export-excel" onclick="closeModal('modalViewComment')">Đóng</button>
+                <button type="button" class="btn-add-primary" onclick="showToast('💬 Đã mở khung phản hồi khách hàng')">💬 Trả lời bình luận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: XỬ LÝ ĐÁNH GIÁ (TỪ NÚT 3 CHẤM) -->
+    <div class="modal-overlay" id="modalProcessReview" style="display: none !important;">
+        <div class="modal-card" style="max-width: 480px;">
+            <div class="modal-header">
+                <div class="modal-title"><span>⚙️</span> Xử Lý Đánh Giá / Phản Hồi</div>
+                <button class="modal-close-btn" onclick="closeModal('modalProcessReview')">&times;</button>
+            </div>
+            <form onsubmit="submitProcessReview(event)">
+                <input type="hidden" id="processReviewId">
+                <div class="modal-body">
+                    <div style="padding:10px 12px; background:#FEF3C7; border-radius:8px; border:1px solid #FDE68A; color:#92400E; font-size:12px;">
+                        ⚠️ Đang xử lý đánh giá của <strong id="processCustomerName"></strong>
+                    </div>
+
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:12px; font-weight:700; color:#374151;">Hành động xử lý *</label>
+                        <select class="filter-select" id="processActionSelect" style="width:100%;">
+                            <option value="processing">Chuyển sang trạng thái "Đang xử lý"</option>
+                            <option value="hide">Ẩn đánh giá khỏi trang công khai</option>
+                            <option value="warn">Gửi cảnh báo / Yêu cầu xác minh thông tin</option>
+                            <option value="approve">Duyệt lại & Cho phép hiển thị bình thường</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:12px; font-weight:700; color:#374151;">Ghi chú nội bộ / Phản hồi xử lý</label>
+                        <textarea class="filter-select" id="processNotes" style="width:100%; height:70px; resize:none;" placeholder="Nhập ghi chú xử lý..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-export-excel" onclick="closeModal('modalProcessReview')">Hủy</button>
+                    <button type="submit" class="btn-add-primary">Xác nhận xử lý</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: XÁC NHẬN XÓA (CENTER) -->
+    <div class="modal-overlay" id="modalConfirmDelete" style="display: none !important;">
+        <div class="modal-card" style="max-width: 420px; text-align: center; padding: 26px 22px;">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: #FEE2E2; color: #DC2626; font-size: 26px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; border: 2px solid #FCA5A5;">
+                🗑️
+            </div>
+            <h3 style="font-size: 17px; font-weight: 800; color: #111827; margin-bottom: 6px;">Xác nhận xóa đánh giá</h3>
+            <p id="confirmDeleteMessage" style="font-size: 13px; color: #4B5563; line-height: 1.5; margin-bottom: 20px;">
+                Bạn có chắc chắn muốn xóa đánh giá này? Hành động này không thể hoàn tác.
+            </p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button type="button" class="btn-export-excel" style="padding: 8px 18px; font-size: 13px;" onclick="closeModal('modalConfirmDelete')">Hủy bỏ</button>
+                <button type="button" id="btnConfirmDeleteAction" style="padding: 8px 20px; font-size: 13px; font-weight: 700; background: #DC2626; color: #FFFFFF; border: none; border-radius: 8px; cursor: pointer;">🗑️ Xóa vĩnh viễn</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-notif" id="toastNotif"><span id="toastIcon">✅</span><span id="toastMsg">Thành công!</span></div>
+
+    <script>
+        // Data for main reviews table
+        let mainReviews = [
+            { id: 1, targetName: 'Tour Một ngày xanh', sub: '1 ngày', targetImg: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=80&h=80&fit=crop', customer: 'Nguyễn Văn A', phone: '0901 234 567', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&h=60&fit=crop', comment: 'Tour rất tuyệt vời, lịch trình hợp lý, hướng dẫn viên nhiệt tình, món ăn ngon.', stars: '★★★★★', date: '20/08/2026 10:30', status: 'Hiển thị', statusClass: 'approved' },
+            { id: 2, targetName: 'Khám phá miệt vườn', sub: '2 ngày 1 đêm', targetImg: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=80&h=80&fit=crop', customer: 'Trần Thị B', phone: '0902 345 678', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop', comment: 'Trải nghiệm rất thú vị, không gian trong lành, sẽ giới thiệu cho bạn bè.', stars: '★★★★☆', date: '19/08/2026 16:45', status: 'Hiển thị', statusClass: 'approved' },
+            { id: 3, targetName: 'Trải nghiệm sông nước', sub: '1 ngày', targetImg: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=80&h=80&fit=crop', customer: 'Lê Hoàng C', phone: '0903 456 789', avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=60&h=60&fit=crop', comment: 'Đi thuyền rất thích, nhưng thời gian ở một số điểm hơi ngắn.', stars: '★★★★☆', date: '18/08/2026 09:15', status: 'Hiển thị', statusClass: 'approved' },
+            { id: 4, targetName: 'Cồn Phụng - Cù Lao', sub: '1 ngày', targetImg: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=80&h=80&fit=crop', customer: 'Phạm Minh D', phone: '0904 567 890', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop', comment: 'Hướng dẫn viên vui vẻ, am hiểu địa phương.', stars: '★★★★★', date: '17/08/2026 14:20', status: 'Hiển thị', statusClass: 'approved' },
+            { id: 5, targetName: 'Du lịch sinh thái', sub: '3 ngày 2 đêm', targetImg: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=80&h=80&fit=crop', customer: 'Võ Thị E', phone: '0905 678 901', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&h=60&fit=crop', comment: 'Dịch vụ quá tệ, đồ ăn dở, hướng dẫn viên không quan tâm khách!!!', stars: '★☆☆☆☆', date: '16/08/2026 11:05', status: 'Đã ẩn', statusClass: 'hidden' }
+        ];
+
+        // Data for hidden/violation reviews table
+        let hiddenReviews = [
+            { id: 101, comment: 'Dịch vụ quá tệ, lừa đảo khách hàng!', violation: 'Ngôn từ xúc phạm', customer: 'Võ Thị E', phone: '0905 678 901', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&h=60&fit=crop', date: '16/08/2026 11:05', status: 'Đã ẩn', statusClass: 'hidden' },
+            { id: 102, comment: 'Hướng dẫn viên không có kiến thức, giải thích sai hoàn toàn.', violation: 'Thông tin sai lệch', customer: 'Nguyễn Văn F', phone: '0906 789 012', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&h=60&fit=crop', date: '15/08/2026 10:20', status: 'Đang xử lý', statusClass: 'processing' },
+            { id: 103, comment: 'Địa điểm rất bẩn, rác khắp nơi, không nên đi.', violation: 'Nội dung không phù hợp', customer: 'Trần Thị G', phone: '0907 890 123', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop', date: '14/08/2026 09:45', status: 'Đã ẩn', statusClass: 'hidden' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMainTable();
+            renderHiddenTable();
+        });
+
+        function renderMainTable() {
+            const tbody = document.getElementById('reviewsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            mainReviews.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = '<td>' + (index + 1) + '</td>' +
+                    '<td><div class="thumb-cell-flex"><img src="' + item.targetImg + '" class="thumb-img-box"><div><strong>' + item.targetName + '</strong><div style="font-size:11px; color:#64748B;">' + item.sub + '</div></div></div></td>' +
+                    '<td><div style="display:flex; align-items:center; gap:8px;"><img src="' + item.avatar + '" style="width:28px; height:28px; border-radius:50%; object-fit:cover;"><div><strong>' + item.customer + '</strong><div style="font-size:10.5px; color:#64748B;">' + item.phone + '</div></div></div></td>' +
+                    '<td style="max-width:240px;"><div style="font-size:12px; color:' + (item.status === 'Đã ẩn' ? '#DC2626; font-weight:700;' : '#334155;') + '">' + item.comment + '</div></td>' +
+                    '<td><span style="color:#F59E0B; letter-spacing:1px; font-size:13px;">' + item.stars + '</span></td>' +
+                    '<td><span style="font-size:11.5px; color:#64748B;">' + item.date + '</span></td>' +
+                    '<td><span class="status-badge ' + item.statusClass + '">' + item.status + '</span></td>' +
+                    '<td style="text-align:right; white-space:nowrap; position:relative;">' +
+                        '<button class="action-icon-btn" onclick="openCommentDetail(' + item.id + ', event)" title="Xem bình luận">👁️</button>' +
+                        '<button class="action-icon-btn" onclick="toggleReviewDropdown(' + item.id + ', event)" title="Tùy chọn">⋮</button>' +
+                        '<div class="action-dropdown-menu" id="dropdownMenu_' + item.id + '">' +
+                            '<button type="button" class="action-dropdown-item hide-opt" onclick="toggleHideReview(' + item.id + ', event)">' +
+                                '<span>' + (item.status === 'Đã ẩn' ? '👁️' : '🚫') + '</span> ' + (item.status === 'Đã ẩn' ? 'Hiện bình luận' : 'Ẩn bình luận') +
+                            '</button>' +
+                            '<button type="button" class="action-dropdown-item process-opt" onclick="openProcessModal(' + item.id + ', event)">' +
+                                '<span>⚙️</span> Xử lý đánh giá' +
+                            '</button>' +
+                        '</div>' +
+                    '</td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderHiddenTable() {
+            const tbody = document.getElementById('hiddenReviewsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            hiddenReviews.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = '<td>' + (index + 1) + '</td>' +
+                    '<td style="max-width:220px;"><strong>' + item.comment + '</strong></td>' +
+                    '<td><span style="color:#DC2626; font-weight:700; font-size:11.5px;">' + item.violation + '</span></td>' +
+                    '<td><div style="display:flex; align-items:center; gap:8px;"><img src="' + item.avatar + '" style="width:26px; height:26px; border-radius:50%; object-fit:cover;"><div><strong>' + item.customer + '</strong><div style="font-size:10.5px; color:#64748B;">' + item.phone + '</div></div></div></td>' +
+                    '<td><span style="font-size:11.5px; color:#64748B;">' + item.date + '</span></td>' +
+                    '<td><span class="status-badge ' + item.statusClass + '">' + item.status + '</span></td>' +
+                    '<td style="text-align:right; white-space:nowrap;">' +
+                        '<button class="action-icon-btn" onclick="openHiddenCommentDetail(' + item.id + ', event)" title="Xem" style="padding:4px 8px; width:auto; font-size:11px;">👁️ Xem</button>' +
+                        '<button class="action-icon-btn" onclick="unhideReview(' + item.id + ')" title="Cho phép hiển thị" style="padding:4px 8px; width:auto; font-size:11px; color:#059669; font-weight:700;">✓ Hiển thị</button>' +
+                        '<button class="action-icon-btn delete" onclick="confirmDeleteHidden(' + item.id + ')" title="Xóa" style="padding:4px 8px; width:auto; font-size:11px; color:#DC2626;">🗑️ Xóa</button>' +
+                    '</td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 1. CON MẮT: XEM BÌNH LUẬN
+        function openCommentDetail(id, e) {
+            if (e) e.stopPropagation();
+            const item = mainReviews.find(r => r.id === id);
+            if (!item) return;
+
+            document.getElementById('modalCommentAvatar').src = item.avatar;
+            document.getElementById('modalCommentAuthor').innerText = item.customer;
+            document.getElementById('modalCommentPhone').innerText = 'SĐT: ' + item.phone;
+            document.getElementById('modalCommentStars').innerText = item.stars;
+            document.getElementById('modalCommentStatus').innerText = item.status;
+            document.getElementById('modalCommentStatus').className = 'status-badge ' + item.statusClass;
+            document.getElementById('modalCommentTarget').innerText = item.targetName + ' (' + item.sub + ')';
+            document.getElementById('modalCommentDate').innerText = item.date;
+            document.getElementById('modalCommentContent').innerText = '"' + item.comment + '"';
+
+            const modal = document.getElementById('modalViewComment');
+            modal.style.setProperty('display', 'flex', 'important');
+        }
+
+        function openHiddenCommentDetail(id, e) {
+            if (e) e.stopPropagation();
+            const item = hiddenReviews.find(r => r.id === id);
+            if (!item) return;
+
+            document.getElementById('modalCommentAvatar').src = item.avatar;
+            document.getElementById('modalCommentAuthor').innerText = item.customer;
+            document.getElementById('modalCommentPhone').innerText = 'SĐT: ' + item.phone;
+            document.getElementById('modalCommentStars').innerText = 'Vi phạm: ' + item.violation;
+            document.getElementById('modalCommentStatus').innerText = item.status;
+            document.getElementById('modalCommentStatus').className = 'status-badge ' + item.statusClass;
+            document.getElementById('modalCommentTarget').innerText = 'Báo cáo vi phạm';
+            document.getElementById('modalCommentDate').innerText = item.date;
+            document.getElementById('modalCommentContent').innerText = '"' + item.comment + '"';
+
+            const modal = document.getElementById('modalViewComment');
+            modal.style.setProperty('display', 'flex', 'important');
+        }
+
+        // 2. NÚT 3 CHẤM: TOGGLE ACTION DROPDOWN
+        function toggleReviewDropdown(id, e) {
+            if (e) e.stopPropagation();
+            closeAllActionDropdowns();
+            const menu = document.getElementById('dropdownMenu_' + id);
+            if (menu) {
+                menu.style.display = 'block';
+            }
+        }
+
+        function closeAllActionDropdowns() {
+            document.querySelectorAll('.action-dropdown-menu').forEach(m => m.style.display = 'none');
+        }
+
+        // 3. TÙY CHỌN 1: ẨN / HIỆN ĐÁNH GIÁ
+        function toggleHideReview(id, e) {
+            if (e) e.stopPropagation();
+            closeAllActionDropdowns();
+            const item = mainReviews.find(r => r.id === id);
+            if (!item) return;
+
+            if (item.status === 'Hiển thị') {
+                item.status = 'Đã ẩn';
+                item.statusClass = 'hidden';
+                showToast('🚫 Đã ẩn bình luận của "' + item.customer + '"');
+            } else {
+                item.status = 'Hiển thị';
+                item.statusClass = 'approved';
+                showToast('✅ Đã hiển thị lại bình luận của "' + item.customer + '"');
+            }
+            renderMainTable();
+        }
+
+        // 4. TÙY CHỌN 2: XỬ LÝ ĐÁNH GIÁ (OPEN MODAL)
+        function openProcessModal(id, e) {
+            if (e) e.stopPropagation();
+            closeAllActionDropdowns();
+            const item = mainReviews.find(r => r.id === id);
+            if (!item) return;
+
+            document.getElementById('processReviewId').value = item.id;
+            document.getElementById('processCustomerName').innerText = item.customer;
+
+            const modal = document.getElementById('modalProcessReview');
+            modal.style.setProperty('display', 'flex', 'important');
+        }
+
+        function submitProcessReview(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('processReviewId').value);
+            const action = document.getElementById('processActionSelect').value;
+            const item = mainReviews.find(r => r.id === id);
+
+            if (item) {
+                if (action === 'hide') {
+                    item.status = 'Đã ẩn';
+                    item.statusClass = 'hidden';
+                } else if (action === 'processing') {
+                    item.status = 'Đang xử lý';
+                    item.statusClass = 'processing';
+                } else if (action === 'approve') {
+                    item.status = 'Hiển thị';
+                    item.statusClass = 'approved';
+                }
+                renderMainTable();
+            }
+
+            closeModal('modalProcessReview');
+            showToast('✅ Đã cập nhật xử lý đánh giá thành công!');
+        }
+
+        // 5. CHO PHÉP HIỂN THỊ LẠI (TỪ BẢNG ẨN)
+        function unhideReview(id) {
+            const item = hiddenReviews.find(r => r.id === id);
+            if (!item) return;
+            hiddenReviews = hiddenReviews.filter(r => r.id !== id);
+            mainReviews.unshift({
+                id: Date.now(),
+                targetName: 'Tour Một ngày xanh',
+                sub: '1 ngày',
+                targetImg: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=80&h=80&fit=crop',
+                customer: item.customer,
+                phone: item.phone,
+                avatar: item.avatar,
+                comment: item.comment,
+                stars: '★★★★☆',
+                date: item.date,
+                status: 'Hiển thị',
+                statusClass: 'approved'
+            });
+            renderMainTable();
+            renderHiddenTable();
+            showToast('✅ Đã khôi phục và cho phép hiển thị đánh giá!');
+        }
+
+        // 6. XÓA ĐÁNH GIÁ VI PHẠM VĨNH VIỄN
+        let deleteHiddenId = null;
+        function confirmDeleteHidden(id) {
+            deleteHiddenId = id;
+            const item = hiddenReviews.find(r => r.id === id);
+            document.getElementById('confirmDeleteMessage').innerHTML = 'Bạn có chắc muốn xóa vĩnh viễn đánh giá vi phạm của <strong>"' + (item ? item.customer : '') + '"</strong>?';
+            
+            document.getElementById('btnConfirmDeleteAction').onclick = function() {
+                hiddenReviews = hiddenReviews.filter(r => r.id !== deleteHiddenId);
+                closeModal('modalConfirmDelete');
+                renderHiddenTable();
+                showToast('🗑️ Đã xóa đánh giá vi phạm vĩnh viễn!');
+            };
+
+            const modal = document.getElementById('modalConfirmDelete');
+            modal.style.setProperty('display', 'flex', 'important');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.style.setProperty('display', 'none', 'important');
+        }
+
+        function toggleDropdownMenu(submenuId, parentEl) {
+            const submenu = document.getElementById(submenuId);
+            if (!submenu) return;
+            const isHidden = (submenu.style.display === 'none' || !submenu.style.display);
+            submenu.style.display = isHidden ? 'flex' : 'none';
+            submenu.style.flexDirection = 'column';
+            const arrow = parentEl.querySelector('.menu-arrow-btn');
+            if (arrow) arrow.textContent = isHidden ? '▲' : '▼';
+        }
+
+        let toastTimeout;
+        function showToast(msg) {
+            const t = document.getElementById('toastNotif');
+            document.getElementById('toastMsg').textContent = msg;
+            t.style.display = 'flex';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+    </script>
+
+    <script>
+        function handleLogout(e) {
+            if (e) e.preventDefault();
+            try {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('token');
+                sessionStorage.clear();
+            } catch(err) {}
+            
+            showToast('👋 Đã đăng xuất! Đang chuyển về trang chủ...');
+            setTimeout(function() {
+                window.location.href = '../khach-hang/index.html';
+            }, 600);
+        }
+    </script>
+
+    <script src="../assets/js/api-client.js?v=20260831-4"></script>
+</body>
+</html>

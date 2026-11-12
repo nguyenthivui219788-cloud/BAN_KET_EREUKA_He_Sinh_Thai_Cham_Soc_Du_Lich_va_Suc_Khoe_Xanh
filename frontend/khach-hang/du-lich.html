@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Du lịch bền vững - Phường Bến Tre</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Dancing+Script:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css?v=20260908-1">
+    <!-- Leaflet CSS (Local Vendor first, CDN Fallback) -->
+    <link rel="stylesheet" href="../assets/vendor/leaflet/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <style>
+        /* Standalone page adjustments */
+        body {
+            padding-top: 76px; /* Offset for fixed header */
+            background-color: var(--gray-50);
+            color: #1F2937;
+        }
+        
+        .container {
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* Hero Banner Styles (Image 1 Design - Deep Green Gradient with Scenery Overlay) */
+        .tourism-hero-banner {
+            position: relative;
+            min-height: 320px;
+            background: linear-gradient(135deg, #0A391C 0%, #0E4B25 50%, #165A2E 100%);
+            display: flex;
+            align-items: center;
+            padding: 60px 0 90px;
+            overflow: hidden;
+        }
+
+        .tourism-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: url('../assets/images/du-lich-ben-vung-hero.png') center center / cover no-repeat;
+            opacity: 0.22;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            z-index: 1;
+            animation: heroBgZoom 2.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .tourism-hero-banner .container {
+            margin: 0 auto !important;
+            padding: 0 32px !important;
+            max-width: 1480px !important;
+            width: 100%;
+        }
+
+        .tourism-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            color: var(--white);
+            text-align: left;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tourism-hero-subtitle {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #A7F3D0;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tourism-hero-title {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: clamp(2.4rem, 5vw, 3.4rem);
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.15;
+            margin-bottom: 14px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .tourism-hero-desc {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: rgba(255, 255, 255, 0.92);
+            margin-bottom: 0;
+            max-width: 820px;
+        }
+
+        /* Floating 5-Feature Bar overlapping Hero bottom */
+        .features-bar-wrapper {
+            position: relative;
+            z-index: 10;
+            margin-top: -45px;
+            margin-bottom: 24px;
+        }
+
+        .features-bar {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(14, 75, 37, 0.12);
+            padding: 26px 28px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .features-bar {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .features-bar {
+                grid-template-columns: 1fr;
+            }
+            .features-bar-wrapper {
+                margin-top: -20px;
+            }
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .feature-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #E8F5E9;
+            color: #0E4B25;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon-box svg {
+            color: #0E4B25;
+        }
+
+        .feature-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature-title {
+            font-size: 0.92rem;
+            font-weight: 750;
+            color: #0E4B25;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .feature-desc {
+            font-size: 0.78rem;
+            color: #6B7280;
+            line-height: 1.45;
+        }
+
+        /* Tourism Section styling */
+        .tourism-section {
+            padding: 10px 0 80px;
+        }
+
+        /* Tabs Styles */
+        .tabs-container {
+            margin-bottom: 36px;
+            width: 100%;
+            animation: tabsRowIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+            opacity: 0;
+        }
+
+        .tabs-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px clamp(6px, 0.7vw, 10px);
+            width: 100%;
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--white);
+            border: 1px solid #E5E7EB;
+            padding: 8px clamp(11px, 0.95vw, 16px);
+            border-radius: 999px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: clamp(0.81rem, 0.86vw, 0.88rem);
+            font-weight: 600;
+            color: #4B5563;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .tab-btn:hover {
+            border-color: #A7F3D0;
+            background-color: #F9FAFB;
+            color: #0E4B25;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .tab-btn.active {
+            background-color: #0E4B25;
+            border-color: #0E4B25;
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(14, 75, 37, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .tab-btn svg {
+            transition: stroke 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .tab-btn.active svg {
+            stroke: var(--white);
+        }
+
+        @media (max-width: 640px) {
+            .tabs-container {
+                margin-bottom: 24px;
+            }
+            .tabs-row {
+                gap: 8px 8px;
+            }
+            .tab-btn {
+                padding: 8px 14px;
+                font-size: 0.82rem;
+                gap: 6px;
+            }
+            .tab-btn svg {
+                width: 14px;
+                height: 14px;
+            }
+        }
+
+        /* Tour Cards Grid */
+        .tour-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Responsive Grid Breakpoints */
+        @media (max-width: 1200px) {
+            .tour-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 900px) {
+            .tour-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .tour-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tour Card Styles */
+        .tour-card {
+            background: var(--white);
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(14, 75, 37, 0.1);
+        }
+
+        .tour-img-wrapper {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .tour-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .tour-card:hover .tour-img-wrapper img {
+            transform: scale(1.08);
+        }
+
+        /* Floating Favorite Heart Icon */
+        .btn-fav {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 5;
+        }
+
+        .btn-fav:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #DC2626;
+            transform: scale(1.08);
+        }
+        
+        .btn-fav.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #DC2626;
+        }
+
+        /* Tour Details Body */
+        .tour-info {
+            padding: 20px 18px 24px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .tour-name {
+            font-size: 1.12rem;
+            font-weight: 750;
+            color: #0E4B25;
+            margin: 0 0 10px;
+            line-height: 1.35;
+        }
+
+        /* Rating & Sustainability badge */
+        .tour-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .rating-box {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: #4B5563;
+        }
+
+        .rating-box svg {
+            color: #F59E0B;
+        }
+
+        .rating-box span.review-count {
+            color: #9CA3AF;
+            font-weight: 400;
+        }
+
+        .sustain-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #10B981;
+            background-color: #ECFDF5;
+            color: #047857;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        /* Specifications list */
+        .tour-specs {
+            margin: 0 0 20px;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 1px solid #F3F4F6;
+            padding-top: 14px;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.86rem;
+            color: #4B5563;
+        }
+
+        .spec-item svg {
+            color: #10B981;
+            flex-shrink: 0;
+        }
+
+        .spec-label {
+            color: #6B7280;
+            font-weight: 400;
+        }
+
+        .spec-value {
+            font-weight: 600;
+            color: #1F2937;
+            margin-left: auto;
+        }
+
+        /* Bottom Buttons */
+        .tour-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-detail {
+            flex: 1;
+            padding: 11px 0;
+            border-radius: 10px;
+            border: none;
+            background: #0E4B25;
+            color: var(--white);
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-detail:hover {
+            background: #0A391C;
+            color: var(--white);
+        }
+
+        .btn-tour-reviews {
+            flex: 1;
+            padding: 10px 8px;
+            border-radius: 10px;
+            border: 1px solid #0E4B25;
+            background: #FFFFFF;
+            color: #0E4B25;
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+        .btn-tour-reviews:hover { background:#ECFDF5; transform:translateY(-1px); }
+        .tour-review-item { padding:14px 0; border-bottom:1px solid #E5E7EB; }
+        .tour-review-item:last-child { border-bottom:0; }
+        .tour-review-stars { color:#F59E0B; font-weight:800; }
+        .tour-review-item p { margin:7px 0; color:#374151; line-height:1.55; }
+        .tour-review-item small { color:#6B7280; }
+        .btn-show-all-reviews { width:100%;padding:11px 16px;border:1px solid #10B981;border-radius:10px;background:#FFFFFF;color:#047857;font-weight:800;cursor:pointer;margin-top:8px;transition:.2s ease; }
+        .btn-show-all-reviews:hover { background:#ECFDF5; }
+
+        /* Load More Button */
+        .load-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .btn-load-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--white);
+            border: 1px solid #E5E7EB;
+            border-radius: 30px;
+            padding: 12px 28px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #4B5563;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-load-more:hover {
+            border-color: #9CA3AF;
+            color: #0E4B25;
+            transform: translateY(1px);
+        }
+
+        /* Animations & load more spinner */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(75, 85, 99, 0.2);
+            border-radius: 50%;
+            border-top-color: #0E4B25;
+            animation: spin 0.8s linear infinite;
+            margin-right: 6px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Sustainability Animations (Entrance & Interaction) */
+        @keyframes heroBgZoom {
+            from { transform: scale(1.15); opacity: 0; }
+            to { transform: scale(1); opacity: 0.22; }
+        }
+        @keyframes heroSubtitleIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes heroTitleIn {
+            from { opacity: 0; transform: translateY(30px); filter: blur(4px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+        @keyframes heroDescIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes featuresBarIn {
+            from { opacity: 0; transform: translateY(40px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes featureItemIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes tabsRowIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tourism-hero-subtitle {
+            animation: heroSubtitleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+            opacity: 0;
+        }
+        .tourism-hero-title {
+            animation: heroTitleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+            opacity: 0;
+        }
+        .tourism-hero-desc {
+            animation: heroDescIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+            opacity: 0;
+        }
+        .features-bar-wrapper {
+            animation: featuresBarIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+            opacity: 0;
+        }
+        .feature-item {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            cursor: pointer;
+        }
+        .feature-icon-box {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+        }
+        .feature-item:hover .feature-icon-box {
+            transform: scale(1.15) rotate(8deg);
+            background-color: #C8E6C9;
+        }
+    
+        /* STRICT VERTICAL DARK SIDEBAR - FIX TRIỆT ĐỂ DỒN NGANG & THƯA DÀI */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #032216 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #E5E7EB !important;
+            border-right: 1px solid #064E3B !important;
+            scrollbar-width: thin;
+            scrollbar-color: #064E3B #032216;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #064E3B; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 16px 16px 10px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            box-sizing: border-box !important;
+        }
+
+        .brand-logo {
+            width: 38px !important;
+            height: 38px !important;
+            border-radius: 50% !important;
+            background: #064E3B !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 18px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .brand-title {
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: -0.3px !important;
+            line-height: 1.1 !important;
+        }
+
+        .brand-sub {
+            font-size: 10.5px !important;
+            color: #34D399 !important;
+            font-weight: 600 !important;
+        }
+
+        .sidebar-section-label {
+            font-size: 9.5px !important;
+            font-weight: 800 !important;
+            color: #10B981 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.8px !important;
+            padding: 10px 14px 2px !important;
+            box-sizing: border-box !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 10px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            box-sizing: border-box !important;
+            flex: none !important;
+        }
+
+        .nav-item {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 8px 10px !important;
+            border-radius: 8px !important;
+            color: #D1D5DB !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .nav-item:hover {
+            background: rgba(16, 185, 129, 0.15) !important;
+            color: #FFFFFF !important;
+        }
+
+        .nav-item.active {
+            background: #059669 !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3) !important;
+        }
+
+        .menu-arrow-btn {
+            margin-left: auto !important;
+            font-size: 11px !important;
+            padding: 2px 6px !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            color: #A7F3D0 !important;
+        }
+
+        .submenu-container {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            width: 100% !important;
+            padding: 2px 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        .nav-sub-item {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 8px !important;
+            padding: 6px 10px 6px 32px !important;
+            border-radius: 6px !important;
+            color: #9CA3AF !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+            font-size: 12px !important;
+            cursor: pointer !important;
+            transition: all 0.15s !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            white-space: nowrap !important;
+        }
+
+        .nav-sub-item:hover {
+            color: #34D399 !important;
+            background: rgba(16, 185, 129, 0.12) !important;
+        }
+
+        .nav-sub-item.active {
+            color: #34D399 !important;
+            font-weight: 700 !important;
+            background: #064E3B !important;
+            border-radius: 6px !important;
+        }
+
+        .sidebar-user-box {
+            margin: 12px 10px 3px !important;
+            background: #063925 !important;
+            border-radius: 10px !important;
+            padding: 8px 10px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            border: 1px solid rgba(16, 185, 129, 0.2) !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+        }
+
+        .sidebar-user-info {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        .sidebar-user-avatar {
+            width: 30px !important;
+            height: 30px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid #10B981 !important;
+        }
+
+        .logout-btn {
+            color: #9CA3AF !important;
+            background: transparent !important;
+            border: none !important;
+            font-size: 11px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            padding: 5px 10px !important;
+            margin: 0 10px !important;
+            border-radius: 6px !important;
+            transition: all 0.15s !important;
+            box-sizing: border-box !important;
+        }
+
+        .logout-btn:hover {
+            color: #EF4444 !important;
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .sidebar-eco-card {
+            margin: 8px 10px 14px !important;
+            background: linear-gradient(180deg, #064E3B 0%, #022C22 100%) !important;
+            border-radius: 12px !important;
+            padding: 10px 10px !important;
+            position: relative !important;
+            overflow: hidden !important;
+            border: 1px solid #047857 !important;
+            box-sizing: border-box !important;
+        }
+
+        .sidebar-eco-title {
+            font-size: 12px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+        }
+
+        .sidebar-eco-sub {
+            font-size: 10px !important;
+            color: #A7F3D0 !important;
+            margin-top: 2px !important;
+            line-height: 1.3 !important;
+            max-width: 130px !important;
+        }
+
+        .sidebar-eco-img {
+            position: absolute !important;
+            right: -8px !important;
+            bottom: -4px !important;
+            width: 70px !important;
+            height: 50px !important;
+            object-fit: cover !important;
+            border-radius: 6px !important;
+            opacity: 0.85 !important;
+        }
+
+        .main-wrapper {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            min-width: 0 !important;
+        }
+
+    
+        /* MODAL OVERLAY & POPUP STYLING (ẨN 100% KHI CHƯA BẤM) */
+        .modal-overlay {
+            display: none !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(15, 23, 42, 0.65) !important;
+            backdrop-filter: blur(4px) !important;
+            z-index: 99999 !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 20px !important;
+            box-sizing: border-box !important;
+        }
+
+        .modal-card {
+            background: #FFFFFF !important;
+            border-radius: 18px !important;
+            width: 100% !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+            margin: auto !important;
+            position: relative !important;
+            border: 1px solid #E5E7EB !important;
+        }
+
+        .modal-header {
+            padding: 16px 20px !important;
+            background: #F9FAFB !important;
+            border-bottom: 1px solid #E5E7EB !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+
+        .modal-title {
+            font-size: 15px !important;
+            font-weight: 800 !important;
+            color: #111827 !important;
+        }
+
+        .modal-close-btn {
+            background: transparent !important;
+            border: none !important;
+            font-size: 22px !important;
+            color: #6B7280 !important;
+            cursor: pointer !important;
+            line-height: 1 !important;
+        }
+
+        .modal-body {
+            padding: 18px 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 12px !important;
+            max-height: 75vh !important;
+            overflow-y: auto !important;
+        }
+
+        .modal-footer {
+            padding: 12px 20px !important;
+            background: #F9FAFB !important;
+            border-top: 1px solid #E5E7EB !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+            gap: 10px !important;
+        }
+
+    
+        .action-icon-btn {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 8px !important;
+            border: 1px solid transparent !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            margin-left: 6px !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            outline: none !important;
+            vertical-align: middle !important;
+        }
+
+        .action-icon-btn.btn-edit {
+            background: #EFF6FF !important;
+            border-color: #BFDBFE !important;
+        }
+        .action-icon-btn.btn-edit:hover {
+            background: #DBEAFE !important;
+            border-color: #60A5FA !important;
+            transform: translateY(-2px) scale(1.08) !important;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25) !important;
+        }
+
+        .action-icon-btn.btn-delete {
+            background: #FEF2F2 !important;
+            border-color: #FECACA !important;
+        }
+        .action-icon-btn.btn-delete:hover {
+            background: #FEE2E2 !important;
+            border-color: #F87171 !important;
+            transform: translateY(-2px) scale(1.08) !important;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.25) !important;
+        }
+
+        /* ============ INTERACTIVE MAP SECTION ============ */
+        .map-section {
+            padding: 60px 0 70px;
+            background: linear-gradient(180deg, #f0fdf4 0%, #f8fafc 100%);
+        }
+        .map-section-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .map-section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #064e3b;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        .map-section-header p {
+            font-size: 0.95rem;
+            color: #6B7280;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.55;
+        }
+        .map-wrapper {
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 36px rgba(6, 78, 59, 0.14), 0 3px 10px rgba(0,0,0,0.06);
+            border: 2px solid #a7f3d0;
+            background: #e2e8f0;
+        }
+        #interactiveMap {
+            width: 100%;
+            height: 540px;
+            min-height: 400px;
+            z-index: 1;
+        }
+        .map-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        .map-legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            background: #fff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+        .map-legend-item:hover {
+            border-color: #10b981;
+            color: #065f46;
+            background: #f0fdf4;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+        .map-legend-item.active {
+            background: #0E4B25;
+            color: #fff;
+            border-color: #0E4B25;
+            box-shadow: 0 4px 14px rgba(14, 75, 37, 0.25);
+            transform: translateY(-1px);
+        }
+        .map-legend-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        /* Leaflet DivIcon reset */
+        .leaflet-div-icon {
+            background: transparent !important;
+            border: none !important;
+        }
+        .custom-pin-marker {
+            transition: transform 0.2s ease-out;
+            cursor: pointer;
+        }
+        .custom-pin-marker:hover {
+            transform: scale(1.22) translateY(-4px);
+            filter: brightness(1.1);
+        }
+        .leaflet-popup-custom .leaflet-popup-content-wrapper {
+            border-radius: 16px;
+            box-shadow: 0 14px 40px rgba(0,0,0,0.18);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 4px;
+        }
+        .leaflet-popup-custom .leaflet-popup-content {
+            margin: 12px 14px;
+        }
+        .leaflet-popup-custom .leaflet-popup-tip {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        @media (max-width: 768px) {
+            #interactiveMap { height: 400px; min-height: 350px; }
+            .map-section { padding: 40px 0 50px; }
+            .map-section-header h2 { font-size: 1.5rem; }
+            .map-legend-item { font-size: 12px; padding: 6px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">
+            </div>
+                <span class="logo-text">HỆ SINH THÁI DU LỊCH<br>VÀ CHĂM SÓC SỨC KHỎE XANH TẠI BẾN TRE</span>
+            </a>
+            <nav class="nav" id="nav">
+                <a href="index.html#hero" class="nav-link">Trang chủ</a>
+                <a href="index.html#gioi-thieu" class="nav-link">Giới thiệu</a>
+                <a href="index.html#tin-tuc" class="nav-link">Tin tức</a>
+                <a href="index.html#suc-khoe" class="nav-link">Chăm sóc sức khỏe</a>
+                <a href="du-lich.html" class="nav-link active">Du lịch</a>
+                <a href="index.html#footer" class="nav-link">Liên hệ</a>
+            </nav>
+            <a href="dang-nhap.html" class="btn-login">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Đăng nhập</span>
+            </a>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- HERO BANNER (MATCHING IMAGE 1 RICH GREEN SCENERY STYLE) -->
+    <div class="tourism-hero-banner">
+        <div class="tourism-hero-overlay"></div>
+        <div class="container">
+            <div class="tourism-hero-content">
+                <div class="tourism-hero-subtitle">Khám phá Bến Tre xanh</div>
+                <h1 class="tourism-hero-title">Du lịch bền vững</h1>
+                <p class="tourism-hero-desc">Du lịch bền vững là gìn giữ thiên nhiên, bảo tồn văn hóa, đồng thời mang lại lợi ích lâu dài cho cộng đồng địa phương.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING 5-FEATURE PILL BAR -->
+    <div class="features-bar-wrapper">
+        <div class="container">
+            <div class="features-bar">
+                <!-- Item 1 -->
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                    </div>
+                    <div class="feature-info">
+                        <span class="feature-title">Thân thiện môi trường</span>
+                        <span class="feature-desc">Giảm thiểu tác động đến môi trường, bảo vệ tài nguyên thiên nhiên.</span>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div class="feature-info">
+                        <span class="feature-title">Hỗ trợ cộng đồng</span>
+                        <span class="feature-desc">Mang lại lợi ích kinh tế, tạo việc làm cho người dân địa phương.</span>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
+                    <div class="feature-info">
+                        <span class="feature-title">Bảo tồn văn hóa</span>
+                        <span class="feature-desc">Gìn giữ và phát huy giá trị văn hóa, làng nghề truyền thống.</span>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    </div>
+                    <div class="feature-info">
+                        <span class="feature-title">Trải nghiệm có trách nhiệm</span>
+                        <span class="feature-desc">Du khách có ý thức, tôn trọng thiên nhiên và văn hóa bản địa.</span>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="feature-item">
+                    <div class="feature-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8"/><path d="M12 18v4"/><path d="M4.93 10.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 18h4"/><path d="M18 18h4"/><circle cx="12" cy="14" r="4"/></svg>
+                    </div>
+                    <div class="feature-info">
+                        <span class="feature-title">Phát triển lâu dài</span>
+                        <span class="feature-desc">Hướng đến sự phát triển du lịch ổn định và bền vững.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE DIRECTORY SECTION -->
+    <section class="tourism-section">
+        <div class="container">
+            <!-- Navigation Tabs -->
+            <div class="tabs-container">
+                <div class="tabs-row">
+                    <button class="tab-btn active" data-tab="1day">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Tour 1 ngày
+                    </button>
+                    <button class="tab-btn" data-tab="2days">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                        Tour 2 ngày 1 đêm
+                    </button>
+                    <button class="tab-btn" data-tab="3days">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Tour 3 ngày 2 đêm
+                    </button>
+                    <button class="tab-btn" data-tab="1week">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Tour 1 tuần
+                    </button>
+                    <button class="tab-btn" data-tab="experience">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                        Tour trải nghiệm
+                    </button>
+                    <button class="tab-btn" data-tab="ecology">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        Tour sinh thái
+                    </button>
+                    <button class="tab-btn" data-tab="culture">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                        Tour văn hóa
+                    </button>
+                    <button class="tab-btn" data-tab="health">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                        Tour kết hợp sức khỏe
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dynamic Tour Cards Grid -->
+            <div class="tour-grid" id="tour-grid">
+                <!-- Initial cards are rendered by JavaScript -->
+            </div>
+
+            <!-- Bottom Load More Pill -->
+            <div class="load-more-container">
+                <button class="btn-load-more" id="btn-load-more" onclick="loadMoreTours();">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                    Xem thêm tour khác
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE MAP SECTION -->
+    <section class="map-section" id="mapSection">
+        <div class="container">
+            <div class="map-section-header">
+                <h2>🗺️ Bản Đồ Tương Tác Bến Tre</h2>
+                <p>Khám phá các điểm đến du lịch sinh thái, di tích văn hóa và địa điểm chăm sóc sức khỏe xanh trên bản đồ tương tác</p>
+            </div>
+            <div class="map-wrapper">
+                <div id="interactiveMap"></div>
+            </div>
+            <div class="map-legend" id="mapLegend">
+                <button type="button" class="map-legend-item active" data-filter="all">
+                    <span style="font-size:14px">🌴</span> Tất cả điểm đến (17)
+                </button>
+                <button type="button" class="map-legend-item" data-filter="eco">
+                    <div class="map-legend-dot" style="background:#10b981"></div> Sinh thái & Thiên nhiên
+                </button>
+                <button type="button" class="map-legend-item" data-filter="culture">
+                    <div class="map-legend-dot" style="background:#f59e0b"></div> Văn hóa & Di tích
+                </button>
+                <button type="button" class="map-legend-item" data-filter="river">
+                    <div class="map-legend-dot" style="background:#3b82f6"></div> Sông nước & Cù lao
+                </button>
+                <button type="button" class="map-legend-item" data-filter="food">
+                    <div class="map-legend-dot" style="background:#ef4444"></div> Ẩm thực & Làng nghề
+                </button>
+                <button type="button" class="map-legend-item" data-filter="health">
+                    <div class="map-legend-dot" style="background:#8b5cf6"></div> Sức khỏe & Trị liệu
+                </button>
+                <button type="button" class="map-legend-item" id="btnResetMapView" title="Đưa góc nhìn về toàn tỉnh Bến Tre" style="border-style:dashed">
+                    <span style="font-size:13px">🔄</span> Đặt lại góc nhìn
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col footer-about">
+                        <div class="footer-logo-row">
+                            <div class="footer-logo-icon">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">
+            </div>
+                            <div>
+                                <h3 class="footer-logo-text">HỆ SINH THÁI DU LỊCH<br>VÀ CHĂM SÓC SỨC KHỎE XANH TẠI BẾN TRE</h3>
+                            </div>
+                        </div>
+                        <p class="footer-desc">Hướng tới mô hình du lịch sinh thái xanh, bảo tồn văn hóa xứ Dừa và chăm sóc, nâng cao sức khỏe cộng đồng toàn diện.</p>
+                    </div>
+
+
+                    <div class="footer-col footer-contact">
+                        <h4 class="footer-heading">Thông tin liên hệ</h4>
+                        <ul class="contact-list">
+                            <li>
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0E4B25" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <span>Ủy ban nhân dân Phường Bến Tre, TP. Bến Tre, Tỉnh Bến Tre</span>
+                            </li>
+                            <li>
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0E4B25" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                <span>info@phuongbentre.bentre.gov.vn</span>
+                            </li>
+                            <li>
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0E4B25" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                <span>(+84) 275 3822 123</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col footer-social">
+                        <h4 class="footer-heading">Mạng xã hội</h4>
+                        <div class="social-icons-row">
+                            <a href="#" class="social-btn" aria-label="Facebook">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            </a>
+                            <a href="#" class="social-btn" aria-label="Youtube">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                            </a>
+                            <a href="#" class="social-btn" aria-label="Zalo">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#0068FF"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.05 21.95l4.876-1.352A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm3.5 13.5h-7a.75.75 0 0 1 0-1.5h7a.75.75 0 0 1 0 1.5zm1-3.5h-9a.75.75 0 0 1 0-1.5h9a.75.75 0 0 1 0 1.5zm-2-3.5h-5a.75.75 0 0 1 0-1.5h5a.75.75 0 0 1 0 1.5z"/></svg>
+                            </a>
+                            <a href="#" class="social-btn" aria-label="TikTok">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="#000000"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.57-1.34 1.55-1.35 2.56-.01.81.33 1.62.9 2.19.78.78 1.96 1.05 3.01.76 1.01-.27 1.86-1.04 2.14-2.04.18-.58.21-1.19.21-1.8V.02z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Ủy ban nhân dân Phường Bến Tre. Bảo lưu mọi quyền.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for multi-page header actions -->
+    <script src="../assets/js/script.js?v=20260829-1"></script>
+
+    <!-- INTERACTIVE TOUR DIRECTORY DATA & SCRIPT -->
+    <script>
+        const tourData = {
+            "1day": [
+                {
+                    title: "Một Ngày Xanh - Khám Phá Bến Tre",
+                    rating: "4.9",
+                    reviews: "128",
+                    sustainScore: "92/100",
+                    image: "../assets/images/tour-mot-ngay-xanh-ben-tre.png",
+                    specs: [
+                        { label: "Thời lượng", val: "1 ngày" },
+                        { label: "Giá/người", val: "690.000 VNĐ" },
+                        { label: "Số người tối đa", val: "15 người" },
+                        { label: "Phương tiện", val: "Xuồng máy, Xe đạp" },
+                        { label: "Số địa điểm tham quan", val: "4 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có" }
+                    ]
+                },
+                {
+                    title: "Khám Phá Cồn Phụng, Cồn Quy & Đình Phú Tự",
+                    rating: "4.8",
+                    reviews: "95",
+                    sustainScore: "94/100",
+                    image: "../assets/images/tour-con-phung-con-quy-dinh-phu-tu.png",
+                    specs: [
+                        { label: "Thời lượng", val: "1 ngày" },
+                        { label: "Giá/người", val: "650.000 VNĐ" },
+                        { label: "Số người tối đa", val: "20 người" },
+                        { label: "Phương tiện", val: "Tàu sông, Xe ngựa" },
+                        { label: "Số địa điểm tham quan", val: "3 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có" }
+                    ]
+                },
+                {
+                    title: "Hành Trình Đỏ: Đồng Khởi - Nguyễn Thị Định - Bảo Tàng Bến Tre",
+                    rating: "4.9",
+                    reviews: "74",
+                    sustainScore: "93/100",
+                    image: "../assets/images/tour-hanh-trinh-do-bao-tang-ben-tre.png",
+                    specs: [
+                        { label: "Thời lượng", val: "1 ngày" },
+                        { label: "Giá/người", val: "500.000 VNĐ" },
+                        { label: "Số người tối đa", val: "30 người" },
+                        { label: "Phương tiện", val: "Xe du lịch ô tô" },
+                        { label: "Số địa điểm tham quan", val: "3 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có" }
+                    ]
+                },
+                {
+                    title: "Di Sản Nhà Cổ Huỳnh Phủ & Chùa Vạn Phước",
+                    rating: "4.7",
+                    reviews: "56",
+                    sustainScore: "90/100",
+                    image: "../assets/images/tour-nha-co-huynh-phu-chua-van-phuoc.png",
+                    specs: [
+                        { label: "Thời lượng", val: "1 ngày" },
+                        { label: "Giá/người", val: "700.000 VNĐ" },
+                        { label: "Số người tối đa", val: "15 người" },
+                        { label: "Phương tiện", val: "Xe ô tô du lịch" },
+                        { label: "Số địa điểm tham quan", val: "3 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có" }
+                    ]
+                },
+                {
+                    title: "Trải Nghiệm Cồn Phú Đa & Thưởng Thức Ốc Gạo",
+                    rating: "4.8",
+                    reviews: "68",
+                    sustainScore: "95/100",
+                    image: "../assets/images/tour-con-phu-da-oc-gao.png",
+                    specs: [
+                        { label: "Thời lượng", val: "1 ngày" },
+                        { label: "Giá/người", val: "600.000 VNĐ" },
+                        { label: "Số người tối đa", val: "12 người" },
+                        { label: "Phương tiện", val: "Xuồng máy sông" },
+                        { label: "Số địa điểm tham quan", val: "2 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Bữa trưa đặc sản ốc" }
+                    ]
+                }
+            ],
+            "2days": [
+                {
+                    title: "Chinh Phục Cù Lao Minh & Biển Cồn Bửng",
+                    rating: "4.9",
+                    reviews: "108",
+                    sustainScore: "96/100",
+                    image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "2 ngày 1 đêm" },
+                        { label: "Giá/người", val: "1.950.000 VNĐ" },
+                        { label: "Số người tối đa", val: "12 người" },
+                        { label: "Phương tiện", val: "Xe ô tô, Tàu sông" },
+                        { label: "Số địa điểm tham quan", val: "5 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có (Đầy đủ)" }
+                    ]
+                },
+                {
+                    title: "Khám Phá Sân Chim Vàm Hồ & Nhà Thờ La Mã",
+                    rating: "4.8",
+                    reviews: "82",
+                    sustainScore: "94/100",
+                    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "2 ngày 1 đêm" },
+                        { label: "Giá/người", val: "1.800.000 VNĐ" },
+                        { label: "Số người tối đa", val: "15 người" },
+                        { label: "Phương tiện", val: "Xe ô tô, Xuồng chèo" },
+                        { label: "Số địa điểm tham quan", val: "4 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có (Ăn uống dân dã)" }
+                    ]
+                }
+            ],
+            "experience": [
+                {
+                    title: "Trải Nghiệm Miệt Vườn Cái Mơn & Làng Hoa Chợ Lách",
+                    rating: "4.9",
+                    reviews: "114",
+                    sustainScore: "97/100",
+                    image: "https://images.unsplash.com/photo-1528127269322-539801943592?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "Trải nghiệm (6h)" },
+                        { label: "Giá/người", val: "450.000 VNĐ" },
+                        { label: "Số người tối đa", val: "15 người" },
+                        { label: "Phương tiện", val: "Xe đạp, Xe điện" },
+                        { label: "Số địa điểm tham quan", val: "3 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Trái cây & Bữa trưa" }
+                    ]
+                },
+                {
+                    title: "Vui Chơi Sông Nước Làng Bè & Phú An Khang",
+                    rating: "4.7",
+                    reviews: "140",
+                    sustainScore: "91/100",
+                    image: "https://images.unsplash.com/photo-1621244249243-436b79b5eea8?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "Trải nghiệm (5h)" },
+                        { label: "Giá/người", val: "390.000 VNĐ" },
+                        { label: "Số người tối đa", val: "40 người" },
+                        { label: "Phương tiện", val: "Tự túc xe khách" },
+                        { label: "Số địa điểm tham quan", val: "2 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Buffet bánh và bữa trưa" }
+                    ]
+                }
+            ],
+            "ecology": [
+                {
+                    title: "Khám Phá Rừng Ngập Mặn & Sân Chim Vàm Hồ",
+                    rating: "4.9",
+                    reviews: "95",
+                    sustainScore: "99/100",
+                    image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "1 ngày" },
+                        { label: "Giá/người", val: "720.000 VNĐ" },
+                        { label: "Số người tối đa", val: "10 người" },
+                        { label: "Phương tiện", val: "Đi bộ xuyên rừng, xuồng" },
+                        { label: "Số địa điểm tham quan", val: "2 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có (Đặc sản Vàm Hồ)" }
+                    ]
+                },
+                {
+                    title: "Bảo Tồn Đa Dạng Sinh Học Cù Lao Minh",
+                    rating: "4.8",
+                    reviews: "67",
+                    sustainScore: "95/100",
+                    image: "https://images.unsplash.com/photo-1528127269322-539801943592?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "1 ngày" },
+                        { label: "Giá/người", val: "680.000 VNĐ" },
+                        { label: "Số người tối đa", val: "12 người" },
+                        { label: "Phương tiện", val: "Xuồng ba lá, xe đạp" },
+                        { label: "Số địa điểm tham quan", val: "3 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có (Cơm chay hữu cơ)" }
+                    ]
+                }
+            ],
+            "culture": [
+                {
+                    title: "Theo Dấu Người Xưa: Lăng Cụ Đồ Chiểu & Chùa Tuyên Linh",
+                    rating: "4.9",
+                    reviews: "88",
+                    sustainScore: "96/100",
+                    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "1 ngày" },
+                        { label: "Giá/người", val: "580.000 VNĐ" },
+                        { label: "Số người tối đa", val: "25 người" },
+                        { label: "Phương tiện", val: "Xe du lịch ô tô" },
+                        { label: "Số địa điểm tham quan", val: "3 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Trà mật ong, cơm chay" }
+                    ]
+                },
+                {
+                    title: "Hành Trình Di Sản La Mã & Chùa Bạch Vân",
+                    rating: "4.7",
+                    reviews: "52",
+                    sustainScore: "90/100",
+                    image: "https://images.unsplash.com/photo-1528127269322-539801943592?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "1 ngày" },
+                        { label: "Giá/người", val: "550.000 VNĐ" },
+                        { label: "Số người tối đa", val: "20 người" },
+                        { label: "Phương tiện", val: "Xe ô tô du lịch" },
+                        { label: "Số địa điểm tham quan", val: "2 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Bữa trưa đặc sản chay" }
+                    ]
+                }
+            ],
+            "health": [
+                {
+                    title: "Nghỉ Dưỡng Trị Liệu & Yoga Tại Cù Lao Minh",
+                    rating: "4.9",
+                    reviews: "45",
+                    sustainScore: "98/100",
+                    image: "https://images.unsplash.com/photo-1528127269322-539801943592?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "2 ngày 1 đêm" },
+                        { label: "Giá/người", val: "2.500.000 VNĐ" },
+                        { label: "Số người tối đa", val: "6 người" },
+                        { label: "Phương tiện", val: "Xuồng ba lá, đi bộ" },
+                        { label: "Số địa điểm tham quan", val: "2 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Dinh dưỡng thực dưỡng" }
+                    ]
+                }
+            ],
+            "3days": [
+                {
+                    title: "Hành Trình Xanh Cù Lao Minh – Chợ Lách – Cồn Bửng",
+                    rating: "4.9",
+                    reviews: "128",
+                    sustainScore: "97/100",
+                    image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "3 ngày 2 đêm" },
+                        { label: "Giá/người", val: "2.850.000 VNĐ" },
+                        { label: "Số người tối đa", val: "12 người" },
+                        { label: "Phương tiện", val: "Ô tô, Tàu sông, Xe điện" },
+                        { label: "Số địa điểm tham quan", val: "7 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có (Ẩm thực đặc sản)" }
+                    ]
+                },
+                {
+                    title: "Kỳ Nghỉ Dưỡng Trị Liệu & Phục Hồi Sức Khỏe Đặc Biệt",
+                    rating: "5.0",
+                    reviews: "42",
+                    sustainScore: "98/100",
+                    image: "https://images.unsplash.com/photo-1528127269322-539801943592?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "3 ngày 2 đêm" },
+                        { label: "Giá/người", val: "4.800.000 VNĐ" },
+                        { label: "Số người tối đa", val: "6 người" },
+                        { label: "Phương tiện", val: "Xe điện, Đi bộ" },
+                        { label: "Số địa điểm tham quan", val: "3 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có (Thực dưỡng organic)" }
+                    ]
+                }
+            ],
+            "1week": [
+                {
+                    title: "Caravan Xuyên Lục Tỉnh Bến Tre – Trải Nghiệm Sông Nước",
+                    rating: "4.9",
+                    reviews: "64",
+                    sustainScore: "96/100",
+                    image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "7 ngày 6 đêm" },
+                        { label: "Giá/người", val: "8.900.000 VNĐ" },
+                        { label: "Số người tối đa", val: "15 người" },
+                        { label: "Phương tiện", val: "Ô tô du lịch, Thuyền máy" },
+                        { label: "Số địa điểm tham quan", val: "15 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có (Đầy đủ ẩm thực)" }
+                    ]
+                },
+                {
+                    title: "Thập Cảnh Bến Tre: Kỳ Quan Sinh Thái & Di Sản Văn Hóa",
+                    rating: "4.8",
+                    reviews: "55",
+                    sustainScore: "95/100",
+                    image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=400&fit=crop",
+                    specs: [
+                        { label: "Thời lượng", val: "7 ngày 6 đêm" },
+                        { label: "Giá/người", val: "7.500.000 VNĐ" },
+                        { label: "Số người tối đa", val: "20 người" },
+                        { label: "Phương tiện", val: "Ô tô, xe đạp, xuồng chèo" },
+                        { label: "Số địa điểm tham quan", val: "12 điểm" },
+                        { label: "Bao gồm ăn uống", val: "Có (Theo chương trình)" }
+                    ]
+                }
+            ]
+        };
+
+        // Helper function to map guide ID to specific tours
+        function getGuideIdForTour(title) {
+            if (title.includes("Một Ngày Xanh") || title.includes("Đạp Xe Khám Phá Cù Lao") || title.includes("Theo Dấu Người Xưa") || title.includes("Bảo Tồn Đa Dạng") || title.includes("Cù Lao Minh – Chợ Lách – Cồn Bửng") || title.includes("Caravan")) {
+                return 0; // Nguyễn Minh Anh
+            }
+            if (title.includes("Khám Phá Cồn Phụng") || title.includes("Di Sản Nhà Cổ") || title.includes("Hành Trình Di Sản") || title.includes("Hành Trình Đỏ") || title.includes("Nhà Thờ La Mã") || title.includes("Thập Cảnh Bến Tre")) {
+                return 1; // Trần Thanh Hải
+            }
+            if (title.includes("Trải Nghiệm Cồn Phú Đa") || title.includes("Chinh Phục Cù Lao Minh") || title.includes("Miệt Vườn") || title.includes("Bánh Tráng Mỹ Lồng")) {
+                return 2; // Lê Thị Mai
+            }
+            if (title.includes("Vàm Hồ") || title.includes("Làng Bè") || title.includes("Chèo Xuồng Ba Lá") || title.includes("Du Thuyền Sông")) {
+                return 3; // Phạm Quốc Bảo
+            }
+            if (title.includes("Trị Liệu") || title.includes("Nghỉ Dưỡng Trị Liệu") || title.includes("Phục Hồi Sức Khỏe Special")) {
+                return 4; // Võ Hoàng Yến
+            }
+            return 0; // Default
+        }
+
+        function openTourDetail(guideId, encodedTourTitle) {
+            const tourTitle = decodeURIComponent(encodedTourTitle);
+            const destination = `chi-tiet-tour.html?guide=${encodeURIComponent(guideId)}&tourTitle=${encodeURIComponent(tourTitle)}`;
+            const hasSession = Boolean(localStorage.getItem('token') && localStorage.getItem('currentUser'));
+
+            if (!hasSession) {
+                sessionStorage.setItem('postLoginRedirect', destination);
+                window.location.href = 'dang-nhap.html';
+                return;
+            }
+
+            window.location.href = destination;
+        }
+
+        // Render function
+        function renderTours(category) {
+            const grid = document.getElementById('tour-grid');
+            grid.style.opacity = '0'; // Fade out transition
+            
+            setTimeout(() => {
+                grid.innerHTML = '';
+                const tours = tourData[category] || [];
+                
+                if (tours.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #6B7280; padding: 40px;">Đang cập nhật các tour du lịch mới...</div>';
+                    grid.style.opacity = '1';
+                    return;
+                }
+
+                tours.forEach(tour => {
+                    let specHTML = '';
+                    const guideId = getGuideIdForTour(tour.title);
+                    // Generate spec SVGs
+                    const icons = [
+                        // Clock / Duration
+                        `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+                        // Money / Wallet
+                        `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18.01"/><path d="M16 8h2a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M2 10h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H2"/></svg>`,
+                        // Group / People
+                        `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+                        // Transport / Bicycle
+                        `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/><path d="M15 6h5.5a2.5 2.5 0 1 1 0 5H18"/><path d="M12 12v5.5"/><path d="M5.5 15h13l-4.5-9H9L5.5 15z"/></svg>`,
+                        // Map Pin / Locations
+                        `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+                        // Food / Spoon-Fork
+                        `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`
+                    ];
+
+                    tour.specs.forEach((spec, idx) => {
+                        specHTML += `
+                            <li class="spec-item">
+                                ${icons[idx]}
+                                <span class="spec-label">${spec.label}:</span>
+                                <span class="spec-value">${spec.val}</span>
+                            </li>
+                        `;
+                    });
+
+                    const cardHTML = `
+                        <div class="tour-card">
+                            <div class="tour-img-wrapper">
+                                <img src="${tour.image}" alt="${tour.title}">
+                                <button class="btn-fav" onclick="this.classList.toggle('active')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                </button>
+                            </div>
+                            <div class="tour-info">
+                                <h3 class="tour-name">${tour.title}</h3>
+                                <div class="tour-meta-row">
+                                    <div class="rating-box">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                        ${tour.rating} <span class="review-count">(${tour.reviews})</span>
+                                    </div>
+                                    <span class="sustain-badge">🌱 Điểm bền vững: ${tour.sustainScore}</span>
+                                </div>
+                                <ul class="tour-specs">
+                                    ${specHTML}
+                                </ul>
+                                <div class="tour-actions">
+                                    <button class="btn-tour-reviews" onclick="openPublicTourReviews('${encodeURIComponent(tour.title)}', ${Number(tour.rating)||0}, ${Number(tour.reviews)||0});">Xem đánh giá</button>
+                                    <button class="btn-detail" onclick="openTourDetail('${guideId}', '${encodeURIComponent(tour.title)}');">Xem chi tiết</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += cardHTML;
+                });
+                
+                grid.style.opacity = '1'; // Fade back in
+            }, 300);
+        }
+
+        // Tab click listeners
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const tabCategory = this.getAttribute('data-tab');
+                renderTours(tabCategory);
+            });
+        });
+
+        // Initial load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTours('1day');
+        });
+
+        // Extra tours for load-more action
+        const extraTours = [
+            {
+                title: "Chèo Xuồng Ba Lá Khám Phá Rạch Dừa Nước",
+                rating: "4.8",
+                reviews: "75",
+                sustainScore: "95/100",
+                image: "../assets/images/tour-cheo-xuong-rach-dua-nuoc.png",
+                specs: [
+                    { label: "Thời lượng", val: "Nửa ngày" },
+                    { label: "Giá/người", val: "490.000 VNĐ" },
+                    { label: "Số người tối đa", val: "12 người" },
+                    { label: "Phương tiện", val: "Xuồng ba lá" },
+                    { label: "Số địa điểm tham quan", val: "3 điểm" },
+                    { label: "Bao gồm ăn uống", val: "Nước dừa tươi" }
+                ]
+            },
+            {
+                title: "Du Thuyền Sông Bến Tre Ngắm Hoàng Hôn",
+                rating: "4.9",
+                reviews: "62",
+                sustainScore: "93/100",
+                image: "../assets/images/tour-du-thuyen-ngam-hoang-hon.png",
+                specs: [
+                    { label: "Thời lượng", val: "Trải nghiệm (3h)" },
+                    { label: "Giá/người", val: "350.000 VNĐ" },
+                    { label: "Số người tối đa", val: "20 người" },
+                    { label: "Phương tiện", val: "Du thuyền gỗ" },
+                    { label: "Số địa điểm tham quan", val: "2 điểm" },
+                    { label: "Bao gồm ăn uống", val: "Tiệc trà trái cây" }
+                ]
+            },
+            {
+                title: "Khám Phá Làng Bánh Tráng Mỹ Lồng Cổ Truyền",
+                rating: "4.7",
+                reviews: "49",
+                sustainScore: "90/100",
+                image: "../assets/images/tour-lang-banh-trang-my-long.png",
+                specs: [
+                    { label: "Thời lượng", val: "Trải nghiệm (4h)" },
+                    { label: "Giá/người", val: "280.000 VNĐ" },
+                    { label: "Số người tối đa", val: "15 người" },
+                    { label: "Phương tiện", val: "Xe đạp" },
+                    { label: "Số địa điểm tham quan", val: "2 điểm" },
+                    { label: "Bao gồm ăn uống", val: "Ăn thử bánh nóng" }
+                ]
+            },
+            {
+                title: "Hành Trình Đạp Xe Khám Phá Cù Lao & Vườn Cây Ăn Trái",
+                rating: "4.8",
+                reviews: "91",
+                sustainScore: "96/100",
+                image: "../assets/images/tour-dap-xe-cu-lao-vuon-cay.png",
+                specs: [
+                    { label: "Thời lượng", val: "1 ngày" },
+                    { label: "Giá/người", val: "550.000 VNĐ" },
+                    { label: "Số người tối đa", val: "10 người" },
+                    { label: "Phương tiện", val: "Xe đạp" },
+                    { label: "Số địa điểm tham quan", val: "4 điểm" },
+                    { label: "Bao gồm ăn uống", val: "Có" }
+                ]
+            },
+            {
+                title: "Trị Liệu Sức Khỏe & Ngâm Chân Thảo Dược Nam Bộ",
+                rating: "4.9",
+                reviews: "38",
+                sustainScore: "97/100",
+                image: "../assets/images/tour-tri-lieu-ngam-chan-thao-duoc.png",
+                specs: [
+                    { label: "Thời lượng", val: "Nửa ngày" },
+                    { label: "Giá/người", val: "950.000 VNĐ" },
+                    { label: "Số người tối đa", val: "8 người" },
+                    { label: "Phương tiện", val: "Xe điện" },
+                    { label: "Số địa điểm tham quan", val: "2 điểm" },
+                    { label: "Bao gồm ăn uống", val: "Trà thảo mộc & súp dưỡng sinh" }
+                ]
+            }
+        ];
+
+        function loadMoreTours() {
+            const btn = document.getElementById('btn-load-more');
+            btn.innerHTML = `<span class="spinner"></span> Đang tải...`;
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                const grid = document.getElementById('tour-grid');
+                const icons = [
+                    `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+                    `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18.01"/><path d="M16 8h2a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M2 10h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H2"/></svg>`,
+                    `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+                    `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="2.5"/><circle cx="18.5" cy="17.5" r="2.5"/><path d="M15 6h5.5a2.5 2.5 0 1 1 0 5H18"/><path d="M12 12v5.5"/><path d="M5.5 15h13l-4.5-9H9L5.5 15z"/></svg>`,
+                    `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+                    `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`
+                ];
+
+                extraTours.forEach(tour => {
+                    let specHTML = '';
+                    const guideId = getGuideIdForTour(tour.title);
+                    tour.specs.forEach((spec, idx) => {
+                        specHTML += `
+                            <li class="spec-item">
+                                ${icons[idx]}
+                                <span class="spec-label">${spec.label}:</span>
+                                <span class="spec-value">${spec.val}</span>
+                            </li>
+                        `;
+                    });
+
+                    const cardHTML = `
+                        <div class="tour-card animate-fadeIn">
+                            <div class="tour-img-wrapper">
+                                <img src="${tour.image}" alt="${tour.title}">
+                                <button class="btn-fav" onclick="this.classList.toggle('active')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                                </button>
+                            </div>
+                            <div class="tour-info">
+                                <h3 class="tour-name">${tour.title}</h3>
+                                <div class="tour-meta-row">
+                                    <div class="rating-box">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                        ${tour.rating} <span class="review-count">(${tour.reviews})</span>
+                                    </div>
+                                    <span class="sustain-badge">🌱 Điểm bền vững: ${tour.sustainScore}</span>
+                                </div>
+                                <ul class="tour-specs">
+                                    ${specHTML}
+                                </ul>
+                                <div class="tour-actions">
+                                    <button class="btn-tour-reviews" onclick="openPublicTourReviews('${encodeURIComponent(tour.title)}', ${Number(tour.rating)||0}, ${Number(tour.reviews)||0});">Xem đánh giá</button>
+                                    <button class="btn-detail" onclick="openTourDetail('${guideId}', '${encodeURIComponent(tour.title)}');">Xem chi tiết</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += cardHTML;
+                });
+                
+                btn.innerHTML = `Đã tải hết tour`;
+                btn.style.background = '#E5E7EB';
+                btn.style.color = '#9CA3AF';
+                btn.style.cursor = 'not-allowed';
+            }, 800);
+        }
+    </script>
+    <script src="../assets/js/bentre-ai.js" defer></script>
+    <script src="../assets/js/auth.js?v=20260829-5" defer></script>
+
+    <div class="modal-overlay" id="tourReviewsModal" onclick="if(event.target===this) closeModal('tourReviewsModal')">
+        <div class="modal-card" style="max-width:620px;">
+            <div class="modal-header">
+                <div class="modal-title" id="tourReviewsTitle">Đánh giá tour</div>
+                <button class="modal-close-btn" type="button" onclick="closeModal('tourReviewsModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="tourReviewsList"><div>Đang tải đánh giá...</div></div>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRMATION MODAL (THAY THẾ CONFIRM MẶC ĐỊNH) -->
+    <div class="modal-overlay" id="modalConfirmDelete" style="display: none !important;">
+        <div class="modal-card" style="max-width: 440px; text-align: center; padding: 24px 20px;">
+            <div style="width: 56px; height: 56px; border-radius: 50%; background: #FEE2E2; color: #DC2626; font-size: 26px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; border: 2px solid #FCA5A5;">
+                🗑️
+            </div>
+            <h3 style="font-size: 17px; font-weight: 800; color: #111827; margin-bottom: 6px;">Xác nhận xóa dữ liệu</h3>
+            <p id="confirmDeleteMessage" style="font-size: 13px; color: #4B5563; line-height: 1.5; margin-bottom: 20px;">
+                Bạn có chắc chắn muốn xóa mục này khỏi hệ thống? Hành động này không thể hoàn tác.
+            </p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button type="button" class="btn-export-excel" style="padding: 8px 18px; font-size: 13px;" onclick="closeModal('modalConfirmDelete')">
+                    Hủy bỏ
+                </button>
+                <button type="button" id="btnConfirmDeleteAction" style="padding: 8px 20px; font-size: 13px; font-weight: 700; background: #DC2626; color: #FFFFFF; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s;" onmouseover="this.style.background='#B91C1C'" onmouseout="this.style.background='#DC2626'">
+                    🗑️ Xóa vĩnh viễn
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function escapeReviewHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value == null ? '' : String(value);
+            return div.innerHTML;
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.style.setProperty('display', 'none', 'important');
+        }
+
+        function normalizeTourName(value) {
+            return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').replace(/[^a-z0-9]+/g, ' ').trim();
+        }
+
+        function sameTourName(left, right) {
+            const a = normalizeTourName(left), b = normalizeTourName(right);
+            if (!a || !b) return false;
+            if (a === b || a.includes(b) || b.includes(a)) return true;
+            const important = a.split(' ').filter(word => word.length > 2);
+            return important.length > 0 && important.filter(word => b.includes(word)).length >= Math.min(4, important.length);
+        }
+
+        function fallbackTourReviews(tourTitle, rating) {
+            const title = normalizeTourName(tourTitle);
+            let highlights = ['lịch trình hợp lý', 'hướng dẫn viên nhiệt tình', 'trải nghiệm địa phương thú vị'];
+            if (title.includes('con phung') || title.includes('con quy')) highlights = ['cảnh sông nước rất đẹp', 'đi thuyền an toàn và vui', 'ẩm thực địa phương ngon'];
+            else if (title.includes('nha co') || title.includes('bao tang') || title.includes('di san')) highlights = ['địa điểm giàu giá trị lịch sử', 'phần thuyết minh dễ hiểu', 'kiến trúc rất ấn tượng'];
+            else if (title.includes('xanh') || title.includes('sinh thai') || title.includes('vuon')) highlights = ['không gian xanh trong lành', 'hoạt động gần gũi thiên nhiên', 'người dân địa phương thân thiện'];
+            const base = Math.max(4, Math.min(5, Math.round(Number(rating) || 5)));
+            const recent = [
+                { rating:base, content:'Chuyến đi rất đáng nhớ, '+highlights[0]+'. Gia đình tôi rất hài lòng.', full_name:'Nguyễn Thảo Vy', created_at:'2026-08-24' },
+                { rating:Math.max(4,base-1), content:'Tour tổ chức chu đáo, '+highlights[1]+'. Mình sẽ giới thiệu cho bạn bè.', full_name:'Trần Minh Khang', created_at:'2026-08-18' },
+                { rating:base, content:'Mình thích nhất '+highlights[2]+'. Thời gian tham quan vừa đủ và phục vụ tốt.', full_name:'Lê Ngọc Mai', created_at:'2026-08-09' }
+            ];
+            const olderNames=['Phạm Gia Hân','Võ Hoàng Long','Đặng Mỹ Linh','Bùi Quốc Bảo','Ngô Thanh Trúc','Huỳnh Tuấn Anh'];
+            const olderComments=[
+                'Lịch trình rõ ràng, đón khách đúng giờ và các điểm tham quan đều thú vị.',
+                'Hướng dẫn viên thân thiện, hỗ trợ gia đình mình rất chu đáo trong suốt chuyến đi.',
+                'Không gian đẹp, nhiều trải nghiệm bản địa và đồ ăn hợp khẩu vị.',
+                'Tour phù hợp với nhóm bạn và gia đình, chi phí hợp lý so với trải nghiệm.',
+                'Mọi hoạt động được sắp xếp vừa sức, mình có nhiều ảnh đẹp sau chuyến đi.',
+                'Một hành trình đáng thử khi đến Bến Tre, mình sẽ quay lại vào dịp khác.'
+            ];
+            return recent.concat(olderNames.map((name,index)=>({rating:index===2?Math.max(4,base-1):base,content:olderComments[index]+' Đặc biệt, '+highlights[index%highlights.length]+'.',full_name:name,created_at:'2026-07-'+String(28-index*3).padStart(2,'0')})));
+        }
+
+        function showAllTourReviews(button) {
+            document.querySelectorAll('#tourReviewsList .tour-review-extra').forEach(item => item.style.display = 'block');
+            button.remove();
+        }
+
+        async function openPublicTourReviews(encodedTitle, cardRating, cardReviewCount) {
+            const tourTitle = decodeURIComponent(encodedTitle || '');
+            const modal = document.getElementById('tourReviewsModal');
+            const list = document.getElementById('tourReviewsList');
+            document.getElementById('tourReviewsTitle').textContent = 'Đánh giá: ' + tourTitle;
+            modal.style.setProperty('display', 'flex', 'important');
+            list.innerHTML = '<div style="padding:20px;text-align:center;color:#6B7280">Đang tải đánh giá...</div>';
+            let reviews = [];
+            try {
+                const local = JSON.parse(localStorage.getItem('benTreTourReviews') || '[]');
+                if (Array.isArray(local)) reviews.push(...local.filter(item => sameTourName(item.tourName, tourTitle)));
+            } catch (_) {}
+            try {
+                const [tourResponse, reviewResponse] = await Promise.all([
+                    BenTreAPI.list('tours', { limit: 100 }),
+                    BenTreAPI.list('reviews', { targetType: 'TOUR', limit: 100 })
+                ]);
+                const tours = Array.isArray(tourResponse?.data) ? tourResponse.data : [];
+                const serverReviews = Array.isArray(reviewResponse?.data) ? reviewResponse.data : [];
+                const tour = tours.find(item => sameTourName(item.name || item.title, tourTitle));
+                reviews.push(...serverReviews.filter(item => tour && Number(item.tour_id || item.target_id) === Number(tour.id)));
+            } catch (_) {}
+            let unique = reviews.filter((item, index, array) => index === array.findIndex(row => String(row.id || row.created_at || row.createdAt || '') + String(row.content || '') === String(item.id || item.created_at || item.createdAt || '') + String(item.content || '')));
+            if (!unique.length && Number(cardReviewCount) > 0) unique = fallbackTourReviews(tourTitle, cardRating);
+            const reviewTotal = Number(cardReviewCount || unique.length);
+            const ratingValue = Number(cardRating || (unique.length ? unique.reduce((sum,item)=>sum+(Number(item.rating)||0),0)/unique.length : 0));
+            const summary = '<div style="padding:16px;border-radius:12px;background:#ECFDF5;color:#065F46">' +
+                '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px"><strong style="font-size:22px">★ ' + ratingValue.toFixed(1) + '/5</strong><span style="font-weight:700">' + reviewTotal.toLocaleString('vi-VN') + ' lượt đánh giá</span></div>' +
+                '<div style="height:8px;background:#D1FAE5;border-radius:999px;margin-top:12px;overflow:hidden"><span style="display:block;width:' + Math.max(0,Math.min(100,ratingValue/5*100)) + '%;height:100%;background:#10B981;border-radius:999px"></span></div>' +
+                '</div>';
+            list.innerHTML = summary + (unique.length ? '<div style="font-weight:800;color:#374151;margin-top:4px">Một số nhận xét gần đây</div>' + unique.map((item,index) => {
+                const rating = Math.max(0, Math.min(5, Number(item.rating) || 0));
+                const dateValue = item.created_at || item.createdAt;
+                const date = dateValue ? new Date(dateValue).toLocaleDateString('vi-VN') : '';
+                return '<article class="tour-review-item' + (index>=3?' tour-review-extra':'') + '"' + (index>=3?' style="display:none"':'') + '><div class="tour-review-stars">' + '★'.repeat(rating) + '☆'.repeat(5-rating) + '</div><p>' + escapeReviewHtml(item.content || 'Không có nội dung nhận xét.') + '</p><small>' + escapeReviewHtml(item.full_name || item.customerName || 'Khách hàng') + (date ? ' · ' + date : '') + '</small></article>';
+            }).join('') + (unique.length>3?'<button type="button" class="btn-show-all-reviews" onclick="showAllTourReviews(this)">Xem tất cả đánh giá trước đó ('+(unique.length-3)+')</button>':'') : '<div style="padding:24px;text-align:center;color:#6B7280;line-height:1.6"><strong style="display:block;color:#374151;margin-bottom:5px">Đã có ' + reviewTotal.toLocaleString('vi-VN') + ' lượt đánh giá tổng hợp</strong>Nội dung nhận xét chi tiết của tour này chưa được đồng bộ từ hệ thống.</div>');
+        }
+
+        document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal('tourReviewsModal'); });
+
+        // Custom Modal Confirm Dialog
+        let confirmCallback = null;
+
+        function showConfirmModal(message, onConfirm) {
+            const modal = document.getElementById('modalConfirmDelete');
+            const msgEl = document.getElementById('confirmDeleteMessage');
+            const confirmBtn = document.getElementById('btnConfirmDeleteAction');
+            if (!modal) return;
+
+            msgEl.innerHTML = message;
+            confirmCallback = onConfirm;
+
+            confirmBtn.onclick = function() {
+                if (typeof confirmCallback === 'function') {
+                    confirmCallback();
+                }
+                closeModal('modalConfirmDelete');
+            };
+
+            modal.style.setProperty('display', 'flex', 'important');
+        }
+    </script>
+
+    <script>
+        function handleLogout(e) {
+            if (e) e.preventDefault();
+            try {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('token');
+                sessionStorage.clear();
+            } catch(err) {}
+            
+            showToast('👋 Đã đăng xuất! Đang chuyển về trang chủ...');
+            setTimeout(function() {
+                window.location.href = 'index.html';
+            }, 600);
+        }
+    </script>
+
+    <!-- Leaflet JS (Local Vendor first, CDN Fallback) -->
+    <script src="../assets/vendor/leaflet/leaflet.js"></script>
+    <script>
+        if (typeof L === 'undefined') {
+            document.write('<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>');
+        }
+    </script>
+    <script>
+    (function() {
+        // ===== BẢN ĐỒ TƯƠNG TÁC LEAFLET + OPENSTREETMAP / GOOGLE MAPS =====
+        let map = null;
+        let markerGroup = null;
+        let allMarkers = [];
+
+        // Custom icon factory
+        function createIcon(color, emoji) {
+            return L.divIcon({
+                html: `<div class="custom-pin-marker" style="display:flex;flex-direction:column;align-items:center;">
+                    <div style="background:${color};width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #ffffff;box-shadow:0 4px 12px rgba(0,0,0,0.32);display:flex;align-items:center;justify-content:center;position:relative;">
+                        <span style="transform:rotate(45deg);font-size:14px;line-height:1;margin-top:2px;margin-left:2px">${emoji}</span>
+                    </div>
+                    <div style="width:10px;height:4px;background:rgba(0,0,0,0.25);border-radius:50%;margin-top:2px;filter:blur(1px)"></div>
+                </div>`,
+                className: 'custom-pin-container',
+                iconSize: [32, 40],
+                iconAnchor: [16, 38],
+                popupAnchor: [0, -38]
+            });
+        }
+
+        const categoryMeta = {
+            eco: { label: 'Sinh thái & Thiên nhiên', color: '#10b981', emoji: '🌿' },
+            culture: { label: 'Văn hóa & Di tích', color: '#f59e0b', emoji: '🏛️' },
+            river: { label: 'Sông nước & Cù lao', color: '#3b82f6', emoji: '⛵' },
+            food: { label: 'Ẩm thực & Làng nghề', color: '#ef4444', emoji: '🥥' },
+            health: { label: 'Sức khỏe & Trị liệu', color: '#8b5cf6', emoji: '🍵' }
+        };
+
+        // Các địa điểm du lịch Bến Tre thực tế
+        const locations = [
+            // === Sinh thái & Thiên nhiên ===
+            { name: 'Sân Chim Vàm Hồ', lat: 10.1412, lng: 106.3689, type: 'eco', desc: 'Khu bảo tồn chim hoang dã lớn nhất Bến Tre, hệ sinh thái rừng ngập mặn phong phú', rating: '4.9' },
+            { name: 'Rừng Ngập Mặn Thạnh Phú', lat: 10.0050, lng: 106.5920, type: 'eco', desc: 'Rừng phòng hộ ven biển với đa dạng sinh học cao, trải nghiệm bắt ốc, câu cá', rating: '4.8' },
+            { name: 'Biển Cồn Bửng', lat: 9.9725, lng: 106.6512, type: 'eco', desc: 'Bãi biển hoang sơ ở Thạnh Phú, cát trắng, sóng êm, hải sản tươi sống', rating: '4.7' },
+
+            // === Sông nước & Cù lao ===
+            { name: 'Cồn Phụng', lat: 10.3320, lng: 106.5150, type: 'river', desc: 'Cù lao nổi tiếng với đạo Dừa, vườn trái cây, chèo xuồng trên rạch dừa nước', rating: '4.8' },
+            { name: 'Cồn Quy', lat: 10.3275, lng: 106.4982, type: 'river', desc: 'Cù lao yên bình với vườn cây ăn trái quanh năm, trải nghiệm homestay miệt vườn', rating: '4.7' },
+            { name: 'Cồn Phú Đa', lat: 10.3480, lng: 106.4620, type: 'river', desc: 'Nổi tiếng với ốc gạo Phú Đa, trải nghiệm sông nước miền Tây chân thực', rating: '4.8' },
+            { name: 'Cù Lao Minh', lat: 10.1000, lng: 106.4500, type: 'river', desc: 'Vùng đất xanh tươi với dừa, cacao và nhiều di tích lịch sử cách mạng', rating: '4.9' },
+
+            // === Văn hóa & Di tích ===
+            { name: 'Bảo Tàng Bến Tre', lat: 10.2430, lng: 106.3760, type: 'culture', desc: 'Lưu giữ hàng ngàn hiện vật lịch sử về phong trào Đồng Khởi và văn hóa xứ Dừa', rating: '4.9' },
+            { name: 'Nhà Cổ Huỳnh Phủ', lat: 10.1835, lng: 106.5238, type: 'culture', desc: 'Ngôi nhà cổ hơn 150 tuổi, kiến trúc gỗ tinh xảo, di sản văn hóa cấp quốc gia', rating: '4.8' },
+            { name: 'Chùa Tuyên Linh', lat: 10.1520, lng: 106.3850, type: 'culture', desc: 'Chùa cổ hơn 100 năm, gắn liền với lịch sử cách mạng Bến Tre', rating: '4.7' },
+            { name: 'Đình Phú Tự', lat: 10.3180, lng: 106.4880, type: 'culture', desc: 'Đình làng cổ với kiến trúc truyền thống Nam Bộ, nơi sinh hoạt văn hóa cộng đồng', rating: '4.6' },
+            { name: 'Lăng Cụ Đồ Chiểu', lat: 10.2900, lng: 106.3450, type: 'culture', desc: 'Khu tưởng niệm nhà thơ yêu nước Nguyễn Đình Chiểu, biểu tượng văn hóa Bến Tre', rating: '4.9' },
+
+            // === Ẩm thực & Làng nghề ===
+            { name: 'Làng Hoa Chợ Lách', lat: 10.2380, lng: 106.2090, type: 'food', desc: 'Vựa hoa kiểng lớn nhất ĐBSCL, tham quan vườn cây giống, trải nghiệm làm nông', rating: '4.8' },
+            { name: 'Làng Bánh Tráng Mỹ Lồng', lat: 10.3150, lng: 106.4320, type: 'food', desc: 'Làng nghề truyền thống bánh tráng dừa, xem quy trình tráng bánh thủ công', rating: '4.7' },
+            { name: 'Vườn Trái Cây Cái Mơn', lat: 10.2190, lng: 106.2250, type: 'food', desc: 'Vương quốc trái cây với chôm chôm, sầu riêng, măng cụt, trải nghiệm hái tại vườn', rating: '4.9' },
+
+            // === Sức khỏe & Trị liệu ===
+            { name: 'Khu Nghỉ Dưỡng Phú An Khang', lat: 10.2600, lng: 106.3920, type: 'health', desc: 'Resort xanh kết hợp yoga, thiền, massage thảo dược giữa vườn dừa', rating: '4.8' },
+            { name: 'Suối Nước Khoáng Ba Tri', lat: 10.0500, lng: 106.5800, type: 'health', desc: 'Nguồn nước khoáng tự nhiên, tắm khoáng nóng giữa thiên nhiên hoang sơ', rating: '4.6' }
+        ];
+
+        function initInteractiveMap() {
+            const mapEl = document.getElementById('interactiveMap');
+            if (!mapEl) return;
+            if (typeof L === 'undefined') {
+                console.warn('Leaflet library not ready yet, retrying in 150ms...');
+                setTimeout(initInteractiveMap, 150);
+                return;
+            }
+            if (map) {
+                map.invalidateSize();
+                return;
+            }
+
+            // Tọa độ trung tâm Bến Tre
+            const benTreCenter = [10.2415, 106.3753];
+            map = L.map('interactiveMap', {
+                center: benTreCenter,
+                zoom: 11,
+                scrollWheelZoom: false,
+                zoomControl: true
+            });
+
+            // 🗺️ TILE LAYERS: Google Maps Streets (Mặc định siêu nhanh) + OpenStreetMap + Vệ tinh
+            const googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '© Google Maps Bến Tre'
+            });
+
+            const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+            });
+
+            const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '© Google Maps Vệ Tinh'
+            });
+
+            const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '© Google Maps Địa Hình'
+            });
+
+            // Mặc định nạp Google Maps Streets
+            googleStreets.addTo(map);
+
+            // Menu chuyển đổi loại bản đồ
+            const baseMaps = {
+                "🗺️ Google Maps": googleStreets,
+                "🌿 Bản đồ Mở (OSM)": osm,
+                "🛰️ Google Vệ Tinh": googleHybrid,
+                "🏞️ Google Địa Hình": googleTerrain
+            };
+            L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+
+            // Marker Group
+            markerGroup = L.featureGroup().addTo(map);
+
+            // Thêm các marker
+            locations.forEach(loc => {
+                const meta = categoryMeta[loc.type] || { label: 'Điểm đến', color: '#10b981', emoji: '📍' };
+                const icon = createIcon(meta.color, meta.emoji);
+                const marker = L.marker([loc.lat, loc.lng], { icon: icon });
+
+                marker.bindPopup(`
+                    <div style="font-family:'Be Vietnam Pro',sans-serif;min-width:240px;max-width:300px;padding:2px">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+                            <span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;background:${meta.color};color:#fff;display:inline-block">${meta.label}</span>
+                            <span style="font-weight:700;font-size:12.5px;color:#047857;display:flex;align-items:center;gap:3px">
+                                ★ ${loc.rating}
+                            </span>
+                        </div>
+                        <div style="font-weight:800;font-size:15px;color:#064e3b;margin-bottom:6px;line-height:1.35">${loc.name}</div>
+                        <div style="font-size:12.5px;color:#4B5563;line-height:1.5;margin-bottom:10px">${loc.desc}</div>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:#0E4B25;color:#ffffff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;box-shadow:0 2px 6px rgba(14,75,37,0.25);transition:background 0.2s">
+                            🧭 Chỉ đường Google Maps &rarr;
+                        </a>
+                    </div>
+                `, { closeButton: true, className: 'leaflet-popup-custom' });
+
+                marker.locationData = loc;
+                allMarkers.push(marker);
+                marker.addTo(markerGroup);
+            });
+
+            // Enable scroll zoom on click
+            map.on('click', function() { map.scrollWheelZoom.enable(); });
+            map.on('mouseout', function() { map.scrollWheelZoom.disable(); });
+
+            // Fit bounds
+            if (markerGroup.getLayers().length > 0) {
+                map.fitBounds(markerGroup.getBounds().pad(0.12));
+            }
+
+            // Gắn sự kiện bộ lọc danh mục
+            const filterButtons = document.querySelectorAll('#mapLegend .map-legend-item[data-filter]');
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.getAttribute('data-filter');
+
+                    markerGroup.clearLayers();
+                    allMarkers.forEach(m => {
+                        if (filter === 'all' || m.locationData.type === filter) {
+                            m.addTo(markerGroup);
+                        }
+                    });
+
+                    if (markerGroup.getLayers().length > 0) {
+                        map.flyToBounds(markerGroup.getBounds().pad(0.15), { duration: 1.0 });
+                    }
+                });
+            });
+
+            // Gắn sự kiện nút Đặt lại góc nhìn
+            const btnReset = document.getElementById('btnResetMapView');
+            if (btnReset) {
+                btnReset.addEventListener('click', function() {
+                    const allBtn = document.querySelector('#mapLegend .map-legend-item[data-filter="all"]');
+                    if (allBtn) {
+                        filterButtons.forEach(b => b.classList.remove('active'));
+                        allBtn.classList.add('active');
+                    }
+                    markerGroup.clearLayers();
+                    allMarkers.forEach(m => m.addTo(markerGroup));
+                    if (markerGroup.getLayers().length > 0) {
+                        map.flyToBounds(markerGroup.getBounds().pad(0.12), { duration: 1.2 });
+                    }
+                });
+            }
+
+            // Tự động điều chỉnh kích thước khi render xong hoặc cuộn tới
+            setTimeout(function() { map.invalidateSize(); }, 250);
+            setTimeout(function() { map.invalidateSize(); }, 1000);
+            window.addEventListener('resize', function() { map.invalidateSize(); });
+
+            // IntersectionObserver: Tự động invalidateSize khi người dùng cuộn đến phần bản đồ
+            if ('IntersectionObserver' in window) {
+                const mapObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && map) {
+                            map.invalidateSize();
+                        }
+                    });
+                }, { rootMargin: '250px' });
+                mapObserver.observe(mapEl);
+            }
+        }
+
+        // Khởi chạy khi DOM sẵn sàng
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initInteractiveMap);
+        } else {
+            initInteractiveMap();
+        }
+    })();
+    </script>
+
+    <script src="../assets/js/api-client.js?v=20260831-4"></script>
+</body>
+</html>

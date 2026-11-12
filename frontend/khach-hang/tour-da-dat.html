@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour đã đặt | Du lịch Bến Tre</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Be Vietnam Pro', sans-serif; color: #1f2937; background: #f6f8f7; }
+        .header { background:#fff; border-bottom:1px solid #e5e7eb; position:sticky; top:0; z-index:10; }
+        .header-inner { max-width:1180px; min-height:76px; margin:auto; padding:10px 24px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+        .brand { display:flex; align-items:center; gap:12px; color:#0e4b25; text-decoration:none; font-weight:800; line-height:1.45; }
+        .brand img { width:48px; height:48px; border-radius:50%; object-fit:cover; }
+        .nav { display:flex; align-items:center; gap:24px; }
+        .nav a { color:#374151; text-decoration:none; font-weight:600; }
+        .nav a.active { color:#0e4b25; border-bottom:3px solid #0e4b25; padding-bottom:8px; }
+        main { max-width:1080px; margin:42px auto 80px; padding:0 24px; }
+        .page-head { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:24px; }
+        h1 { color:#0e4b25; margin:0 0 8px; font-size:2rem; }
+        .subtitle { color:#6b7280; margin:0; }
+        .btn { display:inline-flex; align-items:center; justify-content:center; padding:12px 18px; border-radius:10px; background:#0e4b25; color:#fff; text-decoration:none; font-weight:700; }
+        .booking-list { display:grid; gap:18px; }
+        .booking-card { background:#fff; border:1px solid #e5e7eb; border-left:5px solid #10b981; border-radius:16px; padding:22px; box-shadow:0 8px 24px rgba(15,76,38,.06); }
+        .card-top { display:flex; justify-content:space-between; gap:20px; align-items:start; }
+        .tour-name { margin:0 0 8px; font-size:1.15rem; color:#0e4b25; }
+        .code { color:#6b7280; font-size:.86rem; }
+        .status { flex:none; padding:7px 12px; border-radius:999px; background:#fef3c7; color:#92400e; font-weight:700; font-size:.82rem; }
+        .details { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin:18px 0; }
+        .detail { padding:12px; border-radius:10px; background:#f8faf9; }
+        .detail small { display:block; color:#6b7280; margin-bottom:5px; }
+        .detail strong { color:#1f2937; }
+        .booking-notes { margin:0 0 18px; padding:13px 14px; border-radius:10px; background:#f0fdf4; color:#374151; font-size:.86rem; line-height:1.65; }
+        .card-actions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:9px; }
+        .card-actions a,.review-action { color:#0e4b25; font-weight:700; text-decoration:none; border:1px solid #a7d8b8; background:#fff; border-radius:9px; padding:9px 12px; cursor:pointer; font-family:inherit; }
+        .review-action.primary { background:#0e4b25;color:#fff;border-color:#0e4b25; }
+        .review-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(15,23,42,.58);padding:18px;align-items:center;justify-content:center}.review-modal.open{display:flex}.review-dialog{width:min(540px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.25)}.review-dialog h2{margin:0 0 6px;color:#0e4b25}.review-dialog label{display:block;font-weight:700;font-size:.86rem;margin:14px 0 6px}.review-dialog input,.review-dialog textarea{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:9px;font:inherit}.review-dialog textarea{min-height:110px;resize:vertical}.star-picker{display:flex;gap:7px}.star-picker button{border:0;background:transparent;color:#d1d5db;font-size:30px;cursor:pointer;padding:0}.star-picker button.selected{color:#f59e0b}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.review-message{display:none;margin-top:12px;padding:10px;border-radius:8px;font-size:.83rem}.review-message.show{display:block;background:#fef2f2;color:#b91c1c}.review-message.success{background:#ecfdf5;color:#047857}.review-list{display:grid;gap:10px;margin-top:14px}.review-row{padding:13px;background:#f8faf9;border-radius:10px}.review-row strong{color:#0e4b25}.review-row p{margin:7px 0 0;line-height:1.5;font-size:.86rem}.review-row small{color:#6b7280}
+        .empty { background:#fff; text-align:center; padding:64px 24px; border-radius:18px; border:1px dashed #a7c6b2; }
+        .empty-icon { font-size:3rem; margin-bottom:12px; }
+        .empty h2 { color:#0e4b25; }
+        @media(max-width:700px) { .brand span { display:none; } .nav a:not(.active) { display:none; } .page-head { align-items:start; flex-direction:column; } .details { grid-template-columns:1fr; } .card-top { flex-direction:column; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a class="brand" href="index.html">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre">
+                <span>HỆ SINH THÁI DU LỊCH<br>VÀ CHĂM SÓC SỨC KHỎE XANH TẠI BẾN TRE</span>
+            </a>
+            <nav class="nav">
+                <a href="index.html">Trang chủ</a>
+                <a href="du-lich.html">Du lịch</a>
+                <a class="active" href="tour-da-dat.html">Tour đã đặt</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-head">
+            <div>
+                <h1>Tour đã đặt</h1>
+                <p class="subtitle">Theo dõi các yêu cầu đặt tour của bạn tại đây.</p>
+            </div>
+            <a class="btn" href="du-lich.html">← Xem thêm tour</a>
+        </div>
+        <section id="booking-list" class="booking-list" aria-live="polite"></section>
+    </main>
+
+    <div class="review-modal" id="reviewFormModal" role="dialog" aria-modal="true">
+        <div class="review-dialog"><h2>Đánh giá tour</h2><p id="reviewTourName" class="subtitle"></p>
+            <form id="tourReviewForm"><label>Mức độ hài lòng *</label><div class="star-picker" id="starPicker"></div>
+                <label for="reviewTitle">Tiêu đề</label><input id="reviewTitle" maxlength="200" placeholder="Ví dụ: Chuyến đi rất đáng nhớ">
+                <label for="reviewContent">Nhận xét *</label><textarea id="reviewContent" maxlength="2000" placeholder="Chia sẻ trải nghiệm của bạn..."></textarea>
+                <div id="reviewMessage" class="review-message"></div><div class="modal-actions"><button type="button" class="review-action" onclick="closeReviewModal('reviewFormModal')">Hủy</button><button class="review-action primary" id="submitReviewBtn" type="submit">Gửi đánh giá</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="review-modal" id="reviewListModal" role="dialog" aria-modal="true"><div class="review-dialog"><h2 id="reviewListTitle">Đánh giá tour</h2><div id="reviewList" class="review-list"></div><div class="modal-actions"><button class="review-action primary" type="button" onclick="closeReviewModal('reviewListModal')">Đóng</button></div></div></div>
+
+    <script>
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;'
+            })[char]);
+        }
+
+        function currentOwnerId() {
+            try {
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                return String(user.id || user.email || user.username || user.name || 'customer');
+            } catch (_) { return 'customer'; }
+        }
+
+        function bookingDetailUrl(item) {
+            try {
+                const url = new URL(item.detailUrl || 'du-lich.html', window.location.href);
+                if (!/^https?:$/.test(url.protocol) || url.origin !== window.location.origin) return 'du-lich.html';
+                url.searchParams.set('booking', String(item.bookingCode || item.id || ''));
+                return `${url.pathname.split('/').pop()}${url.search}${url.hash}`;
+            } catch (_) {
+                return 'du-lich.html';
+            }
+        }
+
+        let visibleBookings = [];
+        let reviewingBookingIndex = -1;
+        let selectedRating = 0;
+
+        function renderBookings() {
+            const container = document.getElementById('booking-list');
+            let bookings = [];
+            try { bookings = JSON.parse(localStorage.getItem('benTreCustomerBookings') || '[]'); } catch (_) {}
+            if (!Array.isArray(bookings)) bookings = [];
+            const ownerId = currentOwnerId();
+            bookings = bookings.filter(item => String(item.ownerId || 'customer') === ownerId);
+            visibleBookings = bookings;
+
+            if (!bookings.length) {
+                container.innerHTML = `<div class="empty"><div class="empty-icon">🎫</div><h2>Bạn chưa đặt tour nào</h2><p>Hãy khám phá các hành trình Bến Tre và chọn tour phù hợp với bạn.</p><br><a class="btn" href="du-lich.html">Khám phá tour ngay</a></div>`;
+                return;
+            }
+
+            container.innerHTML = bookings.map((item, bookingIndex) => {
+                const date = item.departureDate ? new Date(item.departureDate + 'T00:00:00').toLocaleDateString('vi-VN') : 'Đang cập nhật';
+                const created = item.createdAt ? new Date(item.createdAt).toLocaleString('vi-VN') : 'Đang cập nhật';
+                const guestBreakdown = item.adultCount != null
+                    ? `${Number(item.adultCount) || 0} người lớn · ${Number(item.childCount) || 0} trẻ em · ${Number(item.infantCount) || 0} em bé`
+                    : `${Number(item.guests) || 1} người`;
+                const total = Number(item.totalAmount);
+                const notes = [item.roomType && item.roomType !== 'NONE' ? `Phòng: ${item.roomType}` : '', item.dietaryRequest ? `Ăn uống: ${item.dietaryRequest}` : '', item.specialRequest ? `Ghi chú: ${item.specialRequest}` : ''].filter(Boolean);
+                return `<article class="booking-card">
+                    <div class="card-top">
+                        <div><h2 class="tour-name">${escapeHtml(item.tourName)}</h2><span class="code">Mã đặt tour: <strong>${escapeHtml(item.bookingCode || item.id)}</strong></span></div>
+                        <span class="status">${escapeHtml(item.status || 'Chờ xác nhận')}</span>
+                    </div>
+                    <div class="details">
+                        <div class="detail"><small>Ngày khởi hành</small><strong>${date}</strong></div>
+                        <div class="detail"><small>Số lượng khách</small><strong>${escapeHtml(guestBreakdown)}</strong></div>
+                        <div class="detail"><small>Thời gian đặt</small><strong>${created}</strong></div>
+                        <div class="detail"><small>Người liên hệ</small><strong>${escapeHtml(item.contactName || item.ownerName || 'Khách hàng')}</strong></div>
+                        <div class="detail"><small>Thanh toán</small><strong>${escapeHtml(item.paymentLabel || 'Chưa lựa chọn')}</strong></div>
+                        <div class="detail"><small>Tổng tiền</small><strong>${Number.isFinite(total) ? `${Math.round(total).toLocaleString('vi-VN')}đ` : 'Đang cập nhật'}</strong></div>
+                    </div>
+                    ${notes.length ? `<div class="booking-notes">${notes.map(escapeHtml).join('<br>')}</div>` : ''}
+                    <div class="card-actions"><button class="review-action" type="button" onclick="viewTourReviews(${bookingIndex})">Xem đánh giá</button><button class="review-action primary" type="button" onclick="openTourReview(${bookingIndex})">Đánh giá tour</button><a href="${escapeHtml(bookingDetailUrl(item))}">Xem chi tiết tour</a></div>
+                </article>`;
+            }).join('');
+        }
+
+        function localReviews() { try { const value=JSON.parse(localStorage.getItem('benTreTourReviews')||'[]'); return Array.isArray(value)?value:[]; } catch(_){ return []; } }
+        function closeReviewModal(id){ document.getElementById(id)?.classList.remove('open'); }
+        function renderStarPicker(){ const picker=document.getElementById('starPicker');picker.innerHTML='';for(let n=1;n<=5;n++){const button=document.createElement('button');button.type='button';button.textContent='★';button.classList.toggle('selected',n<=selectedRating);button.setAttribute('aria-label',n+' sao');button.onclick=()=>{selectedRating=n;renderStarPicker()};picker.appendChild(button)} }
+        function openTourReview(index){ const item=visibleBookings[index];if(!item)return;reviewingBookingIndex=index;selectedRating=0;document.getElementById('tourReviewForm').reset();document.getElementById('reviewTourName').textContent=item.tourName||'Tour Bến Tre';document.getElementById('reviewMessage').className='review-message';renderStarPicker();document.getElementById('reviewFormModal').classList.add('open'); }
+        async function viewTourReviews(index){ const item=visibleBookings[index];if(!item)return;const box=document.getElementById('reviewList');document.getElementById('reviewListTitle').textContent='Đánh giá: '+(item.tourName||'Tour Bến Tre');document.getElementById('reviewListModal').classList.add('open');box.innerHTML='<div class="subtitle">Đang tải đánh giá...</div>';
+            let reviews=localReviews().filter(r=>String(r.tourName)===String(item.tourName));try{if(item.tourId){const response=await BenTreAPI.list('reviews',{targetType:'TOUR'});const server=Array.isArray(response?.data)?response.data:[];reviews.push(...server.filter(r=>Number(r.tour_id)===Number(item.tourId)))}}catch(_){}
+            box.innerHTML=reviews.length?reviews.map(r=>`<article class="review-row"><strong>${'★'.repeat(Number(r.rating)||0)}${'☆'.repeat(5-(Number(r.rating)||0))} ${escapeHtml(r.title||'Đánh giá tour')}</strong><p>${escapeHtml(r.content||'Không có nhận xét.')}</p><small>${escapeHtml(r.full_name||r.customerName||'Khách hàng')} · ${r.created_at||r.createdAt?new Date(r.created_at||r.createdAt).toLocaleDateString('vi-VN'):''}</small></article>`).join(''):'<div class="empty" style="padding:28px">Tour này chưa có đánh giá.</div>';
+        }
+        document.getElementById('tourReviewForm').addEventListener('submit',async event=>{event.preventDefault();const item=visibleBookings[reviewingBookingIndex];const message=document.getElementById('reviewMessage');const content=document.getElementById('reviewContent').value.trim();if(!item||selectedRating<1||!content){message.textContent='Vui lòng chọn số sao và nhập nhận xét.';message.className='review-message show';return}const button=document.getElementById('submitReviewBtn');button.disabled=true;
+            try{let savedToServer=false;if(item.serverBookingId&&item.tourId&&window.BenTreAPI?.createReview&&localStorage.getItem('token')){await BenTreAPI.createReview({bookingId:item.serverBookingId,targetType:'TOUR',targetId:item.tourId,rating:selectedRating,title:document.getElementById('reviewTitle').value.trim()||null,content});savedToServer=true}else{const reviews=localReviews();if(reviews.some(r=>String(r.bookingCode)===String(item.bookingCode||item.id)))throw new Error('Bạn đã đánh giá tour này rồi.');let user={};try{user=JSON.parse(localStorage.getItem('currentUser')||'{}')}catch(_){}reviews.unshift({bookingCode:item.bookingCode||item.id,tourName:item.tourName,rating:selectedRating,title:document.getElementById('reviewTitle').value.trim(),content,customerName:user.fullName||user.name||'Khách hàng',createdAt:new Date().toISOString(),status:'PENDING'});localStorage.setItem('benTreTourReviews',JSON.stringify(reviews.slice(0,500)))}message.textContent=savedToServer?'Đã gửi đánh giá và đang chờ Admin duyệt.':'Đã lưu đánh giá và đang chờ Admin duyệt.';message.className='review-message show success';setTimeout(()=>closeReviewModal('reviewFormModal'),1000)}catch(error){message.textContent=error.message||'Không thể gửi đánh giá.';message.className='review-message show'}finally{button.disabled=false}});
+
+        async function syncReviewIdentifiers(){
+            if(!window.BenTreAPI||!localStorage.getItem('token')||!visibleBookings.length)return;
+            try{const [bookingResponse,tourResponse]=await Promise.all([BenTreAPI.bookings(),BenTreAPI.list('tours',{limit:100})]);const serverBookings=Array.isArray(bookingResponse?.data)?bookingResponse.data:[];const tours=Array.isArray(tourResponse?.data)?tourResponse.data:[];
+                visibleBookings.forEach(item=>{const code=String(item.bookingCode||item.id||'');const matchedBooking=serverBookings.find(row=>String(row.booking_code)===code)||serverBookings.find(row=>String(row.tour_name).trim().toLowerCase()===String(item.tourName||'').trim().toLowerCase());const matchedTour=tours.find(row=>Number(row.id)===Number(matchedBooking?.tour_id))||tours.find(row=>String(row.name).trim().toLowerCase()===String(item.tourName||'').trim().toLowerCase());if(matchedBooking)item.serverBookingId=matchedBooking.id;if(matchedTour)item.tourId=matchedTour.id;});
+            }catch(error){console.warn('Không thể đồng bộ dữ liệu đánh giá:',error.message)}
+        }
+
+        renderBookings();
+        document.addEventListener('DOMContentLoaded',syncReviewIdentifiers);
+    </script>
+    <script src="../assets/js/api-client.js?v=20260831-4"></script>
+    <script src="../assets/js/auth.js?v=20260829-5" defer></script>
+</body>
+</html>

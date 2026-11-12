@@ -1,0 +1,3323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Quản lý Địa điểm du lịch - Bến Tre Admin</title>
+    <style>
+        :root {
+            --sidebar-bg: #FFFFFF;
+            --sidebar-border: #E5E7EB;
+            --sidebar-active-bg: #064E3B;
+            --sidebar-active-sub: #E8FAF0;
+            --sidebar-active-text: #065F46;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-dark: #111827;
+            --text-muted: #64748B;
+            --primary-emerald: #064E3B;
+            --primary-green: #059669;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13.5px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 255px !important;
+            min-width: 255px !important;
+            max-width: 255px !important;
+            background: #FFFFFF !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #1F2937 !important;
+            border-right: 1px solid #E5E7EB !important;
+            scrollbar-width: thin;
+            scrollbar-color: #CBD5E1 #FFFFFF;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .sidebar-item-link:hover {
+            background: #F3F4F6 !important;
+            color: #111827 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-icon-svg {
+            width: 18px !important;
+            height: 18px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-arrow-icon {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-sub-container {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            padding: 4px 0 6px 8px !important;
+        }
+
+        .sidebar-sub-item {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #4B5563 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+        }
+
+        .sidebar-sub-item:hover {
+            background: #F3F4F6 !important;
+            color: #065F46 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-item.active {
+            background: #E8FAF0 !important;
+            color: #065F46 !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-icon-svg {
+            width: 16px !important;
+            height: 16px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        /* MAIN WRAPPER */
+        .main-wrapper {
+            margin-left: 250px !important;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #F8FAFC;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            height: 70px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #EDEDF2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .header-left { display: flex; flex-direction: column; }
+        .page-title { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.4px; }
+        .page-sub { font-size: 13px; color: #64748B; margin-top: 2px; }
+
+        .header-right { display: flex; align-items: center; gap: 16px; }
+
+        .header-search-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-search-input {
+            width: 260px;
+            padding: 8px 36px 8px 34px;
+            border-radius: 10px;
+            border: 1.5px solid #E2E8F0;
+            font-size: 13px;
+            outline: none;
+            background: #FFFFFF;
+            color: #111827;
+            transition: all 0.15s;
+        }
+        .header-search-input:focus {
+            border-color: #059669;
+            width: 290px;
+        }
+
+        .header-search-icon {
+            position: absolute;
+            left: 10px;
+            color: #9CA3AF;
+            pointer-events: none;
+        }
+
+        .header-search-kbd {
+            position: absolute;
+            right: 10px;
+            background: #F1F5F9;
+            border: 1px solid #CBD5E1;
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-size: 11px;
+            color: #64748B;
+            font-weight: 700;
+            pointer-events: none;
+        }
+
+        .notif-bell {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.15s;
+        }
+        .notif-bell:hover { background: #F1F5F9; }
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #EF4444;
+            color: #FFF;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 1px 5px;
+            border: 2px solid #FFF;
+        }
+
+        .user-profile {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            cursor: pointer !important;
+        }
+
+        .user-avatar {
+            width: 38px !important;
+            height: 38px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid #E2E8F0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .user-info { display: flex !important; flex-direction: column !important; }
+        .user-name { font-size: 13.5px !important; font-weight: 700 !important; color: #111827 !important; line-height: 1.2 !important; }
+        .user-role { font-size: 11.5px !important; color: #64748B !important; line-height: 1.2 !important; }
+
+        /* CONTENT CONTAINER */
+        .content-container {
+            padding: 22px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 4 TOP NAVIGATION TABS (HÀNG 1) */
+        .top-tourism-nav-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tourism-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            background: #FFFFFF;
+            color: #374151;
+            border: 1.5px solid #E5E7EB;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .tourism-nav-btn:hover {
+            border-color: #059669;
+            color: #064E3B;
+            background: #F9FAFB;
+        }
+
+        .tourism-nav-btn.active {
+            background: #064E3B;
+            color: #FFFFFF;
+            border-color: #064E3B;
+            box-shadow: 0 2px 6px rgba(6, 78, 59, 0.2);
+        }
+
+        /* FILTER & SORT ROW (HÀNG 2) */
+        .filter-sort-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .category-pills-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .category-pill-btn {
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            background: #FFFFFF;
+            color: #374151;
+            border: 1.5px solid #E5E7EB;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .category-pill-btn:hover {
+            border-color: #059669;
+            color: #064E3B;
+        }
+
+        .category-pill-btn.active {
+            background: #064E3B;
+            color: #FFFFFF;
+            border-color: #064E3B;
+            font-weight: 700;
+        }
+
+        .sort-dropdown-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #FFFFFF;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        /* 2-COLUMN MAIN LAYOUT */
+        .tourism-main-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        @media (max-width: 1200px) {
+            .tourism-main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* LEFT COLUMN: TABLE CARD */
+        .card-table-wrap {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .diadiem-exact-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .diadiem-exact-table thead th {
+            background: #F9FAFB;
+            color: #4B5563;
+            font-weight: 700;
+            padding: 10px 12px;
+            border-bottom: 1px solid #E5E7EB;
+            white-space: nowrap;
+            font-size: 12.5px;
+        }
+
+        .diadiem-exact-table tbody tr {
+            border-bottom: 1px solid #F1F5F9;
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+
+        .diadiem-exact-table tbody tr:hover {
+            background: #F8FAFC;
+        }
+
+        .diadiem-exact-table tbody tr.active-selected {
+            background: #E8FAF0 !important;
+        }
+
+        .diadiem-exact-table tbody td {
+            padding: 9px 12px;
+            vertical-align: middle;
+            color: #1F2937;
+        }
+
+        /* CELL STYLES */
+        .col-stt {
+            width: 32px;
+            font-weight: 700;
+            color: #6B7280;
+            text-align: center;
+        }
+
+        .col-place-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 190px;
+        }
+
+        .place-thumb-img {
+            width: 38px;
+            height: 38px;
+            border-radius: 7px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #E5E7EB;
+        }
+
+        .place-title-text {
+            font-size: 13px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.2;
+        }
+
+        .place-sub-desc {
+            font-size: 11px;
+            color: #64748B;
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .badge-category-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            background: #E8FAF0;
+            color: #065F46;
+            white-space: nowrap;
+        }
+
+        .col-area-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 12px;
+            color: #4B5563;
+            white-space: nowrap;
+        }
+
+        .col-eco-score {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-weight: 800;
+            color: #059669;
+            font-size: 12.5px;
+            white-space: nowrap;
+        }
+
+        .col-price-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .badge-status-open {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            background: #DCFCE7;
+            color: #15803D;
+            white-space: nowrap;
+        }
+
+        .action-btns-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-action-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: #FFFFFF;
+            transition: all 0.15s;
+        }
+
+        .btn-action-icon.edit {
+            border: 1.5px solid #93C5FD;
+            color: #2563EB;
+        }
+        .btn-action-icon.edit:hover {
+            background: #EFF6FF;
+            border-color: #3B82F6;
+        }
+
+        .btn-action-icon.delete {
+            border: 1.5px solid #FCA5A5;
+            color: #EF4444;
+        }
+        .btn-action-icon.delete:hover {
+            background: #FEF2F2;
+            border-color: #DC2626;
+        }
+
+        /* PAGINATION ROW */
+        .table-pagination-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+            border-top: 1px solid #F1F5F9;
+            background: #FFFFFF;
+            font-size: 12.5px;
+        }
+
+        .pagination-info-text {
+            color: #64748B;
+            font-weight: 600;
+        }
+
+        .pagination-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .page-num-btn {
+            min-width: 28px;
+            height: 28px;
+            padding: 0 6px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid #E2E8F0;
+            background: #FFFFFF;
+            color: #374151;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .page-num-btn:hover {
+            border-color: #059669;
+            color: #064E3B;
+            background: #F8FAFC;
+        }
+
+        .page-num-btn.active {
+            background: #064E3B;
+            color: #FFFFFF;
+            border-color: #064E3B;
+        }
+
+        /* RIGHT COLUMN: INSPECTOR CARD (HỒ SƠ ĐỊA ĐIỂM) */
+        .card-inspector-wrap {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 14px 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: sticky;
+            top: 86px;
+        }
+
+        .inspect-banner-img-wrap {
+            width: 100%;
+            height: 145px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            background: #E5E7EB;
+        }
+
+        .inspect-banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .inspect-img-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 10.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .inspect-heart-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            font-size: 13px;
+        }
+
+        .inspect-title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .inspect-main-title {
+            font-size: 17px;
+            font-weight: 900;
+            color: #111827;
+            letter-spacing: -0.3px;
+        }
+
+        .inspect-sub-desc {
+            font-size: 12px;
+            color: #64748B;
+            line-height: 1.3;
+        }
+
+        /* 3 MINI STATS GRID */
+        .inspect-stats-3grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px 6px;
+            text-align: center;
+        }
+
+        .inspect-stat-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+        }
+
+        .inspect-stat-val {
+            font-size: 13px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .inspect-stat-lbl {
+            font-size: 10px;
+            color: #64748B;
+            font-weight: 600;
+        }
+
+        /* KEY-VALUE INFO ROWS */
+        .inspect-info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            font-size: 12px;
+        }
+
+        .inspect-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #374151;
+        }
+
+        .inspect-info-lbl {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #64748B;
+            font-weight: 600;
+        }
+
+        .inspect-info-val {
+            font-weight: 700;
+            color: #111827;
+            text-align: right;
+        }
+
+        .inspect-amenities-icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+        }
+
+        /* MAP PREVIEW SECTION (CHUẨN BẢN ĐỒ VỆ TINH BẾN TRE) */
+        .inspect-map-box {
+            position: relative;
+            width: 100%;
+            height: 90px;
+            border-radius: 9px;
+            overflow: hidden;
+            background: #E8F4F8;
+            border: 1px solid #CBD5E1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .bentre-map-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .map-pulse-pin {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pulse-circle {
+            width: 22px;
+            height: 22px;
+            background: rgba(239, 68, 68, 0.25);
+            border-radius: 50%;
+            position: absolute;
+            animation: pulseMap 1.6s infinite ease-out;
+        }
+        @keyframes pulseMap {
+            0% { transform: scale(0.6); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        .inspect-map-tag {
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-inspect-map {
+            position: absolute;
+            bottom: 6px;
+            background: #FFFFFF;
+            border: 1px solid #059669;
+            padding: 3px 10px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #064E3B;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+            transition: all 0.15s;
+        }
+        .btn-inspect-map:hover {
+            background: #064E3B;
+            color: #FFFFFF;
+        }
+
+        /* GALLERY THUMBNAILS */
+        .inspect-gallery-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .gallery-head-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gallery-title { font-size: 12.5px; font-weight: 800; color: #111827; }
+        .gallery-link-all { font-size: 11px; font-weight: 700; color: #065F46; text-decoration: none; cursor: pointer; }
+
+        .gallery-thumbs-3grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
+        .gallery-thumb-img {
+            width: 100%;
+            height: 56px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #E5E7EB;
+        }
+
+        /* BOTTOM FULL WIDTH BUTTON */
+        .btn-inspect-details {
+            width: 100%;
+            padding: 9px;
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-inspect-details:hover { background: #065F46; }
+
+        /* MODAL BẢN ĐỒ VỆ TINH FULL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            animation: fadeIn 0.15s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-map-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            width: 800px;
+            max-width: 96%;
+            height: 540px;
+            max-height: 90vh;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-map-head {
+            padding: 14px 20px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F9FAFB;
+        }
+
+        .modal-map-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #064E3B;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close-x {
+            cursor: pointer;
+            font-size: 20px;
+            color: #9CA3AF;
+            border: none;
+            background: transparent;
+            line-height: 1;
+            padding: 4px;
+        }
+        .modal-close-x:hover { color: #111827; }
+
+        .modal-map-body {
+            flex: 1;
+            position: relative;
+            background: #E5E7EB;
+        }
+
+        .modal-map-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* TOAST */
+        .toast-notif {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 99999;
+            animation: slideUp 0.2s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    
+        /* MODAL POPUP FORM */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(2px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            width: 580px;
+            max-width: 96%;
+            max-height: 90vh;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-head {
+            padding: 18px 24px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F9FAFB;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-head-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #064E3B;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close-x {
+            cursor: pointer;
+            font-size: 20px;
+            color: #9CA3AF;
+            border: none;
+            background: transparent;
+            line-height: 1;
+            padding: 4px;
+        }
+        .modal-close-x:hover { color: #111827; }
+
+        .modal-body {
+            padding: 22px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .modal-body .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .form-input, .form-select {
+            padding: 9px 12px;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 13.5px;
+            outline: none;
+            color: #111827;
+            font-family: inherit;
+            background: #FFFFFF;
+            transition: border-color 0.15s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #059669;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        .btn-cancel {
+            padding: 9px 18px;
+            background: #FFFFFF;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #4B5563;
+            font-size: 13px;
+        }
+        .btn-cancel:hover { background: #F3F4F6; color: #111827; }
+
+        .btn-submit {
+            padding: 9px 20px;
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        .btn-submit:hover { background: #065F46; }
+
+    
+        /* FLOATING FORM & CONFIRM MODALS */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(3px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            animation: modalFadeIn 0.15s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            border-radius: 18px;
+            width: 580px;
+            max-width: 96%;
+            max-height: 90vh;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.25);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            animation: modalPopIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPopIn {
+            from { transform: scale(0.93) translateY(10px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-head {
+            padding: 18px 24px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F9FAFB;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-head-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #064E3B;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close-x {
+            cursor: pointer;
+            font-size: 22px;
+            color: #9CA3AF;
+            border: none;
+            background: transparent;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.15s;
+        }
+        .modal-close-x:hover { color: #111827; }
+
+        .modal-body {
+            padding: 22px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .modal-body .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .form-input, .form-select {
+            padding: 10px 14px;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 13.5px;
+            outline: none;
+            color: #111827;
+            font-family: inherit;
+            background: #FFFFFF;
+            transition: border-color 0.15s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        .btn-cancel {
+            padding: 10px 20px;
+            background: #FFFFFF;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #4B5563;
+            font-size: 13.5px;
+            transition: background 0.15s;
+        }
+        .btn-cancel:hover { background: #F3F4F6; color: #111827; }
+
+        .btn-submit {
+            padding: 10px 22px;
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13.5px;
+            transition: background 0.15s;
+        }
+        .btn-submit:hover { background: #065F46; }
+
+        /* FLOATING DELETE CONFIRMATION MODAL */
+        .modal-confirm-card {
+            background: #FFFFFF;
+            border-radius: 18px;
+            width: 440px;
+            max-width: 95%;
+            padding: 28px 24px 24px;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            animation: modalPopIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .confirm-icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #FEE2E2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+
+        .confirm-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .confirm-desc {
+            font-size: 14px;
+            color: #4B5563;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        .confirm-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-confirm-delete {
+            padding: 10px 24px;
+            background: #DC2626;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-confirm-delete:hover { background: #B91C1C; }
+
+    
+        /* ENLARGED ACTION BUTTONS (SỬA & XÓA PHÓNG TO RÕ NÉT) */
+        .btn-action-icon, .action-icon-btn {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 8px !important;
+            border: 1.5px solid #E5E7EB !important;
+            background: #FFFFFF !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+        }
+
+        .btn-action-icon.edit, .action-icon-btn.edit {
+            border-color: #93C5FD !important;
+            color: #2563EB !important;
+        }
+        .btn-action-icon.edit:hover, .action-icon-btn.edit:hover {
+            background: #EFF6FF !important;
+            border-color: #3B82F6 !important;
+            color: #1D4ED8 !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        .btn-action-icon.delete, .action-icon-btn.delete {
+            border-color: #FCA5A5 !important;
+            color: #EF4444 !important;
+        }
+        .btn-action-icon.delete:hover, .action-icon-btn.delete:hover {
+            background: #FEF2F2 !important;
+            border-color: #DC2626 !important;
+            color: #B91C1C !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        .btn-action-icon svg, .action-icon-btn svg {
+            width: 17px !important;
+            height: 17px !important;
+            stroke-width: 2.2 !important;
+        }
+
+    
+        
+        /* EXACT PIXEL-MATCHED DARK GREEN SIDEBAR */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Rich Dark Emerald Green */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: none !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Vibrant Emerald Green Pill */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        .sidebar-bottom-banner {
+            margin-top: auto !important;
+            padding: 14px !important;
+        }
+        .sidebar-banner-img {
+            width: 100% !important;
+            height: 160px !important;
+            object-fit: cover !important;
+            border-radius: 12px !important;
+            display: block !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+        }
+
+        
+        .main-wrapper, .main-content, .admin-main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container {
+            margin-left: 0 !important;
+        }
+    
+
+    
+        /* ======================================================= */
+        /* MASTER UNIFIED DARK GREEN SIDEBAR (CHUẨN 100% ĐỒNG BỘ)  */
+        /* ======================================================= */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Xanh lá đậm chuẩn */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 999 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: 1px solid rgba(0, 0, 0, 0.15) !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+            background: transparent !important;
+            border: none !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Xanh ngọc nổi bật chuẩn */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        /* KHẮC PHỤC TRIỆT ĐỂ THỤT LỀ & KHOẢNG TRẮNG */
+        .main-wrapper, .main-content, .admin-main, .main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container, .main-wrapper .content-container {
+            margin-left: 0 !important;
+        }
+
+    </style>
+</head>
+<body>
+
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+    <aside class="sidebar">
+        <!-- BRAND HEADER -->
+        <a href="dashboard.html" class="sidebar-brand">
+            <div class="brand-logo-circle">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre">
+            </div>
+            <div class="brand-title-wrap">
+                <div class="brand-title-main">HỆ SINH THÁI DU LỊCH</div>
+                <div class="brand-sub-main">VÀ CHĂM SÓC SỨC KHỎE XANH TẠI BẾN TRE</div>
+            </div>
+        </a>
+
+        <!-- MENU ITEMS -->
+        <nav class="sidebar-nav">
+            <!-- 1. Tổng quan -->
+            <a href="dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Tổng quan</span>
+                </div>
+            </a>
+
+            <!-- 2. Du lịch -->
+            <a href="dia-diem.html" class="sidebar-item-link active">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    <span>Du lịch</span>
+                </div>
+            </a>
+
+            <!-- 3. Đặt tour -->
+            <a href="dat-tour.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Đặt tour</span>
+                </div>
+            </a>
+
+            <!-- 4. Người dùng -->
+            <a href="nguoi-dung.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Người dùng</span>
+                </div>
+            </a>
+
+            <!-- 5. Chăm sóc sức khỏe -->
+            <a href="co-so-y-te.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span>Chăm sóc sức khỏe</span>
+                </div>
+            </a>
+
+            <!-- 6. Tin tức & sự kiện -->
+            <a href="tin-tuc.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span>Tin tức & sự kiện</span>
+                </div>
+            </a>
+
+            <!-- 7. Đánh giá -->
+            <a href="danh-gia.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Đánh giá</span>
+                </div>
+            </a>
+        </nav>
+
+        <!-- BOTTOM LOGOUT BUTTON -->
+        <div style="margin-top: auto; padding: 14px 14px 16px;">
+            <a href="../khach-hang/dang-nhap.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #FFFFFF; color: #DC2626; font-weight: 700; font-size: 13px; padding: 10px; border-radius: 10px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.15s ease;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span>Đăng xuất</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar">
+            <div class="header-left">
+                <h1 class="page-title">Quản lý</h1>
+                <p class="page-sub">Quản lý 32 địa điểm du lịch sinh thái, di tích văn hóa và làng nghề Bến Tre</p>
+            </div>
+            <div class="header-right">
+                <!-- SEARCH INPUT WITH SHORTCUT -->
+                <div class="header-search-wrap">
+                    <svg class="header-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="topSearchInput" class="header-search-input" placeholder="Tìm kiếm địa điểm, huyện..." oninput="handleSearch()">
+                    <span class="header-search-kbd">⌘K</span>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT CONTAINER -->
+        <main class="content-container">
+            <!-- 4 TOP NAVIGATION TABS (HÀNG 1) -->
+            <div class="top-tourism-nav-row">
+                <a href="dia-diem.html" class="tourism-nav-btn active">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span>Địa điểm du lịch</span>
+                </a>
+                <a href="tour.html" class="tourism-nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                    <span>Tour du lịch</span>
+                </a>
+                <a href="lich-trinh.html" class="tourism-nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Lịch trình</span>
+                </a>
+                <a href="dich-vu-du-lich.html" class="tourism-nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Dịch vụ du lịch</span>
+                </a>
+            </div>
+
+            <!-- CATEGORY FILTER PILLS & SORT DROPDOWN (HÀNG 2) -->
+            <div class="filter-sort-row">
+                <div class="category-pills-wrap">
+                    <button class="category-pill-btn active" onclick="filterCategory('all', this)">Tất cả (32)</button>
+                    <button class="category-pill-btn" onclick="filterCategory('sinhthai', this)">Sinh thái (14)</button>
+                    <button class="category-pill-btn" onclick="filterCategory('vanhoa', this)">Văn hóa - Lịch sử (8)</button>
+                    <button class="category-pill-btn" onclick="filterCategory('langnghe', this)">Làng nghề (6)</button>
+                    <button class="category-pill-btn" onclick="filterCategory('amthuc', this)">Ẩm thực (4)</button>
+                </div>
+
+                </div>
+
+            <!-- 2-COLUMN MAIN CONTENT LAYOUT -->
+            <div class="tourism-main-layout">
+                <!-- LEFT COLUMN: TABLE CARD -->
+                <div class="card-table-wrap">
+                    <div class="table-responsive">
+                        <table class="diadiem-exact-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-stt">#</th>
+                                    <th>Địa điểm</th>
+                                    <th>Phân loại</th>
+                                    <th>Khu vực</th>
+                                    <th>Điểm Eco 🍃</th>
+                                    <th>Giá vé</th>
+                                    <th>Trạng thái</th>
+                                    <th style="text-align:center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="diadiemTableBody">
+                                <!-- Injected dynamically via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PAGINATION ROW (GỌN GÀNG, ĐẸP MẮT) -->
+                    <div class="table-pagination-row">
+                        <div class="pagination-info-text" id="paginationInfo">Hiển thị 1 - 10 trong 32 địa điểm</div>
+                        <div class="pagination-btn-group" id="paginationBtns">
+                            <!-- Injected dynamically via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: DETAIL INSPECTOR CARD (HỒ SƠ ĐỊA ĐIỂM) -->
+                <div class="card-inspector-wrap" id="placeInspectorCard">
+                    <!-- BANNER IMAGE -->
+                    <div class="inspect-banner-img-wrap">
+                        <img src="../assets/images/rung-dua-thuyen-ben-tre.png" id="inspectImg" class="inspect-banner-img" alt="Place banner">
+                        <div class="inspect-img-badge" id="inspectBadge">🍃 Sinh thái</div>
+                        <button class="inspect-heart-btn" onclick="toggleHeart(this)">❤️</button>
+                    </div>
+
+                    <!-- TITLE & SUBTITLE -->
+                    <div class="inspect-title-block">
+                        <h2 class="inspect-main-title" id="inspectTitle">Cồn Phụng</h2>
+                        <p class="inspect-sub-desc" id="inspectSub">Đạp Dừa, kẹo dừa, xuồng ba lá</p>
+                    </div>
+
+                    <!-- 3 STATS BOXES -->
+                    <div class="inspect-stats-3grid">
+                        <div class="inspect-stat-col">
+                            <span class="inspect-stat-val" style="color:#059669;" id="inspectEco">🍃 9.8</span>
+                            <span class="inspect-stat-lbl">Điểm Eco</span>
+                        </div>
+                        <div class="inspect-stat-col" style="border-left:1px solid #E2E8F0; border-right:1px solid #E2E8F0;">
+                            <span class="inspect-stat-val" style="color:#D97706;" id="inspectRating">★ 4.8</span>
+                            <span class="inspect-stat-lbl" id="inspectReviewsCount">(256 đánh giá)</span>
+                        </div>
+                        <div class="inspect-stat-col">
+                            <span class="inspect-stat-val" style="color:#059669;" id="inspectPrice">🎫 50.000đ</span>
+                            <span class="inspect-stat-lbl">Giá vé</span>
+                        </div>
+                    </div>
+
+                    <!-- KEY-VALUE INFO -->
+                    <div class="inspect-info-list">
+                        <div class="inspect-info-row">
+                            <div class="inspect-info-lbl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                <span>Vị trí</span>
+                            </div>
+                            <span class="inspect-info-val" id="inspectLocation">Châu Thành, Bến Tre</span>
+                        </div>
+
+                        <div class="inspect-info-row">
+                            <div class="inspect-info-lbl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                <span>Giờ mở cửa</span>
+                            </div>
+                            <span class="inspect-info-val" id="inspectHours">07:30 - 17:30</span>
+                        </div>
+
+                        <div class="inspect-info-row">
+                            <div class="inspect-info-lbl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                <span>Loại hình</span>
+                            </div>
+                            <span class="inspect-info-val" id="inspectType">Du lịch sinh thái</span>
+                        </div>
+
+                        <div class="inspect-info-row">
+                            <div class="inspect-info-lbl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                                <span>Phương tiện</span>
+                            </div>
+                            <span class="inspect-info-val" id="inspectVehicles" style="font-size:11.5px;">Xe máy, Ô tô, Xe du lịch, Xuồng</span>
+                        </div>
+
+                        <div class="inspect-info-row">
+                            <div class="inspect-info-lbl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                <span>Tiện ích</span>
+                            </div>
+                            <div class="inspect-amenities-icons">
+                                <span title="Bãi đỗ xe">🅿️</span>
+                                <span title="Nhà hàng ẩm thực">🍴</span>
+                                <span title="Nhà vệ sinh sạch">🚻</span>
+                                <span title="Lối đi xe lăn">♿</span>
+                                <span title="Wifi miễn phí">📶</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MAP PREVIEW BOX (CHUẨN BẢN ĐỒ BẾN TRE VỚI SÔNG NƯỚC & PIN ĐỎ) -->
+                    <div class="inspect-map-box" onclick="openMapModal()">
+                        <!-- VECTOR MAP GRAPHIC OF MEKONG RIVERS & ROADS -->
+                        <svg class="bentre-map-svg" viewBox="0 0 320 100" preserveAspectRatio="none">
+                            <rect width="320" height="100" fill="#E6F2EB"/>
+                            <!-- Rivers Tiền & Hàm Luông -->
+                            <path d="M -10 25 C 60 20, 140 45, 330 35 L 330 55 C 160 65, 80 40, -10 45 Z" fill="#BFDBFE" opacity="0.85"/>
+                            <path d="M -10 65 C 80 60, 180 85, 330 75 L 330 90 C 180 100, 90 75, -10 80 Z" fill="#BFDBFE" opacity="0.7"/>
+                            <!-- Islands / Cù Lao Green -->
+                            <path d="M 110 30 C 140 28, 190 38, 220 34 C 180 48, 130 45, 110 30 Z" fill="#86EFAC" opacity="0.9"/>
+                            <!-- Roads -->
+                            <path d="M 0 10 L 320 85" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M 160 0 L 160 100" stroke="#FFFFFF" stroke-width="2.5" stroke-dasharray="4,3"/>
+                            <path d="M 90 0 L 230 100" stroke="#FDE68A" stroke-width="2"/>
+                        </svg>
+
+                        <!-- PULSE PIN -->
+                        <div class="map-pulse-pin">
+                            <div class="pulse-circle"></div>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3" fill="#FFFFFF"></circle>
+                            </svg>
+                        </div>
+
+                        <div class="inspect-map-tag">
+                            <span style="color:#EF4444; font-size:12px;">📍</span>
+                            <span id="inspectMapText">Cồn Phụng, Châu Thành, Bến Tre</span>
+                        </div>
+
+                        <button class="btn-inspect-map" onclick="event.stopPropagation(); openMapModal()">
+                            <span>Xem trên bản đồ 🗺️</span>
+                        </button>
+                    </div>
+
+                    <!-- GALLERY THUMBNAILS -->
+                    <div class="inspect-gallery-section">
+                        <div class="gallery-head-row">
+                            <span class="gallery-title">Hình ảnh</span>
+                            
+                        </div>
+                        <div class="gallery-thumbs-3grid" id="inspectThumbsGrid" onclick="openPlaceDetailModal()" style="cursor:pointer;" >
+                            <img id="inspectThumb1" src="https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=200&h=150&fit=crop" class="gallery-thumb-img" alt="thumb1">
+                            <img id="inspectThumb2" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200&h=150&fit=crop" class="gallery-thumb-img" alt="thumb2">
+                            <img id="inspectThumb3" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=200&h=150&fit=crop" class="gallery-thumb-img" alt="thumb3">
+                        </div>
+                    </div>
+
+                    <!-- BOTTOM BUTTON -->
+                    <button class="btn-inspect-details" onclick="openPlaceDetailModal()">
+                        <span>Xem chi tiết</span>
+                        <span>→</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL BẢN ĐỒ SỐ TƯƠNG TÁC BẾN TRE -->
+    <div id="mapModalOverlay" class="modal-overlay" onclick="if(event.target===this) closeMapModal()">
+        <div class="modal-map-card">
+            <div class="modal-map-head">
+                <div class="modal-map-title">
+                    <span>📍</span>
+                    <span id="modalMapPlaceTitle">Bản đồ vị trí: Cồn Phụng, Bến Tre</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="display:flex; background:#E5E7EB; border-radius:8px; padding:2px;">
+                        <button id="btnMapStandard" onclick="switchMapType('m')" style="padding:4px 10px; border-radius:6px; font-size:12px; font-weight:700; border:none; background:#064E3B; color:#FFF; cursor:pointer;">Bản đồ số</button>
+                        <button id="btnMapSatellite" onclick="switchMapType('k')" style="padding:4px 10px; border-radius:6px; font-size:12px; font-weight:700; border:none; background:transparent; color:#4B5563; cursor:pointer;">Vệ tinh</button>
+                    </div>
+                    <a id="linkOpenGoogleMaps" href="https://maps.google.com" target="_blank" style="font-size:12px; font-weight:700; color:#059669; text-decoration:none; display:flex; align-items:center; gap:4px; padding:4px 8px; border:1px solid #A7F3D0; border-radius:6px; background:#ECFDF5;">
+                        <span>Mở Google Maps</span>
+                        <span>↗</span>
+                    </a>
+                    <button class="modal-close-x" onclick="closeMapModal()">✕</button>
+                </div>
+            </div>
+            <div class="modal-map-body">
+                <iframe id="interactiveMapIframe" class="modal-map-iframe" src="about:blank" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    
+    <!-- MODAL THÊM / SỬA ĐỊA ĐIỂM DU LỊCH -->
+    
+
+    
+    <!-- MODAL NỔI THÊM / SỬA ĐỊA ĐIỂM DU LỊCH -->
+    <div id="placeFormModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-head">
+                <div class="modal-head-title">
+                    <span id="placeModalIcon">✏️</span>
+                    <span id="placeModalTitle">Chỉnh sửa địa điểm du lịch</span>
+                </div>
+                <button class="modal-close-x" onclick="closePlaceModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editPlaceId" value="">
+
+                <div class="form-group form-group-full">
+                    <label class="form-label">Tên địa điểm du lịch *</label>
+                    <input type="text" id="inputPlaceName" class="form-input" placeholder="VD: Cồn Phụng">
+                </div>
+
+                <div class="form-group form-group-full">
+                    <label class="form-label">Mô tả tóm tắt / Điểm nổi bật *</label>
+                    <input type="text" id="inputPlaceSub" class="form-input" placeholder="VD: Đạo Dừa, kẹo dừa, xuồng ba lá">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phân loại danh mục *</label>
+                    <select id="selectPlaceCategory" class="form-select">
+                        <option value="sinhthai">Sinh thái</option>
+                        <option value="vanhoa">Văn hóa - Lịch sử</option>
+                        <option value="langnghe">Làng nghề</option>
+                        <option value="amthuc">Ẩm thực</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Khu vực / Huyện thị *</label>
+                    <input type="text" id="inputPlaceDistrict" class="form-input" placeholder="VD: Châu Thành">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Giá vé / Chi phí *</label>
+                    <input type="text" id="inputPlacePrice" class="form-input" placeholder="VD: 50.000 VNĐ hoặc Miễn phí vé vào cổng">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Giờ mở cửa *</label>
+                    <input type="text" id="inputPlaceHours" class="form-input" placeholder="VD: 07:30 - 17:30">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Điểm Eco Rating</label>
+                    <input type="text" id="inputPlaceEco" class="form-input" placeholder="VD: 9.8">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Trạng thái hoạt động</label>
+                    <input type="text" id="inputPlaceStatus" class="form-input" placeholder="Mở cửa">
+                </div>
+
+                <div class="form-group form-group-full">
+                    <label class="form-label">Đường dẫn hình ảnh (URL)</label>
+                    <input type="text" id="inputPlaceImg" class="form-input" placeholder="https://images.unsplash.com/photo-...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closePlaceModal()">Hủy bỏ</button>
+                <button class="btn-submit" onclick="savePlaceForm()">Lưu thông tin</button>
+            </div>
+        </div>
+    </div>
+  
+
+    <!-- MODAL NỔI XÁC NHẬN XÓA DỮ LIỆU -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-confirm-card">
+            <div class="confirm-icon-wrap">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </div>
+            <h3 class="confirm-title">Xác nhận xóa dữ liệu?</h3>
+            <p class="confirm-desc" id="deleteConfirmDesc">Bạn có chắc chắn muốn xóa mục này khỏi hệ thống không? Thao tác này không thể hoàn tác.</p>
+            <div class="confirm-actions">
+                <button class="btn-cancel" onclick="closeDeleteConfirmModal()">Hủy bỏ</button>
+                <button class="btn-confirm-delete" onclick="executeDeleteConfirm()">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- MODAL NỔI XEM CHI TIẾT & BỘ SƯU TẬP HÌNH ẢNH ĐỊA ĐIỂM -->
+    <div id="placeDetailModal" class="modal-overlay" onclick="if(event.target===this) closePlaceDetailModal()" style="display:none; z-index:9999;">
+        <div class="modal-card modal-detail-card" style="max-width:960px; width:95%; max-height:92vh; border-radius:20px; overflow:hidden; display:flex; flex-direction:column; background:#FFF; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);">
+            <!-- MODAL HEADER -->
+            <div style="padding:16px 24px; border-bottom:1px solid #E5E7EB; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <span id="detailBadgeCat" style="background:#ECFDF5; color:#065F46; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; border:1px solid #A7F3D0;">🍃 Sinh thái</span>
+                    <span id="detailBadgeEco" style="background:#F0FDF4; color:#166534; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; border:1px solid #BBF7D0;">🌿 9.8 Eco Score</span>
+                    <h2 id="detailPlaceTitle" style="font-size:18px; font-weight:800; color:#064E3B; margin:0;">Cồn Phụng Bến Tre</h2>
+                    <div style="display:flex; align-items:center; gap:4px; font-size:13px; font-weight:700; color:#D97706;">
+                        <span id="detailRating">⭐ 4.8</span>
+                        <span id="detailReviewsCount" style="color:#6B7280; font-weight:500; font-size:12px;">(256 đánh giá)</span>
+                    </div>
+                </div>
+                <button class="modal-close-x" onclick="closePlaceDetailModal()" style="width:36px; height:36px; border-radius:50%; border:none; background:#F1F5F9; color:#475569; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;">✕</button>
+            </div>
+
+            <!-- MODAL BODY (SCROLLABLE) -->
+            <div style="flex:1; overflow-y:auto; padding:20px 24px; display:flex; flex-direction:column; gap:20px;">
+                
+                <!-- SECTION: BỘ SƯU TẬP HÌNH ẢNH TOÀN DIỆN -->
+                <div style="background:#0F172A; border-radius:16px; padding:16px; box-shadow:0 4px 20px rgba(0,0,0,0.15);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:16px;">📸</span>
+                            <span style="font-size:14px; font-weight:800; color:#F8FAFC; text-transform:uppercase; letter-spacing:0.5px;">Bộ sưu tập hình ảnh địa điểm</span>
+                        </div>
+                        <span id="galleryPhotoCounter" style="font-size:12px; font-weight:700; color:#94A3B8; background:rgba(255,255,255,0.1); padding:3px 10px; border-radius:20px;">Ảnh 1 / 6</span>
+                    </div>
+
+                    <!-- HERO BIG IMAGE VIEWER -->
+                    <div style="position:relative; width:100%; height:340px; border-radius:12px; overflow:hidden; background:#1E293B; display:flex; align-items:center; justify-content:center;">
+                        <img id="detailHeroImg" src="" alt="Địa điểm du lịch Bến Tre" style="width:100%; height:100%; object-fit:cover; transition:opacity 0.25s ease-in-out;">
+                        
+                        <!-- PREV / NEXT ARROWS -->
+                        <button onclick="prevDetailPhoto()" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#FFF; border:none; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; box-shadow:0 2px 8px rgba(0,0,0,0.3);">‹</button>
+                        <button onclick="nextDetailPhoto()" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#FFF; border:none; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; box-shadow:0 2px 8px rgba(0,0,0,0.3);">›</button>
+
+                        <!-- CAPTION OVERLAY -->
+                        <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.85), transparent); padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-end;">
+                            <span id="detailHeroCaption" style="color:#FFF; font-size:13.5px; font-weight:600; text-shadow:0 1px 2px rgba(0,0,0,0.6);">Toàn cảnh không gian sinh thái rợp bóng dừa</span>
+                            <a id="btnViewOriginalImg" href="#" target="_blank" style="color:#6EE7B7; font-size:12px; font-weight:700; text-decoration:none; background:rgba(255,255,255,0.15); padding:4px 10px; border-radius:6px; backdrop-filter:blur(4px);">Xem ảnh gốc ↗</a>
+                        </div>
+                    </div>
+
+                    <!-- THUMBNAIL STRIP (NHẤP ĐỔI ẢNH) -->
+                    <div id="detailThumbnailsList" style="display:flex; gap:10px; margin-top:12px; overflow-x:auto; padding-bottom:4px;">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- SECTION: LƯỚI TẤT CẢ HÌNH ẢNH (GRID VIEW) -->
+                <div>
+                    <h3 style="font-size:14px; font-weight:800; color:#1F2937; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+                        <span>🖼️</span>
+                        <span>Tất cả các góc chụp thực tế</span>
+                    </h3>
+                    <div id="detailFullPhotoGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px;">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- SECTION: THÔNG TIN CHI TIẾT & TIỆN ÍCH -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+                    <!-- INFO BOX 1 -->
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:10px;">
+                        <div style="font-size:13px; font-weight:800; color:#064E3B; border-bottom:1px solid #E2E8F0; padding-bottom:6px; display:flex; align-items:center; gap:6px;">
+                            <span>📌</span>
+                            <span>Thông tin cơ bản & Giá vé</span>
+                        </div>
+                        <div style="font-size:13px; color:#334155; display:flex; justify-content:space-between;">
+                            <span style="color:#64748B;">📍 Địa chỉ:</span>
+                            <span id="detailAddress" style="font-weight:700; color:#0F172A; text-align:right;">Châu Thành, Bến Tre</span>
+                        </div>
+                        <div style="font-size:13px; color:#334155; display:flex; justify-content:space-between;">
+                            <span style="color:#64748B;">🎫 Giá vé:</span>
+                            <span id="detailPrice" style="font-weight:800; color:#059669;">50.000đ</span>
+                        </div>
+                        <div style="font-size:13px; color:#334155; display:flex; justify-content:space-between;">
+                            <span style="color:#64748B;">⏰ Giờ mở cửa:</span>
+                            <span id="detailHours" style="font-weight:700; color:#0F172A;">07:30 - 17:30</span>
+                        </div>
+                        <div style="font-size:13px; color:#334155; display:flex; justify-content:space-between;">
+                            <span style="color:#64748B;">🚗 Phương tiện:</span>
+                            <span id="detailVehicles" style="font-weight:600; color:#0F172A; text-align:right;">Xe du lịch, Xuồng ba lá</span>
+                        </div>
+                    </div>
+
+                    <!-- INFO BOX 2 -->
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:10px;">
+                        <div style="font-size:13px; font-weight:800; color:#064E3B; border-bottom:1px solid #E2E8F0; padding-bottom:6px; display:flex; align-items:center; gap:6px;">
+                            <span>🌟</span>
+                            <span>Trải nghiệm & Hoạt động đặc sắc</span>
+                        </div>
+                        <div id="detailHighlightsList" style="display:flex; flex-wrap:wrap; gap:6px;">
+                            <!-- Rendered by JS -->
+                        </div>
+                        <p id="detailDesc" style="font-size:13px; color:#475569; line-height:1.6; margin:0; margin-top:4px;">
+                            Điểm du lịch sinh thái tiêu biểu xứ dừa với cảnh quan sông nước hữu tình, các hoạt động trải nghiệm văn hóa sông nước đậm chất miền Tây Nam Bộ.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- MODAL FOOTER ACTIONS -->
+            <div style="padding:14px 24px; border-top:1px solid #E5E7EB; background:#F8FAFC; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; gap:10px;">
+                    <button onclick="openMapFromDetail()" style="display:inline-flex; align-items:center; gap:6px; padding:9px 16px; background:#ECFDF5; color:#065F46; border:1px solid #A7F3D0; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; transition:0.2s;">
+                        <span>🗺️ Xem trên bản đồ số</span>
+                    </button>
+                    <button onclick="editCurrentDetailPlace()" style="display:inline-flex; align-items:center; gap:6px; padding:9px 16px; background:#FEF3C7; color:#92400E; border:1px solid #FDE68A; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; transition:0.2s;">
+                        <span>✏️ Chỉnh sửa thông tin</span>
+                    </button>
+                </div>
+                <button onclick="closePlaceDetailModal()" style="padding:9px 22px; background:#064E3B; color:#FFF; border:none; border-radius:8px; font-size:13.5px; font-weight:700; cursor:pointer; transition:0.2s;">Đóng cửa sổ</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="toastNotif" class="toast-notif">
+        <span>✅</span>
+        <span id="toastMsg">Thao tác thành công!</span>
+    </div>
+
+    <script>
+        // DATASET 20 ĐỊA ĐIỂM DU LỊCH BẾN TRE VỚI BỘ ẢNH GALLERY ĐẦY ĐỦ
+        const diadiemDataset = [
+            {
+                id: 1,
+                name: 'Cồn Phụng',
+                sub: 'Đạo Dừa, kẹo dừa thủ công, xuồng ba lá len lỏi rạch dừa',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'Châu Thành',
+                eco: '9.8',
+                price: '50.000đ',
+                status: 'Mở cửa',
+                hours: '07:30 - 17:30',
+                type: 'Du lịch sinh thái',
+                rating: '4.8',
+                reviews: '(256 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe du lịch 45 chỗ, Xuồng ba lá, Tàu thuyền',
+                img: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1000&h=650&fit=crop', caption: 'Toàn cảnh sông nước & rạch dừa Cồn Phụng xanh mát' },
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Bình minh trên sông Tiền thơ mộng tại bến thuyền Cồn Phụng' },
+                    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1000&h=650&fit=crop', caption: 'Vườn cây ăn trái trĩu quả quanh năm xứ dừa' },
+                    { url: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1000&h=650&fit=crop', caption: 'Trải nghiệm chèo xuồng ba lá len lỏi dưới bóng dừa nước' },
+                    { url: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=1000&h=650&fit=crop', caption: 'Khu di tích Đạo Dừa độc đáo với kiến trúc 9 trụ rồng' },
+                    { url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&h=650&fit=crop', caption: 'Thưởng thức ẩm thực cá tai tượng chiên xù & dừa xiêm Bến Tre' }
+                ],
+                highlights: ['Chèo xuồng ba lá rạch dừa', 'Di tích Đạo Dừa 9 rồng', 'Lò kẹo dừa truyền thống', 'Đờn ca tài tử Nam Bộ', 'Ẩm thực cá tai tượng'],
+                desc: 'Cồn Phụng nằm trên sông Tiền thuộc xã Tân Thạch, huyện Châu Thành, Bến Tre. Nơi đây nổi tiếng với di tích Đạo Dừa rộng hơn 1.500m², các làng nghề sản xuất kẹo dừa thủ công, đồ thủ công mỹ nghệ từ dừa và trải nghiệm du ngoạn sông nước miệt vườn miền Tây.',
+                lat: 10.334,
+                lon: 106.345
+            },
+            {
+                id: 2,
+                name: 'KDL Lan Vương',
+                sub: 'Trò chơi dân gian, tát mương bắt cá, đu dây qua sông',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'TP. Bến Tre',
+                eco: '9.4',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: '07:00 - 17:30',
+                type: 'Khu vui chơi sinh thái',
+                rating: '4.7',
+                reviews: '(312 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe du lịch 45 chỗ',
+                img: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1000&h=650&fit=crop', caption: 'Không gian sinh thái sông nước rực rỡ tại Lan Vương' },
+                    { url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&h=650&fit=crop', caption: 'Hoạt động tát mương bắt cá trong trang phục áo bà ba' },
+                    { url: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1000&h=650&fit=crop', caption: 'Trò chơi cầu lắc cảm giác mạnh & đạp xe qua cầu khỉ' },
+                    { url: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=1000&h=650&fit=crop', caption: 'Khu cắm trại dã ngoại và team building ven sông' },
+                    { url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&h=650&fit=crop', caption: 'Bữa tiệc ẩm thực miệt vườn: Bánh xèo củ hũ dừa, ốc nướng tiêu' }
+                ],
+                highlights: ['Tát mương bắt cá', 'Đạp xe qua cầu khỉ', 'Chèo thuyền Kayak/xuồng', 'Trang phục áo bà ba', 'Bánh xèo củ hũ dừa'],
+                desc: 'Khu Du Lịch Sinh Thái Lan Vương tọa lạc tại Ấp 2, xã Phú Nhuận, TP. Bến Tre. Nơi đây là thiên đường vui chơi giải trí sông nước miệt vườn với hàng chục trò chơi dân gian hào hứng, không gian xanh mát và ẩm thực Nam Bộ đặc sắc.',
+                lat: 10.231,
+                lon: 106.398
+            },
+            {
+                id: 3,
+                name: 'Sân chim Vàm Hồ',
+                sub: 'Khu bảo tồn thiên nhiên, hệ sinh thái ngập mặn Ba Tri',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'Ba Tri',
+                eco: '9.9',
+                price: '40.000đ',
+                status: 'Mở cửa',
+                hours: '06:00 - 18:00',
+                type: 'Khu bảo tồn thiên nhiên',
+                rating: '4.9',
+                reviews: '(189 đánh giá)',
+                vehicles: 'Xe du lịch, Xe ô tô, Xuồng máy',
+                img: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1000&h=650&fit=crop', caption: 'Hàng ngàn cánh chim cò rợp trời tại rừng ngập mặn Vàm Hồ' },
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Hoàng hôn buông xuống sân chim Vàm Hồ tuyệt đẹp' },
+                    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1000&h=650&fit=crop', caption: 'Đường cầu gỗ xuyên rừng chà là, đước, dừa nước hoang sơ' },
+                    { url: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1000&h=650&fit=crop', caption: 'Tháp ngắm chim quan sát toàn cảnh vùng bảo tồn chim quý' }
+                ],
+                highlights: ['Ngắm hơn 84 loài chim quý', 'Cầu gỗ xuyên rừng đước', 'Tháp quan sát toàn cảnh', 'Thưởng thức trà thảo mộc rừng'],
+                desc: 'Sân chim Vàm Hồ thuộc địa phận hai xã Mỹ Hòa và Tân Xuân, huyện Ba Tri, Bến Tre. Nơi đây là vùng đất ngập mặn sinh thái hoang sơ lưu giữ hơn 500.000 cá thể cò, vạc, cồng cộc cùng hệ thực vật đa dạng bậc nhất tỉnh Bến Tre.',
+                lat: 10.112,
+                lon: 106.567
+            },
+            {
+                id: 4,
+                name: 'Cồn Quy',
+                sub: 'Vườn nhãn cổ thụ, đờn ca tài tử Nam Bộ & chèo xuồng',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'Châu Thành',
+                eco: '9.6',
+                price: '45.000đ',
+                status: 'Mở cửa',
+                hours: '07:30 - 17:00',
+                type: 'Du lịch sinh thái sông nước',
+                rating: '4.6',
+                reviews: '(145 đánh giá)',
+                vehicles: 'Tàu du lịch, Xuồng chèo',
+                img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1000&h=650&fit=crop', caption: 'Vườn nhãn cổ thụ xanh ngắt bốn mùa tại Cồn Quy' },
+                    { url: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1000&h=650&fit=crop', caption: 'Bến đò xuồng ba lá đưa đón du khách thăm cù lao' },
+                    { url: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1000&h=650&fit=crop', caption: 'Giao lưu đờn ca tài tử tại nhà rường cổ kính' }
+                ],
+                highlights: ['Vườn cây ăn trái sum suê', 'Đờn ca tài tử miệt vườn', 'Thưởng thức mật ong hoa nhãn', 'Du ngoạn du thuyền sông Tiền'],
+                desc: 'Cồn Quy là cồn nhỏ nhất trong tứ linh cồn sông Tiền (Long - Lân - Quy - Phụng), giữ trọn nét hoang sơ mộc mạc với những vườn nhãn, vườn dừa trĩu quả và đời sống nông dân chân chất.',
+                lat: 10.312,
+                lon: 106.367
+            },
+            {
+                id: 5,
+                name: 'Cồn Ốc (Cồn Hưng Phong)',
+                sub: 'Cồn dừa lớn nhất Bến Tre, vườn trái cây nhiệt đới & thủ công mỹ nghệ dừa',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'Giồng Trôm',
+                eco: '9.7',
+                price: '30.000đ',
+                status: 'Mở cửa',
+                hours: '08:00 - 17:00',
+                type: 'Du lịch nông thôn - làng nghề',
+                rating: '4.7',
+                reviews: '(98 đánh giá)',
+                vehicles: 'Phà, Đò ngang, Xe máy, Xe đạp',
+                img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Bình yên sông nước Cồn Ốc giữa lòng sông Hàm Luông' },
+                    { url: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1000&h=650&fit=crop', caption: 'Những rặng dừa thẳng tắp và vườn bưởi da xanh' },
+                    { url: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=1000&h=650&fit=crop', caption: 'Nghề chế tác thủ công mỹ nghệ từ gỗ gáo dừa tinh xảo' }
+                ],
+                highlights: ['Vương quốc dừa Bến Tre', 'Vườn bưởi da xanh hữu cơ', 'Đạp xe đường làng rợp bóng cây', 'Thủ công mỹ nghệ từ dừa'],
+                desc: 'Cồn Ốc thuộc xã Hưng Phong, huyện Giồng Trôm, nổi tiếng là cồn dừa bạt ngàn với hàng chục giống dừa quý hiếm, cảnh sắc thanh bình và không khí trong lành quanh năm.',
+                lat: 10.189,
+                lon: 106.432
+            },
+            {
+                id: 6,
+                name: 'Rừng ngập mặn Thạnh Phú',
+                sub: 'Khu bảo tồn sinh quyển ven biển, đường xuyên rừng độc đáo',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'Thạnh Phú',
+                eco: '9.9',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: 'Cả ngày',
+                type: 'Bảo tồn sinh quyển',
+                rating: '4.9',
+                reviews: '(215 đánh giá)',
+                vehicles: 'Xe ô tô, Xe máy, Cano, Xuồng',
+                img: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1000&h=650&fit=crop', caption: 'Vẻ đẹp hùng vĩ của cánh rừng đước ngập mặn ven biển Thạnh Phú' },
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Bờ biển Cồn Bửng trải dài cát mịn lộng gió' },
+                    { url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1000&h=650&fit=crop', caption: 'Hệ sinh thái thuỷ hải sản tự nhiên phong phú' }
+                ],
+                highlights: ['Rừng đước nguyên sinh ven biển', 'Biển Cồn Bửng hoang sơ', 'Thưởng thức hải sản tươi sống', 'Đón bình minh trên biển Đông'],
+                desc: 'Rừng ngập mặn Thạnh Phú đóng vai trò phòng hộ đê biển và bảo tồn đa dạng sinh học độc đáo của Bến Tre, kết hợp du lịch biển và khám phá hệ sinh thái rừng ngập mặn.',
+                lat: 9.945,
+                lon: 106.612
+            },
+            {
+                id: 7,
+                name: 'Cồn Tam Hiệp',
+                sub: 'Xứ sở lá dứa thơm ngát & vườn sầu riêng, chôm chôm',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'Bình Đại',
+                eco: '9.5',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: '08:00 - 17:30',
+                type: 'Du lịch cộng đồng',
+                rating: '4.7',
+                reviews: '(87 đánh giá)',
+                vehicles: 'Đò, Tàu, Xe máy, Xe đạp',
+                img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1000&h=650&fit=crop', caption: 'Vườn cây xanh mướt và những ruộng lá dứa ngát hương Tam Hiệp' },
+                    { url: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1000&h=650&fit=crop', caption: 'Trải nghiệm cuộc sống bình dị cùng người dân cồn Tam Hiệp' }
+                ],
+                highlights: ['Mùi thơm lá dứa nồng nàn', 'Vườn nhãn xuồng cơm vàng', 'Homestay miệt vườn thân thiện'],
+                desc: 'Cồn Tam Hiệp nằm biệt lập giữa sông Ba Lai thuộc huyện Bình Đại, nổi tiếng là vùng đất chuyên canh cây lá dứa thơm, các vườn cây ăn trái và trải nghiệm du lịch cộng đồng mộc mạc.',
+                lat: 10.289,
+                lon: 106.512
+            },
+            {
+                id: 8,
+                name: 'Vườn sinh thái Tư Thành',
+                sub: 'Vườn chôm chôm, sầu riêng chín cây ăn thả ga',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'Châu Thành',
+                eco: '9.3',
+                price: '70.000đ (Bao bụng)',
+                status: 'Mở cửa',
+                hours: '08:00 - 17:00',
+                type: 'Vườn trái cây sinh thái',
+                rating: '4.6',
+                reviews: '(142 đánh giá)',
+                vehicles: 'Xe ô tô, Xe máy, Xe du lịch',
+                img: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1000&h=650&fit=crop', caption: 'Chùm chôm chôm chín đỏ rực trĩu cành tại vườn Tư Thành' },
+                    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1000&h=650&fit=crop', caption: 'Tự tay hái trái cây và thưởng thức ngay tại gốc' }
+                ],
+                highlights: ['Hái trái cây tại vườn', 'Thưởng thức sầu riêng chín rụng', 'Nghỉ trưa trên võng dừa'],
+                desc: 'Vườn sinh thái Tư Thành là điểm dừng chân lý tưởng của du khách yêu thích hương vị ngọt ngào của trái cây nhiệt đới Bến Tre với chính sách bao bụng thưởng thức tại vườn.',
+                lat: 10.301,
+                lon: 106.312
+            },
+            {
+                id: 9,
+                name: 'KDL Hạ Thảo',
+                sub: 'Công viên nước miền Tây, khu nghỉ dưỡng sinh thái cao cấp',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'TP. Bến Tre',
+                eco: '9.2',
+                price: '80.000đ',
+                status: 'Mở cửa',
+                hours: '07:30 - 18:30',
+                type: 'Khu du lịch & Nghỉ dưỡng',
+                rating: '4.8',
+                reviews: '(260 đánh giá)',
+                vehicles: 'Xe ô tô, Xe du lịch 45 chỗ, Tàu du lịch',
+                img: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1000&h=650&fit=crop', caption: 'Toàn cảnh hồ bơi và khu vui chơi giải trí sông nước Hạ Thảo' },
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Phòng bungalow nghỉ dưỡng view sông thoáng mát' }
+                ],
+                highlights: ['Công viên nước hiện đại', 'Cano lướt sóng trên sông', 'Bungalow ven sông cao cấp', 'Khu ẩm thực buffet đồng quê'],
+                desc: 'KDL Hạ Thảo tại xã Nhơn Thạnh, TP. Bến Tre kết hợp hài hòa giữa cảnh quan thiên nhiên sông nước mộc mạc và hệ thống tiện ích giải trí, nghỉ dưỡng đẳng cấp.',
+                lat: 10.215,
+                lon: 106.415
+            },
+            {
+                id: 10,
+                name: 'KDL Làng Xanh Bến Tre',
+                sub: 'Trò chơi vận động team building, cầu lắc sông nước',
+                category: 'sinhthai',
+                categoryName: 'Sinh thái',
+                district: 'Châu Thành',
+                eco: '9.1',
+                price: '60.000đ',
+                status: 'Mở cửa',
+                hours: '07:30 - 17:30',
+                type: 'Khu vui chơi sinh thái',
+                rating: '4.6',
+                reviews: '(178 đánh giá)',
+                vehicles: 'Xe ô tô, Xe máy, Xe du lịch',
+                img: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1000&h=650&fit=crop', caption: 'Sân chơi vận động dã ngoại sôi động tại Làng Xanh' },
+                    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1000&h=650&fit=crop', caption: 'Khuôn viên xanh mát với hàng dừa và ao cá' }
+                ],
+                highlights: ['Team building bùng nổ', 'Đu dây Zipline qua sông', 'Tát mương nướng cá lóc', 'Không gian xanh rợp mát'],
+                desc: 'KDL Làng Xanh Bến Tre là điểm đến số 1 cho các đoàn học sinh, sinh viên và công ty tổ chức dã ngoại, rèn luyện kỹ năng và trải nghiệm văn hóa sông nước.',
+                lat: 10.315,
+                lon: 106.325
+            },
+            {
+                id: 11,
+                name: 'Di tích Lăng Cụ Nguyễn Đình Chiểu',
+                sub: 'Khu lưu niệm nhà thơ yêu nước lỗi lạc Nam Bộ',
+                category: 'vanhoa',
+                categoryName: 'Văn hóa - Lịch sử',
+                district: 'Ba Tri',
+                eco: '9.6',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: '07:00 - 17:00',
+                type: 'Di tích Lịch sử Quốc gia Đặc biệt',
+                rating: '4.9',
+                reviews: '(350 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe khách 45 chỗ',
+                img: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=1000&h=650&fit=crop', caption: 'Đền thờ Cụ Nguyễn Đình Chiểu trang nghiêm, uy nghi' },
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Khuôn viên tượng đài và hoa kiểng di tích rợp bóng mát' },
+                    { url: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1000&h=650&fit=crop', caption: 'Nhà trưng bày hiện vật, tác phẩm Lục Vân Tiên bất hủ' }
+                ],
+                highlights: ['Di tích Quốc gia Đặc biệt', 'Lăng mộ Cụ Đồ Chiểu', 'Nhà trưng bày tác phẩm Lục Vân Tiên', 'Lễ hội truyền thống 1/7'],
+                desc: 'Khu di tích lịch sử Lăng Mộ Nguyễn Đình Chiểu tọa lạc tại xã An Đức, huyện Ba Tri. Nơi yên nghỉ của danh nhân văn hóa thế giới được UNESCO vinh danh.',
+                lat: 10.045,
+                lon: 106.598
+            },
+            {
+                id: 12,
+                name: 'Di tích Đồng Khởi Bến Tre',
+                sub: 'Cái nôi phong trào Đồng Khởi hào hùng năm 1960',
+                category: 'vanhoa',
+                categoryName: 'Văn hóa - Lịch sử',
+                district: 'Mỏ Cày Nam',
+                eco: '9.5',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: '07:30 - 17:00',
+                type: 'Di tích Lịch sử Cách mạng',
+                rating: '4.8',
+                reviews: '(210 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe khách',
+                img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1000&h=650&fit=crop', caption: 'Nhà truyền thống Đồng Khởi và tượng đài biểu tượng ngọn đuốc' },
+                    { url: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=1000&h=650&fit=crop', caption: 'Khu trưng bày hiện vật của đội quân tóc dài huyền thoại' }
+                ],
+                highlights: ['Cái nôi ngọn đuốc Đồng Khởi', 'Đội quân tóc dài huyền thoại', 'Nhà truyền thống di tích'],
+                desc: 'Khu di tích tọa lạc tại xã Định Thủy, huyện Mỏ Cày Nam, ghi dấu sự kiện phong trào Đồng Khởi bùng nổ ngày 17/01/1960 làm nên trang sử vàng của quê hương Bến Tre Đồng Khởi.',
+                lat: 10.154,
+                lon: 106.332
+            },
+            {
+                id: 13,
+                name: 'Nhà cổ Huỳnh Phủ (Hương Liêm)',
+                sub: 'Kiến trúc nhà rường Nam Bộ thế kỷ 19 chạm trổ tuyệt mỹ',
+                category: 'vanhoa',
+                categoryName: 'Văn hóa - Lịch sử',
+                district: 'Thạnh Phú',
+                eco: '9.4',
+                price: '20.000đ',
+                status: 'Mở cửa',
+                hours: '08:00 - 17:00',
+                type: 'Di tích Kiến trúc Nghệ thuật',
+                rating: '4.7',
+                reviews: '(115 đánh giá)',
+                vehicles: 'Xe máy, Ô tô',
+                img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1000&h=650&fit=crop', caption: 'Gian chính ngôi nhà cổ với hàng trăm cột gỗ quý chạm khắc rồng phượng' },
+                    { url: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=1000&h=650&fit=crop', caption: 'Họa tiết điêu khắc xà cừ tinh xảo bậc nhất Nam Kỳ lục tỉnh' }
+                ],
+                highlights: ['Kiến trúc nhà rường 88 cột gỗ lim', 'Chạm khắc cẩn xà cừ tinh xảo', 'Di tích nghệ thuật quốc gia'],
+                desc: 'Nhà cổ Huỳnh Phủ tại xã Đại Điền, huyện Thạnh Phú, là kiệt tác kiến trúc gỗ mỹ nghệ cổ của thế kỷ 19 với nghệ thuật chạm khắc hoa văn cực kỳ độc đáo và giá trị lịch sử cao.',
+                lat: 10.012,
+                lon: 106.523
+            },
+            {
+                id: 14,
+                name: 'Chùa Tuyên Linh',
+                sub: 'Ngôi chùa cổ lịch sử nơi cụ Phó bảng Nguyễn Sinh Sắc từng hoạt động',
+                category: 'vanhoa',
+                categoryName: 'Văn hóa - Lịch sử',
+                district: 'Mỏ Cày Nam',
+                eco: '9.5',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: '06:00 - 18:00',
+                type: 'Di tích Lịch sử Văn hóa',
+                rating: '4.8',
+                reviews: '(165 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe du lịch',
+                img: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=1000&h=650&fit=crop', caption: 'Khuôn viên thanh tịnh rợp bóng bồ đề chùa Tuyên Linh' },
+                    { url: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1000&h=650&fit=crop', caption: 'Không gian thờ tự trang nghiêm và nhà truyền thống cụ Phó Bảng' }
+                ],
+                highlights: ['Nơi cụ Phó Bảng Nguyễn Sinh Sắc truyền bá tư tưởng yêu nước', 'Chùa cổ thanh tịnh ven sông', 'Vườn kinh Phật khắc đá'],
+                desc: 'Chùa Tuyên Linh tại xã Minh Đức, huyện Mỏ Cày Nam, được thành lập từ năm 1861, là di tích lịch sử quan trọng gắn liền với cụ Phó bảng Nguyễn Sinh Sắc - thân sinh Chủ tịch Hồ Chí Minh.',
+                lat: 10.123,
+                lon: 106.389
+            },
+            {
+                id: 15,
+                name: 'Làng hoa kiểng Cái Mơn',
+                sub: 'Thủ phủ hoa kiểng, cây giống lớn nhất miền Tây Nam Bộ',
+                category: 'langnghe',
+                categoryName: 'Làng nghề',
+                district: 'Chợ Lách',
+                eco: '9.8',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: '06:00 - 18:00',
+                type: 'Làng nghề truyền thống',
+                rating: '4.9',
+                reviews: '(420 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe du lịch 45 chỗ',
+                img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Biển hoa kiểng vạn thọ, hoa giấy ngũ sắc rực rỡ tại Cái Mơn' },
+                    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1000&h=650&fit=crop', caption: 'Kỹ thuật uốn tạo dáng cây kiểng bonsai bạc tỉ của nghệ nhân' },
+                    { url: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1000&h=650&fit=crop', caption: 'Vườn cây giống sầu riêng, mít ruột đỏ nức tiếng Chợ Lách' }
+                ],
+                highlights: ['Vương quốc hoa kiểng & cây giống', 'Check-in cánh đồng hoa Tết rực rỡ', 'Nghệ thuật uốn Bonsai độc nhất', 'Trải nghiệm làm nông cùng nghệ nhân'],
+                desc: 'Làng hoa kiểng Cái Mơn thuộc huyện Chợ Lách, Bến Tre là xứ sở ngàn hoa nổi tiếng khắp cả nước, nơi cung ứng hàng triệu giỏ hoa tết và giống cây ăn quả chất lượng cao mỗi năm.',
+                lat: 10.245,
+                lon: 106.189
+            },
+            {
+                id: 16,
+                name: 'Làng nghề Kẹo dừa Mỏ Cày',
+                sub: 'Cái nôi của kẹo dừa Bến Tre thơm béo nức tiếng',
+                category: 'langnghe',
+                categoryName: 'Làng nghề',
+                district: 'Mỏ Cày Nam',
+                eco: '9.4',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: '07:00 - 18:00',
+                type: 'Làng nghề truyền thống',
+                rating: '4.8',
+                reviews: '(310 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe du lịch',
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&h=650&fit=crop', caption: 'Quy trình quậy kẹo dừa thủ công trên bếp củi thơm ngào ngạt' },
+                    { url: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1000&h=650&fit=crop', caption: 'Thưởng thức kẹo dừa dẻo nóng hổi vừa ra lò miễn phí' },
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Đa dạng hương vị kẹo: Sầu riêng, lá dứa, đậu phộng, cacao' }
+                ],
+                highlights: ['Tự tay gói kẹo dừa bánh tráng', 'Ăn kẹo dừa nóng tại lò', 'Mua đặc sản giá gốc', 'Hơn 50 lò kẹo truyền thống'],
+                desc: 'Làng nghề kẹo dừa Mỏ Cày ra đời từ những năm 1930, là biểu tượng ẩm thực xứ dừa kết hợp giữa nước cốt dừa béo ngậy, mạch nha nếp thơm ngọt và đôi bàn tay khéo léo của nghệ nhân.',
+                lat: 10.165,
+                lon: 106.345
+            },
+            {
+                id: 17,
+                name: 'Làng nghề Bánh tráng Mỹ Lồng',
+                sub: 'Đặc sản bánh tráng dừa nướng giòn rụm thơm lừng',
+                category: 'langnghe',
+                categoryName: 'Làng nghề',
+                district: 'Giồng Trôm',
+                eco: '9.5',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: '06:00 - 17:00',
+                type: 'Làng nghề truyền thống',
+                rating: '4.8',
+                reviews: '(245 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe du lịch',
+                img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Hàng ngàn liếp bánh tráng phơi dọc bờ sông Mỹ Lồng' },
+                    { url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&h=650&fit=crop', caption: 'Tráng bánh trên nồi hơi truyền thống giữ trọn vị nước cốt dừa đặc quánh' }
+                ],
+                highlights: ['Bánh tráng nước cốt dừa nướng giòn', 'Trải nghiệm tự tráng bánh', 'Mua đặc sản OCOP Bến Tre'],
+                desc: 'Làng nghề bánh tráng Mỹ Lồng tại xã Mỹ Thạnh, Giồng Trôm là Di sản văn hóa phi vật thể Quốc gia, nổi danh khắp ba miền với loại bánh tráng béo ngậy nước cốt dừa xiêm.',
+                lat: 10.223,
+                lon: 106.456
+            },
+            {
+                id: 18,
+                name: 'Làng nghề Bánh phồng Sơn Đốc',
+                sub: 'Bánh phồng nếp dừa giòn xốp đậm đà xứ dừa',
+                category: 'langnghe',
+                categoryName: 'Làng nghề',
+                district: 'Giồng Trôm',
+                eco: '9.4',
+                price: 'Miễn phí vé vào cổng',
+                status: 'Mở cửa',
+                hours: '06:30 - 17:00',
+                type: 'Làng nghề truyền thống',
+                rating: '4.7',
+                reviews: '(198 đánh giá)',
+                vehicles: 'Xe máy, Ô tô',
+                img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1000&h=650&fit=crop', caption: 'Quá trình quết nếp giã cối phồng xốp truyền thống tại Sơn Đốc' },
+                    { url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&h=650&fit=crop', caption: 'Bánh phồng nướng phồng to gấp 4 lần trên bếp than hồng rực' }
+                ],
+                highlights: ['Di sản văn hóa phi vật thể Quốc gia', 'Quết bánh phồng cối đá', 'Thưởng thức bánh phồng nướng nóng hổi'],
+                desc: 'Cùng với bánh tráng Mỹ Lồng, bánh phồng Sơn Đốc tại xã Hưng Nhượng là cặp đôi đặc sản trứ danh của vùng đất Giồng Trôm, Bến Tre.',
+                lat: 10.201,
+                lon: 106.512
+            },
+            {
+                id: 19,
+                name: 'Vườn dừa ẩm thực Bến Tre Xanh',
+                sub: 'Đại tiệc ẩm thực dừa: Gỏi củ hũ dừa, tôm hấp nước dừa',
+                category: 'amthuc',
+                categoryName: 'Ẩm thực',
+                district: 'TP. Bến Tre',
+                eco: '9.6',
+                price: 'Từ 60.000đ - 250.000đ',
+                status: 'Mở cửa',
+                hours: '09:00 - 22:00',
+                type: 'Nhà hàng sinh thái ẩm thực',
+                rating: '4.9',
+                reviews: '(380 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe du lịch',
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&h=650&fit=crop', caption: 'Bàn tiệc đặc sản: Gỏi củ hũ dừa tôm thịt, tôm rim nước cốt dừa' },
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Không gian nhà chòi mái lá trên hồ sen mát rượi' },
+                    { url: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=1000&h=650&fit=crop', caption: 'Cơm trái dừa thơm nồng hấp cách thủy chuẩn vị Bến Tre' }
+                ],
+                highlights: ['Gỏi củ hũ dừa tôm thịt giòn ngọt', 'Cơm gói lá dừa nấu nước dừa', 'Tôm càng xanh nướng mọi', 'Chòi lá riêng tư view hồ sen'],
+                desc: 'Nhà hàng ẩm thực Bến Tre Xanh mang đến trải nghiệm tinh hoa ẩm thực dừa phong phú với hơn 50 món ăn chế biến từ các bộ phận của cây dừa Bến Tre.',
+                lat: 10.239,
+                lon: 106.378
+            },
+            {
+                id: 20,
+                name: 'Vườn ẩm thực Ba Tri Sông Quê',
+                sub: 'Hải sản biển Ba Tri tươi sống & Bò tơ Bến Tre trứ danh',
+                category: 'amthuc',
+                categoryName: 'Ẩm thực',
+                district: 'Ba Tri',
+                eco: '9.5',
+                price: 'Từ 50.000đ - 220.000đ',
+                status: 'Mở cửa',
+                hours: '09:00 - 21:30',
+                type: 'Nhà hàng đặc sản miền biển',
+                rating: '4.8',
+                reviews: '(290 đánh giá)',
+                vehicles: 'Xe máy, Ô tô, Xe du lịch',
+                img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=500&fit=crop',
+                images: [
+                    { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=650&fit=crop', caption: 'Hải sản Ba Tri: Cua biển gạch, nghêu Tân Thủy, cá đuối tươi rói' },
+                    { url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1000&h=650&fit=crop', caption: 'Đặc sản bò tơ Ba Tri nướng ngói và lẩu mắm đồng quê' }
+                ],
+                highlights: ['Bò tơ Ba Tri nướng ngói', 'Nghêu Tân Thủy hấp sả', 'Cua biển gạch thịt chắc nịch', 'Không gian lộng gió sông Hàm Luông'],
+                desc: 'Tọa lạc tại vùng đất Ba Tri trù phú, nhà hàng phục vụ hải sản tươi ngon đánh bắt trong ngày từ biển Đông cùng đặc sản thịt bò Ba Tri nức tiếng ngọt thơm.',
+                lat: 10.052,
+                lon: 106.589
+            }
+        ];
+
+        let currentFilterCat = 'all';
+        let searchQuery = '';
+        let selectedPlaceId = 1;
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        function getFilteredPlaces() {
+            return diadiemDataset.filter(d => {
+                const matchCat = (currentFilterCat === 'all' || d.category === currentFilterCat);
+                const matchSearch = !searchQuery || 
+                    d.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    d.district.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    d.sub.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchCat && matchSearch;
+            });
+        }
+
+        function renderPagination(totalItems) {
+            const container = document.getElementById('paginationBtns');
+            const info = document.getElementById('paginationInfo');
+            if (!container || !info) return;
+
+            const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIdx = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+            const endIdx = Math.min(currentPage * itemsPerPage, totalItems);
+            info.textContent = `Hiển thị ${startIdx} - ${endIdx} trong ${totalItems} địa điểm`;
+
+            let html = '';
+            if (totalPages > 1) {
+                html += `<button class="page-num-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>‹</button>`;
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-num-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            if (totalPages > 1) {
+                html += `<button class="page-num-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>›</button>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function goToPage(p) {
+            const filtered = getFilteredPlaces();
+            const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+            if (p < 1 || p > totalPages) return;
+            currentPage = p;
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('diadiemTableBody');
+            if (!tbody) return;
+
+            const filtered = getFilteredPlaces();
+            const pageItems = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+            renderPagination(filtered.length);
+
+            let html = '';
+            if (pageItems.length === 0) {
+                html = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#6B7280; font-weight:600;">Không có địa điểm nào phù hợp.</td></tr>';
+            } else {
+                pageItems.forEach((item, idx) => {
+                    const rowNum = (currentPage - 1) * itemsPerPage + idx + 1;
+                    const isSelected = (item.id === selectedPlaceId);
+                    html += `
+                    <tr class="${isSelected ? 'active-selected' : ''}" onclick="selectPlace(${item.id})">
+                        <td class="col-stt">${rowNum}</td>
+                        <td>
+                            <div class="col-place-cell">
+                                <img src="${item.img}" class="place-thumb-img" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=100&h=100&fit=crop'">
+                                <div>
+                                    <div class="place-title-text">${item.name}</div>
+                                    <div class="place-sub-desc">${item.sub}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-category-pill">
+                                <span>🍃</span>
+                                <span>${item.categoryName}</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="col-area-text">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                <span>${item.district}</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="col-eco-score">
+                                <span>🍃</span>
+                                <span>${item.eco}</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="col-price-text">${item.price}</span>
+                        </td>
+                        <td>
+                            <span class="badge-status-open">${item.status}</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <div class="action-btns-wrap" onclick="event.stopPropagation()">
+                                <button class="btn-action-icon edit" title="Chỉnh sửa" onclick="editPlace(${item.id})">
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                </button>
+                                <button class="btn-action-icon delete" title="Xóa" onclick="deletePlace(${item.id})">
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+                });
+            }
+
+            tbody.innerHTML = html;
+        }
+
+        function selectPlace(id) {
+            selectedPlaceId = id;
+            const place = diadiemDataset.find(d => d.id === id);
+            if (!place) return;
+
+            document.getElementById('inspectImg').src = place.img;
+            document.getElementById('inspectBadge').textContent = '🍃 ' + place.categoryName;
+            document.getElementById('inspectTitle').textContent = place.name;
+            document.getElementById('inspectSub').textContent = place.sub;
+            document.getElementById('inspectEco').textContent = '🍃 ' + place.eco;
+            document.getElementById('inspectRating').textContent = '★ ' + place.rating;
+            document.getElementById('inspectReviewsCount').textContent = place.reviews;
+            document.getElementById('inspectPrice').textContent = '🎫 ' + place.price;
+            document.getElementById('inspectLocation').textContent = place.district + ', Bến Tre';
+            document.getElementById('inspectHours').textContent = place.hours;
+            document.getElementById('inspectType').textContent = place.type;
+            document.getElementById('inspectVehicles').textContent = place.vehicles;
+            document.getElementById('inspectMapText').textContent = place.name + ', ' + place.district + ', Bến Tre';
+            updateInspectThumbs(place);
+
+            renderTable();
+        }
+
+        function filterCategory(catKey, btnEl) {
+            currentFilterCat = catKey;
+            currentPage = 1;
+            document.querySelectorAll('.category-pill-btn').forEach(btn => btn.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+
+            const filtered = getFilteredPlaces();
+            if (filtered.length > 0) {
+                selectedPlaceId = filtered[0].id;
+                selectPlace(selectedPlaceId);
+            }
+            renderTable();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('topSearchInput').value.trim();
+            currentPage = 1;
+            const filtered = getFilteredPlaces();
+            if (filtered.length > 0) {
+                selectedPlaceId = filtered[0].id;
+                selectPlace(selectedPlaceId);
+            }
+            renderTable();
+        }
+
+        function toggleHeart(btn) {
+            if (btn.textContent === '❤️') {
+                btn.textContent = '🤍';
+                showToast('🤍 Đã bỏ lưu địa điểm');
+            } else {
+                btn.textContent = '❤️';
+                showToast('❤️ Đã lưu vào danh sách yêu thích!');
+            }
+        }
+
+        function toggleSort() {
+            diadiemDataset.reverse();
+            renderTable();
+            showToast('⇅ Đã đảo thứ tự sắp xếp danh sách!');
+        }
+
+        
+        let pendingDeleteId = null;
+
+        function openAddPlaceModal() {
+            document.getElementById('editPlaceId').value = '';
+            document.getElementById('placeModalIcon').textContent = '➕';
+            document.getElementById('placeModalTitle').textContent = 'Thêm địa điểm du lịch mới';
+            document.getElementById('inputPlaceName').value = '';
+            document.getElementById('inputPlaceSub').value = '';
+            document.getElementById('selectPlaceCategory').value = 'sinhthai';
+            document.getElementById('inputPlaceDistrict').value = 'Châu Thành';
+            document.getElementById('inputPlacePrice').value = 'Miễn phí vé vào cổng';
+            document.getElementById('inputPlaceHours').value = '07:30 - 17:30';
+            document.getElementById('inputPlaceEco').value = '9.5';
+            document.getElementById('inputPlaceStatus').value = 'Mở cửa';
+            document.getElementById('inputPlaceImg').value = '';
+            document.getElementById('placeFormModal').style.display = 'flex';
+        }
+
+        function editPlace(id) {
+            const p = diadiemDataset.find(x => x.id === id);
+            if (!p) return;
+            document.getElementById('editPlaceId').value = p.id;
+            document.getElementById('placeModalIcon').textContent = '✏️';
+            document.getElementById('placeModalTitle').textContent = 'Chỉnh sửa địa điểm: ' + p.name;
+            document.getElementById('inputPlaceName').value = p.name;
+            document.getElementById('inputPlaceSub').value = p.sub;
+            document.getElementById('selectPlaceCategory').value = p.category;
+            document.getElementById('inputPlaceDistrict').value = p.district;
+            document.getElementById('inputPlacePrice').value = (p.price && p.price !== '0' && !/^(0\s*(vnđ|vnd|đ)?|miễn phí.*)$/i.test(p.price.trim())) ? p.price : 'Miễn phí vé vào cổng';
+            document.getElementById('inputPlaceHours').value = p.hours || '07:30 - 17:30';
+            document.getElementById('inputPlaceEco').value = p.eco || '9.5';
+            document.getElementById('inputPlaceStatus').value = p.status || 'Mở cửa';
+            document.getElementById('inputPlaceImg').value = p.img || '';
+            document.getElementById('placeFormModal').style.display = 'flex';
+        }
+
+        function closePlaceModal() {
+            document.getElementById('placeFormModal').style.display = 'none';
+        }
+
+        function savePlaceForm() {
+            const editId = document.getElementById('editPlaceId').value;
+            const name = document.getElementById('inputPlaceName').value.trim();
+            const sub = document.getElementById('inputPlaceSub').value.trim();
+            const category = document.getElementById('selectPlaceCategory').value;
+            const district = document.getElementById('inputPlaceDistrict').value.trim();
+            const price = document.getElementById('inputPlacePrice').value.trim();
+            const hours = document.getElementById('inputPlaceHours').value.trim();
+            const eco = document.getElementById('inputPlaceEco').value.trim();
+            const status = document.getElementById('inputPlaceStatus').value.trim();
+            let img = document.getElementById('inputPlaceImg').value.trim();
+
+            if (!name || !district) {
+                alert('Vui lòng nhập Tên địa điểm và Khu vực / Huyện!');
+                return;
+            }
+
+            if (price && (price.includes('-') || (Number(price.replace(/[^0-9-]/g, '')) < 0))) {
+                if (typeof showNegativeValueWarning === 'function') showNegativeValueWarning();
+                alert('⚠️ Cảnh báo: Giá tiền và số lượng không được là số âm! Mọi giá trị phải lớn hơn hoặc bằng 0 (>= 0).');
+                document.getElementById('inputPlacePrice').focus();
+                return;
+            }
+
+            if (eco && (eco.includes('-') || parseFloat(eco) < 0)) {
+                if (typeof showNegativeValueWarning === 'function') showNegativeValueWarning('⚠️ Cảnh báo: Điểm Eco Rating không được là số âm! Mọi giá trị phải lớn hơn hoặc bằng 0 (>= 0).');
+                alert('⚠️ Cảnh báo: Điểm Eco Rating không được là số âm! Mọi giá trị phải lớn hơn hoặc bằng 0 (>= 0).');
+                document.getElementById('inputPlaceEco').focus();
+                return;
+            }
+
+            const formattedPrice = typeof formatPriceWithThousandDefault === 'function'
+                ? formatPriceWithThousandDefault(price)
+                : ((!price || price === '0' || /^(0\s*(vnđ|vnd|đ)?|miễn phí.*)$/i.test(price.trim())) ? 'Miễn phí vé vào cổng' : price);
+
+            if (!img) {
+                img = 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=600&h=300&fit=crop';
+            }
+
+            const catMap = {
+                'sinhthai': 'Sinh thái',
+                'vanhoa': 'Văn hóa - Lịch sử',
+                'langnghe': 'Làng nghề',
+                'amthuc': 'Ẩm thực'
+            };
+
+            if (editId) {
+                const item = diadiemDataset.find(x => x.id == editId);
+                if (item) {
+                    item.name = name;
+                    item.sub = sub;
+                    item.category = category;
+                    item.categoryName = catMap[category] || 'Sinh thái';
+                    item.district = district;
+                    item.price = formattedPrice;
+                    item.hours = hours;
+                    item.eco = eco;
+                    item.status = status;
+                    item.img = img;
+                    selectPlace(item.id);
+                    showToast('🎉 Đã cập nhật thành công: ' + name);
+                }
+            } else {
+                const newId = diadiemDataset.length ? Math.max(...diadiemDataset.map(x => x.id)) + 1 : 1;
+                const newItem = {
+                    id: newId,
+                    name: name,
+                    sub: sub,
+                    category: category,
+                    categoryName: catMap[category] || 'Sinh thái',
+                    district: district,
+                    price: formattedPrice,
+                    hours: hours,
+                    eco: eco || '9.5',
+                    status: status || 'Mở cửa',
+                    rating: '4.8',
+                    reviews: '(100+ đánh giá)',
+                    vehicles: 'Xe máy, Ô tô, Xuồng',
+                    img: img,
+                    lat: 10.243,
+                    lon: 106.375
+                };
+                diadiemDataset.unshift(newItem);
+                selectPlace(newId);
+                showToast('🎉 Đã thêm địa điểm mới: ' + name);
+            }
+
+            closePlaceModal();
+            renderTable();
+        }
+
+        function deletePlace(id) {
+            const p = diadiemDataset.find(x => x.id === id);
+            if (!p) return;
+            pendingDeleteId = id;
+            document.getElementById('deleteConfirmDesc').textContent = 'Bạn có chắc chắn muốn xóa địa điểm "' + p.name + '" khỏi hệ thống không? Thao tác này không thể hoàn tác.';
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        function closeDeleteConfirmModal() {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+            pendingDeleteId = null;
+        }
+
+        function executeDeleteConfirm() {
+            if (!pendingDeleteId) return;
+            const idx = diadiemDataset.findIndex(x => x.id === pendingDeleteId);
+            if (idx !== -1) {
+                const deletedName = diadiemDataset[idx].name;
+                diadiemDataset.splice(idx, 1);
+                if (selectedPlaceId === pendingDeleteId && diadiemDataset.length > 0) {
+                    selectPlace(diadiemDataset[0].id);
+                }
+                renderTable();
+                showToast('🗑️ Đã xóa thành công: ' + deletedName);
+            }
+            closeDeleteConfirmModal();
+        }
+  
+
+        let currentMapMode = 'm';
+
+        function getMapEmbedUrl(place, mapMode) {
+            const query = encodeURIComponent(place.name + ', ' + place.district + ', Bến Tre');
+            return 'https://maps.google.com/maps?q=' + query + '&t=' + mapMode + '&z=15&ie=UTF8&iwloc=&output=embed';
+        }
+
+        function openMapModal() {
+            const place = diadiemDataset.find(d => d.id === selectedPlaceId) || diadiemDataset[0];
+            document.getElementById('modalMapPlaceTitle').textContent = 'Bản đồ: ' + place.name + ' (' + place.district + ', Bến Tre)';
+            
+            const gmapsSearchUrl = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(place.name + ', ' + place.district + ', Bến Tre');
+            document.getElementById('linkOpenGoogleMaps').href = gmapsSearchUrl;
+
+            document.getElementById('interactiveMapIframe').src = getMapEmbedUrl(place, currentMapMode);
+            document.getElementById('mapModalOverlay').style.display = 'flex';
+        }
+
+        function switchMapType(mode) {
+            currentMapMode = mode;
+            const btnStd = document.getElementById('btnMapStandard');
+            const btnSat = document.getElementById('btnMapSatellite');
+
+            if (mode === 'm') {
+                btnStd.style.background = '#064E3B';
+                btnStd.style.color = '#FFFFFF';
+                btnSat.style.background = 'transparent';
+                btnSat.style.color = '#4B5563';
+            } else {
+                btnSat.style.background = '#064E3B';
+                btnSat.style.color = '#FFFFFF';
+                btnStd.style.background = 'transparent';
+                btnStd.style.color = '#4B5563';
+            }
+
+            const place = diadiemDataset.find(d => d.id === selectedPlaceId) || diadiemDataset[0];
+            document.getElementById('interactiveMapIframe').src = getMapEmbedUrl(place, currentMapMode);
+        }
+
+        function closeMapModal() {
+            document.getElementById('mapModalOverlay').style.display = 'none';
+            document.getElementById('interactiveMapIframe').src = 'about:blank';
+        }
+
+        function navigateOrToggleSidebar(event, url, menuId, el) {
+            const isArrow = event.target.classList.contains('sidebar-arrow-icon');
+            if (isArrow) {
+                event.preventDefault();
+                event.stopPropagation();
+                toggleSidebarMenu(menuId, el);
+                return;
+            }
+            if (url) {
+                window.location.href = url;
+            } else {
+                toggleSidebarMenu(menuId, el);
+            }
+        }
+
+        function toggleSidebarMenu(menuId, btnEl) {
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+            const isHidden = (menu.style.display === 'none' || !menu.style.display);
+            menu.style.display = isHidden ? 'flex' : 'none';
+            const arrow = btnEl.querySelector('.sidebar-arrow-icon');
+            if (arrow) arrow.textContent = isHidden ? '⌃' : '⌄';
+        }
+
+        let toastTimeout;
+        function showToast(msg) {
+            const t = document.getElementById('toastNotif');
+            document.getElementById('toastMsg').textContent = msg;
+            t.style.display = 'flex';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (diadiemDataset.length > 0) {
+                selectPlace(diadiemDataset[0].id);
+            }
+            renderTable();
+        });
+    
+        let currentDetailPlace = null;
+        let currentDetailPhotoIdx = 0;
+
+        function updateInspectThumbs(place) {
+            if (!place) return;
+            const images = place.images && place.images.length ? place.images : [{ url: place.img, caption: place.name }];
+            const t1 = document.getElementById('inspectThumb1');
+            const t2 = document.getElementById('inspectThumb2');
+            const t3 = document.getElementById('inspectThumb3');
+            if (t1 && images[0]) t1.src = images[0].url;
+            if (t2 && images[1]) t2.src = images[1].url;
+            else if (t2 && images[0]) t2.src = images[0].url;
+            if (t3 && images[2]) t3.src = images[2].url;
+            else if (t3 && images[0]) t3.src = images[0].url;
+        }
+
+        function openPlaceDetailModal(placeId) {
+            const id = placeId || selectedPlaceId;
+            const place = diadiemDataset.find(d => d.id === id) || diadiemDataset[0];
+            if (!place) return;
+
+            currentDetailPlace = place;
+            currentDetailPhotoIdx = 0;
+
+            document.getElementById('detailPlaceTitle').textContent = place.name;
+            document.getElementById('detailBadgeCat').textContent = '🍃 ' + (place.categoryName || 'Sinh thái');
+            document.getElementById('detailBadgeEco').textContent = '🌿 ' + (place.eco || '9.8') + ' Eco Score';
+            document.getElementById('detailRating').textContent = '⭐ ' + (place.rating || '4.8');
+            document.getElementById('detailReviewsCount').textContent = place.reviews || '(256 đánh giá)';
+            document.getElementById('detailAddress').textContent = place.district + ', Tỉnh Bến Tre';
+            document.getElementById('detailPrice').textContent = place.price || '50.000đ';
+            document.getElementById('detailHours').textContent = place.hours || '07:30 - 17:30';
+            document.getElementById('detailVehicles').textContent = place.vehicles || 'Xe du lịch, Xuồng';
+            document.getElementById('detailDesc').textContent = place.desc || (place.sub + '. Điểm du lịch sinh thái tiêu biểu xứ dừa với cảnh quan sông nước hữu tình.');
+
+            // Highlights
+            const highlightsListEl = document.getElementById('detailHighlightsList');
+            if (highlightsListEl) {
+                const highlights = place.highlights || [place.sub, 'Chèo xuồng ba lá', 'Trải nghiệm xứ dừa', 'Ẩm thực miệt vườn'];
+                highlightsListEl.innerHTML = highlights.map(h => 
+                    '<span style="background:#ECFDF5; color:#065F46; font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; border:1px solid #A7F3D0;">✨ ' + h + '</span>'
+                ).join('');
+            }
+
+            renderDetailGallery();
+
+            const modal = document.getElementById('placeDetailModal');
+            modal.style.display = 'flex';
+        }
+
+        function renderDetailGallery() {
+            if (!currentDetailPlace) return;
+            const images = currentDetailPlace.images && currentDetailPlace.images.length 
+                ? currentDetailPlace.images 
+                : [{ url: currentDetailPlace.img, caption: currentDetailPlace.name }];
+
+            if (currentDetailPhotoIdx >= images.length) currentDetailPhotoIdx = 0;
+            if (currentDetailPhotoIdx < 0) currentDetailPhotoIdx = images.length - 1;
+
+            const currentImg = images[currentDetailPhotoIdx];
+            const heroImg = document.getElementById('detailHeroImg');
+            heroImg.style.opacity = '0.4';
+            setTimeout(() => {
+                heroImg.src = currentImg.url;
+                heroImg.style.opacity = '1';
+            }, 120);
+
+            document.getElementById('galleryPhotoCounter').textContent = 'Ảnh ' + (currentDetailPhotoIdx + 1) + ' / ' + images.length;
+            document.getElementById('detailHeroCaption').textContent = currentImg.caption || currentDetailPlace.name;
+            document.getElementById('btnViewOriginalImg').href = currentImg.url;
+
+            // Thumbnail strip
+            const stripEl = document.getElementById('detailThumbnailsList');
+            if (stripEl) {
+                stripEl.innerHTML = images.map((img, idx) => `
+                    <div onclick="switchDetailPhoto(${idx})" style="flex-shrink:0; width:76px; height:52px; border-radius:8px; overflow:hidden; cursor:pointer; border:2px solid ${idx === currentDetailPhotoIdx ? '#10B981' : 'transparent'}; box-shadow:${idx === currentDetailPhotoIdx ? '0 0 0 2px #34D399' : 'none'}; opacity:${idx === currentDetailPhotoIdx ? '1' : '0.65'}; transition:0.2s;">
+                        <img src="${img.url}" style="width:100%; height:100%; object-fit:cover;" alt="thumb">
+                    </div>
+                `).join('');
+            }
+
+            // Full photo grid
+            const gridEl = document.getElementById('detailFullPhotoGrid');
+            if (gridEl) {
+                gridEl.innerHTML = images.map((img, idx) => `
+                    <div onclick="switchDetailPhoto(${idx})" style="cursor:pointer; border-radius:10px; overflow:hidden; background:#F1F5F9; border:1px solid #E2E8F0; box-shadow:0 1px 3px rgba(0,0,0,0.08); transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div style="height:120px; width:100%; overflow:hidden;">
+                            <img src="${img.url}" style="width:100%; height:100%; object-fit:cover;" alt="${img.caption || 'Ảnh'}">
+                        </div>
+                        <div style="padding:8px 10px; font-size:11.5px; font-weight:600; color:#334155; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            ${img.caption || ('Ảnh ' + (idx + 1))}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function switchDetailPhoto(idx) {
+            currentDetailPhotoIdx = idx;
+            renderDetailGallery();
+        }
+
+        function nextDetailPhoto() {
+            if (!currentDetailPlace) return;
+            const images = currentDetailPlace.images || [];
+            currentDetailPhotoIdx = (currentDetailPhotoIdx + 1) % images.length;
+            renderDetailGallery();
+        }
+
+        function prevDetailPhoto() {
+            if (!currentDetailPlace) return;
+            const images = currentDetailPlace.images || [];
+            currentDetailPhotoIdx = (currentDetailPhotoIdx - 1 + images.length) % images.length;
+            renderDetailGallery();
+        }
+
+        function closePlaceDetailModal() {
+            const modal = document.getElementById('placeDetailModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function openMapFromDetail() {
+            closePlaceDetailModal();
+            openMapModal();
+        }
+
+        function editCurrentDetailPlace() {
+            if (!currentDetailPlace) return;
+            closePlaceDetailModal();
+            editPlace(currentDetailPlace.id);
+        }
+    
+    </script>
+    <script src="../assets/js/api-client.js?v=20260831-4"></script>
+</body>
+</html>

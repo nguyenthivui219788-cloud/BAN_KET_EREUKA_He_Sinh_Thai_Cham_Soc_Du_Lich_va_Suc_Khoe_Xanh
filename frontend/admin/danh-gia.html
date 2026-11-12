@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh giá & phản hồi - Bến Tre Admin</title>
+    <style>
+        :root {
+            --sidebar-bg: #FFFFFF;
+            --sidebar-border: #E5E7EB;
+            --sidebar-active-bg: #064E3B;
+            --sidebar-active-sub: #E8FAF0;
+            --sidebar-active-text: #065F46;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-dark: #111827;
+            --text-muted: #64748B;
+            --primary-emerald: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        select, option {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13px;
+        }
+
+        /* ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH 3) */
+        .sidebar {
+            width: 255px !important;
+            min-width: 255px !important;
+            max-width: 255px !important;
+            background: #FFFFFF !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #1F2937 !important;
+            border-right: 1px solid #E5E7EB !important;
+            scrollbar-width: thin;
+            scrollbar-color: #CBD5E1 #FFFFFF;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-logo-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 2px solid #059669;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+        }
+
+        .brand-title-box { display: flex; flex-direction: column; }
+        .brand-title-text { font-size: 18px; font-weight: 900; color: #064E3B; letter-spacing: -0.3px; line-height: 1.1; }
+        .brand-sub-text { font-size: 12px; color: #059669; font-weight: 600; margin-top: 2px; }
+
+        .sidebar-nav-list {
+            padding: 4px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-menu-btn, .sidebar-menu-btn-group {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            border: none;
+            background: transparent;
+            box-sizing: border-box !important;
+        }
+
+        .sidebar-menu-btn:hover, .sidebar-menu-btn-group:hover {
+            background: #F3F4F6 !important;
+            color: #111827 !important;
+        }
+
+        .sidebar-menu-btn.active-green-parent, .sidebar-menu-btn-group.active-green-parent {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+        }
+
+        .sidebar-menu-btn.active-green-parent a, .sidebar-menu-btn-group.active-green-parent a {
+            color: #FFFFFF !important;
+        }
+
+        .menu-left-content, .menu-left-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: inherit;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .menu-icon-svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .chevron-toggle-btn {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chevron-toggle-btn:hover { background: rgba(0,0,0,0.08); }
+
+        .sidebar-submenu {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 4px 0 6px 8px;
+        }
+
+        .sidebar-sub-btn {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #4B5563 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+        }
+
+        .sidebar-sub-btn:hover {
+            background: #F3F4F6 !important;
+            color: #065F46 !important;
+        }
+
+        .sidebar-sub-btn.active-sub {
+            background: #E8FAF0 !important;
+            color: #065F46 !important;
+            font-weight: 700 !important;
+        }
+
+        .sidebar-sub-btn.active-sub .menu-icon-svg {
+            stroke: #065F46 !important;
+        }
+
+        .sidebar-bottom-banner {
+            margin-top: auto;
+            padding: 12px;
+        }
+
+        .sidebar-banner-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        /* MAIN CONTENT */
+        .main-wrapper {
+            margin-left: 250px !important;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #FAFAFB;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            height: 70px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #EDEDF2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .header-left { display: flex; flex-direction: column; }
+        .page-title { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.4px; }
+        .page-sub { font-size: 13px; color: #64748B; margin-top: 2px; }
+
+        .header-right { display: flex; align-items: center; gap: 20px; }
+
+        .notif-bell {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 17px;
+            transition: all 0.15s;
+        }
+        .notif-bell:hover { background: #F1F5F9; }
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #EF4444;
+            color: #FFF;
+            font-size: 10.5px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 1px 6px;
+            border: 2px solid #FFF;
+        }
+
+        .user-profile {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            cursor: pointer !important;
+        }
+
+        .user-avatar {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid #E2E8F0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .user-info { display: flex !important; flex-direction: column !important; }
+        .user-name { font-size: 13.5px !important; font-weight: 700 !important; color: #111827 !important; line-height: 1.2 !important; }
+        .user-role { font-size: 11.5px !important; color: #64748B !important; line-height: 1.2 !important; }
+
+        /* CONTENT CONTAINER */
+        .content-container {
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 4 STAT CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .stat-icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .stat-icon-circle.green { background: #E8FAF2; color: #059669; }
+        .stat-icon-circle.blue { background: #EFF6FF; color: #2563EB; }
+        .stat-icon-circle.orange { background: #FEF3C7; color: #D97706; }
+        .stat-icon-circle.purple { background: #F5F3FF; color: #7C3AED; }
+
+        .stat-content { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; }
+        .stat-label { font-size: 12.5px; color: #64748B; font-weight: 600; order: 2; margin-top: 5px; }
+        .stat-value { font-size: 32px; font-weight: 800; color: #111827; line-height: 1.1; order: 1; }
+        .stat-subtext { font-size: 11.5px; color: #64748B; font-weight: 500; }
+        .stat-subtext { order: 3; margin-top: 5px; text-align: center; }
+        .stat-growth { color: #059669; font-weight: 700; }
+
+        /* HORIZONTAL NAV TABS */
+        .feedback-tabs-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 2px;
+        }
+
+        .feedback-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 8px 8px 0 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: #4B5563;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+        }
+        .feedback-tab-btn:hover {
+            color: #064E3B;
+            background: #F3F4F6;
+        }
+        .feedback-tab-btn.active {
+            color: #064E3B;
+            font-weight: 800;
+        }
+        .feedback-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #059669;
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* 2 COLUMNS MAIN LAYOUT */
+        .layout-2cols {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .left-column-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* CARD STYLING */
+        .custom-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 22px 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* FILTER TOOLBAR */
+        .filter-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 12.5px;
+            outline: none;
+            background: #FFF;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .date-input-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #4B5563;
+        }
+        .date-input {
+            padding: 7px 10px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 12px;
+            outline: none;
+            background: #FFF;
+        }
+
+        .btn-filter-action {
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-filter-action:hover { background: #04382A; }
+
+        .btn-export-excel {
+            background: #FFFFFF;
+            color: #059669;
+            border: 1.5px solid #10B981;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-export-excel:hover { background: #ECFDF5; }
+
+        /* TABLE */
+        .feedback-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+        .feedback-table th {
+            text-align: left;
+            padding: 11px 10px;
+            background: #F8FAFC;
+            color: #64748B;
+            font-weight: 700;
+            border-bottom: 1px solid #E2E8F0;
+            font-size: 12px;
+        }
+        .feedback-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #F1F5F9;
+            color: #374151;
+            vertical-align: middle;
+        }
+        .feedback-table tr:hover td { background: #F8FAFC; }
+
+        .tour-cell-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tour-thumb-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .tour-title-name {
+            font-weight: 800;
+            color: #111827;
+            font-size: 12.5px;
+        }
+        .tour-duration-sub {
+            font-size: 11px;
+            color: #64748B;
+            margin-top: 1px;
+        }
+
+        .customer-cell-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cust-avatar-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .cust-name-text {
+            font-weight: 700;
+            color: #111827;
+            font-size: 12px;
+        }
+        .cust-phone-sub {
+            font-size: 11px;
+            color: #64748B;
+        }
+
+        .stars-gold {
+            color: #F59E0B;
+            font-size: 13px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .badge-status-show {
+            background: #ECFDF5;
+            color: #059669;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            white-space: nowrap !important;
+            display: inline-block !important;
+        }
+        .badge-status-hidden {
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            white-space: nowrap !important;
+            display: inline-block !important;
+        }
+        .badge-status-processing {
+            background: #EFF6FF;
+            color: #2563EB;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            white-space: nowrap !important;
+            display: inline-block !important;
+        }
+
+        .table-pagination-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 8px;
+            font-size: 12px;
+            color: #64748B;
+        }
+        .page-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .page-btn {
+            padding: 5px 9px;
+            border-radius: 6px;
+            border: 1px solid #E2E8F0;
+            background: #FFFFFF;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            color: #374151;
+        }
+        .page-btn.active {
+            background: #064E3B;
+            color: #FFFFFF;
+            border-color: #064E3B;
+        }
+
+        .action-btns-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .action-icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid #D1D5DB;
+            background: #FFFFFF;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .action-icon-btn.view { border-color: #E2E8F0; color: #4B5563; }
+        .action-icon-btn.view:hover { background: #F1F5F9; }
+        .action-icon-btn.dots { border-color: #E2E8F0; color: #4B5563; }
+        .action-icon-btn.dots:hover { background: #F1F5F9; }
+
+        /* BUTTONS IN VIOLATIONS TABLE */
+        .btn-action-small {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid transparent;
+        }
+        .btn-action-small.view { background: #F8FAFC; border-color: #D1D5DB; color: #374151; }
+        .btn-action-small.show { background: #ECFDF5; border-color: #A7F3D0; color: #059669; }
+        .btn-action-small.delete { background: #FEF2F2; border-color: #FECACA; color: #EF4444; }
+
+        /* RIGHT COLUMN CARDS */
+        .right-column-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 1. RATING OVERVIEW CARD */
+        .card-rating-overview {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .overview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .overview-title { font-size: 14px; font-weight: 800; color: #111827; }
+        .overview-link { font-size: 12px; color: #2563EB; text-decoration: none; font-weight: 600; }
+
+        .score-display-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .score-number { font-size: 32px; font-weight: 900; color: #111827; line-height: 1; }
+        .score-stars-box { display: flex; flex-direction: column; gap: 2px; }
+        .score-subtext { font-size: 11px; color: #64748B; }
+
+        .stars-bars-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 4px;
+        }
+        .star-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11.5px;
+            color: #4B5563;
+        }
+        .bar-label { width: 34px; font-weight: 600; flex-shrink: 0; }
+        .bar-track {
+            flex: 1;
+            height: 7px;
+            background: #F1F5F9;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+        }
+        .bar-count { width: 68px; text-align: right; font-weight: 700; color: #111827; flex-shrink: 0; }
+
+        /* 2. RECENT REPORTS CARD */
+        .card-recent-reports {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .report-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #F1F5F9;
+        }
+        .report-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .report-item-left {
+            display: flex;
+            gap: 8px;
+        }
+        .report-warn-icon {
+            color: #EF4444;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .report-name { font-size: 12px; font-weight: 700; color: #111827; }
+        .report-reason { font-size: 11px; color: #64748B; margin-top: 1px; }
+        .report-date { font-size: 10.5px; color: #9CA3AF; margin-top: 2px; }
+
+        .report-badge-new {
+            background: #FFF7ED;
+            color: #EA580C;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10.5px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .report-badge-proc {
+            background: #EFF6FF;
+            color: #2563EB;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10.5px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* 3. POLICY CARD */
+        .card-policy-box {
+            background: #F0FDF4;
+            border-radius: 16px;
+            border: 1px solid #BBF7D0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .policy-title { font-size: 14px; font-weight: 800; color: #065F46; }
+        .policy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 11.5px;
+            color: #166534;
+            line-height: 1.4;
+        }
+        .policy-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        .btn-view-policy {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1.5px solid #10B981;
+            background: #FFFFFF;
+            color: #059669;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+            text-decoration: none;
+            display: block;
+        }
+        .btn-view-policy:hover { background: #ECFDF5; }
+
+        /* TOAST */
+        .toast-notif {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 99999;
+            animation: slideUp 0.2s ease-out;
+        }
+
+        .review-detail-modal { position:fixed; inset:0; z-index:200000; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(15,23,42,.58); }
+        .review-detail-modal.open { display:flex; }
+        .review-detail-form { width:min(680px,96vw); max-height:92vh; overflow:auto; background:#fff; border-radius:16px; box-shadow:0 24px 60px rgba(15,23,42,.28); }
+        .review-detail-header { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; border-bottom:1px solid #e5e7eb; }
+        .review-detail-header h3 { font-size:18px; color:#111827; }
+        .review-detail-close { width:34px; height:34px; border:0; border-radius:8px; background:#f3f4f6; color:#475569; font-size:20px; cursor:pointer; }
+        .review-detail-body { padding:22px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .review-detail-field { display:flex; flex-direction:column; gap:6px; }
+        .review-detail-field.full { grid-column:1/-1; }
+        .review-detail-field label { font-size:12px; font-weight:700; color:#64748b; }
+        .review-detail-field input,.review-detail-field textarea { width:100%; padding:11px 12px; border:1px solid #dbe2ea; border-radius:9px; background:#f8fafc; color:#111827; font:inherit; outline:none; }
+        .review-detail-field textarea { min-height:100px; resize:vertical; line-height:1.5; }
+        .review-detail-footer { display:flex; justify-content:flex-end; padding:14px 22px; border-top:1px solid #e5e7eb; background:#f8fafc; }
+        .review-detail-done { padding:10px 22px; border:0; border-radius:8px; background:#065f46; color:#fff; font-weight:700; cursor:pointer; }
+        @media(max-width:600px){.review-detail-body{grid-template-columns:1fr}.review-detail-field.full{grid-column:auto}}
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    
+        /* ========================================================
+           GLOBAL SIDEBAR OVERRIDE - CHUẨN 100% THEO ẢNH 3
+           TRIỆT TIÊU TOÀN BỘ GẠCH CHÂN XANH & LỖI GIAO DIỆN
+        ======================================================== */
+        aside.sidebar a, aside.sidebar div, aside.sidebar span {
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .sidebar-item-link:hover {
+            background: #F3F4F6 !important;
+            color: #111827 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-icon-svg {
+            width: 18px !important;
+            height: 18px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-arrow-icon {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-sub-container {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            padding: 4px 0 6px 8px !important;
+        }
+
+        .sidebar-sub-item {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #4B5563 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+        }
+
+        .sidebar-sub-item:hover {
+            background: #F3F4F6 !important;
+            color: #065F46 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-item.active {
+            background: #E8FAF0 !important;
+            color: #065F46 !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-icon-svg {
+            width: 16px !important;
+            height: 16px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .main-wrapper {
+            margin-left: 250px !important;
+        }
+
+    
+        
+        /* EXACT PIXEL-MATCHED DARK GREEN SIDEBAR */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Rich Dark Emerald Green */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: none !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Vibrant Emerald Green Pill */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        .sidebar-bottom-banner {
+            margin-top: auto !important;
+            padding: 14px !important;
+        }
+        .sidebar-banner-img {
+            width: 100% !important;
+            height: 160px !important;
+            object-fit: cover !important;
+            border-radius: 12px !important;
+            display: block !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+        }
+
+        
+        .main-wrapper, .main-content, .admin-main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container {
+            margin-left: 0 !important;
+        }
+    
+
+    
+        /* ======================================================= */
+        /* MASTER UNIFIED DARK GREEN SIDEBAR (CHUẨN 100% ĐỒNG BỘ)  */
+        /* ======================================================= */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Xanh lá đậm chuẩn */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 999 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: 1px solid rgba(0, 0, 0, 0.15) !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+            background: transparent !important;
+            border: none !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Xanh ngọc nổi bật chuẩn */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        /* KHẮC PHỤC TRIỆT ĐỂ THỤT LỀ & KHOẢNG TRẮNG */
+        .main-wrapper, .main-content, .admin-main, .main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container, .main-wrapper .content-container {
+            margin-left: 0 !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH 3) -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH 3 - KHÔNG LỖI GẠCH CHÂN) -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO YÊU CẦU MỚI NHẤT) -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+    <aside class="sidebar">
+        <!-- BRAND HEADER -->
+        <a href="dashboard.html" class="sidebar-brand">
+            <div class="brand-logo-circle">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre">
+            </div>
+            <div class="brand-title-wrap">
+                <div class="brand-title-main">HỆ SINH THÁI DU LỊCH</div>
+                <div class="brand-sub-main">VÀ CHĂM SÓC SỨC KHỎE XANH TẠI BẾN TRE</div>
+            </div>
+        </a>
+
+        <!-- MENU ITEMS -->
+        <nav class="sidebar-nav">
+            <!-- 1. Tổng quan -->
+            <a href="dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Tổng quan</span>
+                </div>
+            </a>
+
+            <!-- 2. Du lịch -->
+            <a href="dia-diem.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    <span>Du lịch</span>
+                </div>
+            </a>
+
+            <!-- 3. Đặt tour -->
+            <a href="dat-tour.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Đặt tour</span>
+                </div>
+            </a>
+
+            <!-- 4. Người dùng -->
+            <a href="nguoi-dung.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Người dùng</span>
+                </div>
+            </a>
+
+            <!-- 5. Chăm sóc sức khỏe -->
+            <a href="co-so-y-te.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span>Chăm sóc sức khỏe</span>
+                </div>
+            </a>
+
+            <!-- 6. Tin tức & sự kiện -->
+            <a href="tin-tuc.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span>Tin tức & sự kiện</span>
+                </div>
+            </a>
+
+            <!-- 7. Đánh giá -->
+            <a href="danh-gia.html" class="sidebar-item-link active">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Đánh giá</span>
+                </div>
+            </a>
+        </nav>
+
+        <!-- BOTTOM LOGOUT BUTTON -->
+        <div style="margin-top: auto; padding: 14px 14px 16px;">
+            <a href="../khach-hang/dang-nhap.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #FFFFFF; color: #DC2626; font-weight: 700; font-size: 13px; padding: 10px; border-radius: 10px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.15s ease;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span>Đăng xuất</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar">
+            <div class="header-left">
+                <h1 class="page-title">Đánh giá & phản hồi</h1>
+                <p class="page-sub">Quản lý toàn bộ đánh giá, phản hồi và báo cáo của khách hàng</p>
+            </div>
+            <div class="header-right">
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT CONTAINER -->
+        <main class="content-container">
+            <!-- 4 STAT CARDS (CHUẨN THEO ẢNH MẪU) -->
+            <div class="stats-grid">
+                <!-- 1. Tổng đánh giá -->
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <span class="stat-label">Tổng đánh giá</span>
+                        <span class="stat-value">1.256</span>
+                        <span class="stat-subtext"><span class="stat-growth">↑ 18.6%</span> so với tháng trước</span>
+                    </div>
+                </div>
+
+                <!-- 2. Phản hồi -->
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <span class="stat-label">Phản hồi</span>
+                        <span class="stat-value">342</span>
+                        <span class="stat-subtext"><span class="stat-growth">↑ 12.4%</span> so với tháng trước</span>
+                    </div>
+                </div>
+
+                <!-- 3. Báo cáo nội dung -->
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <span class="stat-label">Báo cáo nội dung</span>
+                        <span class="stat-value">28</span>
+                        <span class="stat-subtext"><span class="stat-growth">↓ 6.3%</span> so với tháng trước</span>
+                    </div>
+                </div>
+
+                <!-- 4. Đánh giá đã ẩn -->
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <span class="stat-label">Đánh giá đã ẩn</span>
+                        <span class="stat-value">16</span>
+                        <span class="stat-subtext"><span class="stat-growth">↑ 23.1%</span> so với tháng trước</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HORIZONTAL TABS BAR -->
+            <div class="feedback-tabs-bar">
+                <button class="feedback-tab-btn active" onclick="switchMainTab('tour', this)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    <span>Đánh giá tour</span>
+                </button>
+                <button class="feedback-tab-btn" onclick="switchMainTab('guide', this)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                    <span>Đánh giá hướng dẫn viên</span>
+                </button>
+                <button class="feedback-tab-btn" onclick="switchMainTab('place', this)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span>Đánh giá địa điểm</span>
+                </button>
+                <button class="feedback-tab-btn" onclick="switchMainTab('feedback', this)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Phản hồi khách hàng</span>
+                </button>
+            </div>
+
+            <!-- TWO COLUMNS LAYOUT -->
+            <div class="layout-2cols">
+                <!-- LEFT COLUMN STACK -->
+                <div class="left-column-stack">
+                    <!-- FILTER ROW & MAIN TABLE -->
+                    <div class="custom-card">
+                        <!-- FILTER BAR -->
+                        <div class="filter-toolbar">
+                            <select class="filter-select" id="filterTourSelect" onchange="filterFeedback()">
+                                <option value="all">Tất cả tour</option>
+                                <option value="1">Tour Một ngày xanh</option>
+                                <option value="2">Khám phá miệt vườn</option>
+                                <option value="3">Trải nghiệm sông nước</option>
+                                <option value="4">Cồn Phụng - Cù Lao</option>
+                                <option value="5">Du lịch sinh thái</option>
+                            </select>
+                            <select class="filter-select" id="filterStatusSelect" onchange="filterFeedback()">
+                                <option value="all">Tất cả đánh giá</option>
+                                <option value="show">Hiển thị</option>
+                                <option value="hidden">Đã ẩn</option>
+                            </select>
+                            <select class="filter-select" id="filterStarsSelect" onchange="filterFeedback()">
+                                <option value="all">⭐ Tất cả số sao</option>
+                                <option value="5">⭐⭐⭐⭐⭐ (5 sao)</option>
+                                <option value="4">⭐⭐⭐⭐ (4 sao)</option>
+                                <option value="3">⭐⭐⭐ (3 sao)</option>
+                                <option value="2">⭐⭐ (2 sao)</option>
+                                <option value="1">⭐ (1 sao)</option>
+                            </select>
+                            <div class="date-input-group">
+                                <span>Từ ngày</span>
+                                <input type="text" class="date-input" value="01/08/2026" style="width:95px;">
+                            </div>
+                            <div class="date-input-group">
+                                <span>Đến ngày</span>
+                                <input type="text" class="date-input" value="20/08/2026" style="width:95px;">
+                            </div>
+                            <button class="btn-filter-action" onclick="filterFeedback()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line></svg>
+                                <span>Lọc</span>
+                            </button>
+                            <button class="btn-export-excel" onclick="exportFeedbackExcel()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                <span>Xuất Excel</span>
+                            </button>
+                        </div>
+
+                        <!-- REVIEWS TABLE -->
+                        <table class="feedback-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:25px;">#</th>
+                                    <th>Tour</th>
+                                    <th>Khách hàng</th>
+                                    <th>Đánh giá</th>
+                                    <th>Số sao</th>
+                                    <th>Ngày đánh giá</th>
+                                    <th>Trạng thái</th>
+                                    <th style="width:65px; text-align:center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviewsTableBody">
+                                <!-- Injected via JS -->
+                            </tbody>
+                        </table>
+
+                        <div class="table-pagination-row">
+                            <span id="paginationInfo">Hiển thị 1 - 10 trong 1.256 đánh giá</span>
+                            <div class="page-btn-group">
+                                <div class="page-btn-group" id="reviewsPagination"></div>
+                                <select id="reviewsPageSize" onchange="changeReviewsPageSize(this.value)" style="padding:4px 8px; border:1px solid #E2E8F0; border-radius:6px; font-size:11.5px; margin-left:8px; outline:none; background:#FFF;">
+                                    <option value="5">5 / trang</option>
+                                    <option value="10">10 / trang</option>
+                                    <option value="20">20 / trang</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: ĐÁNH GIÁ BỊ ẨN / VI PHẠM -->
+                    <div class="custom-card">
+                        <h3 style="font-size:16px; font-weight:800; color:#111827;">Đánh giá bị ẩn / vi phạm</h3>
+
+                        <table class="feedback-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:25px;">#</th>
+                                    <th>Nội dung đánh giá</th>
+                                    <th>Loại vi phạm</th>
+                                    <th>Khách hàng</th>
+                                    <th>Ngày báo cáo</th>
+                                    <th>Trạng thái</th>
+                                    <th style="width:190px; text-align:center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="violationsTableBody">
+                                <!-- Injected via JS -->
+                            </tbody>
+                        </table>
+
+                        <div style="text-align:center; padding-top:4px;">
+                            <a href="javascript:void(0)" onclick="showToast('📋 Đang mở toàn bộ 16 đánh giá vi phạm')" style="color:#2563EB; font-weight:700; font-size:12.5px; text-decoration:none;">Xem tất cả (16) →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN STACK -->
+                <div class="right-column-stack">
+                    <!-- 1. TỔNG QUAN ĐÁNH GIÁ -->
+                    <div class="card-rating-overview">
+                        <div class="overview-header">
+                            <span class="overview-title">Tổng quan đánh giá</span>
+                            <a href="javascript:void(0)" class="overview-link" onclick="showToast('⭐ Xem phân tích đánh giá chi tiết')">Xem chi tiết</a>
+                        </div>
+
+                        <div class="score-display-box">
+                            <div class="score-number">4.3<span style="font-size:18px; color:#64748B; font-weight:600;">/5</span></div>
+                            <div class="score-stars-box">
+                                <div class="stars-gold" style="font-size:16px;">★★★★☆</div>
+                                <div class="score-subtext">Tổng 1.256 đánh giá</div>
+                            </div>
+                        </div>
+
+                        <div class="stars-bars-list">
+                            <div class="star-bar-row">
+                                <span class="bar-label">5 sao</span>
+                                <div class="bar-track"><div class="bar-fill" style="width:56.7%; background:#10B981;"></div></div>
+                                <span class="bar-count">712 (56.7%)</span>
+                            </div>
+                            <div class="star-bar-row">
+                                <span class="bar-label">4 sao</span>
+                                <div class="bar-track"><div class="bar-fill" style="width:28.5%; background:#10B981;"></div></div>
+                                <span class="bar-count">358 (28.5%)</span>
+                            </div>
+                            <div class="star-bar-row">
+                                <span class="bar-label">3 sao</span>
+                                <div class="bar-track"><div class="bar-fill" style="width:9.8%; background:#F59E0B;"></div></div>
+                                <span class="bar-count">124 (9.8%)</span>
+                            </div>
+                            <div class="star-bar-row">
+                                <span class="bar-label">2 sao</span>
+                                <div class="bar-track"><div class="bar-fill" style="width:2.9%; background:#EF4444;"></div></div>
+                                <span class="bar-count">36 (2.9%)</span>
+                            </div>
+                            <div class="star-bar-row">
+                                <span class="bar-label">1 sao</span>
+                                <div class="bar-track"><div class="bar-fill" style="width:2.1%; background:#DC2626;"></div></div>
+                                <span class="bar-count">26 (2.1%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. BÁO CÁO NỘI DUNG MỚI -->
+                    <div class="card-recent-reports">
+                        <div class="overview-header">
+                            <span class="overview-title">Báo cáo nội dung mới</span>
+                            <a href="javascript:void(0)" class="overview-link" onclick="showToast('🚩 Xem toàn bộ báo cáo')">Xem tất cả →</a>
+                        </div>
+
+                        <div class="report-item">
+                            <div class="report-item-left">
+                                <span class="report-warn-icon">⚠️</span>
+                                <div>
+                                    <div class="report-name">Tour Một ngày xanh</div>
+                                    <div class="report-reason">Nội dung không phù hợp</div>
+                                    <div class="report-date">20/08/2026 09:20</div>
+                                </div>
+                            </div>
+                            <span class="report-badge-new">Mới</span>
+                        </div>
+
+                        <div class="report-item">
+                            <div class="report-item-left">
+                                <span class="report-warn-icon">⚠️</span>
+                                <div>
+                                    <div class="report-name">Hướng dẫn viên Trần Văn B</div>
+                                    <div class="report-reason">Ngôn từ không phù hợp</div>
+                                    <div class="report-date">19/08/2026 14:10</div>
+                                </div>
+                            </div>
+                            <span class="report-badge-new">Mới</span>
+                        </div>
+
+                        <div class="report-item">
+                            <div class="report-item-left">
+                                <span class="report-warn-icon">⚠️</span>
+                                <div>
+                                    <div class="report-name">Địa điểm Cồn Phụng</div>
+                                    <div class="report-reason">Thông tin sai sự thật</div>
+                                    <div class="report-date">18/08/2026 11:30</div>
+                                </div>
+                            </div>
+                            <span class="report-badge-proc">Đang xử lý</span>
+                        </div>
+
+                        <div style="text-align:center; padding-top:4px;">
+                            <a href="javascript:void(0)" onclick="showToast('🚩 Mở trang quản lý báo cáo')" style="color:#2563EB; font-weight:700; font-size:12px; text-decoration:none;">Xem tất cả báo cáo →</a>
+                        </div>
+                    </div>
+
+                    <!-- 3. CHÍNH SÁCH XỬ LÝ ĐÁNH GIÁ -->
+                    <div class="card-policy-box">
+                        <div class="policy-title">Chính sách xử lý đánh giá</div>
+                        <div class="policy-list">
+                            <div class="policy-item"><span>✔</span><span>Đánh giá vi phạm sẽ bị ẩn công khai</span></div>
+                            <div class="policy-item"><span>✔</span><span>Nội dung sai lệch sẽ được yêu cầu chỉnh sửa hoặc gỡ bỏ</span></div>
+                            <div class="policy-item"><span>✔</span><span>Spam, quảng cáo sẽ bị xóa và khóa tài khoản nếu tái phạm</span></div>
+                            <div class="policy-item"><span>✔</span><span>Khách hàng có thể khiếu nại nếu đánh giá bị ẩn nhầm</span></div>
+                        </div>
+                        <button class="btn-view-policy" onclick="showToast('📜 Xem chi tiết quy chế kiểm duyệt đánh giá')">Xem chi tiết chính sách</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- FORM CHI TIẾT ĐÁNH GIÁ -->
+    <div id="reviewDetailModal" class="review-detail-modal" role="dialog" aria-modal="true" aria-labelledby="reviewDetailTitle" onclick="closeReviewDetail(event)">
+        <form class="review-detail-form" onclick="event.stopPropagation()" onsubmit="event.preventDefault(); closeReviewDetail();">
+            <div class="review-detail-header"><h3 id="reviewDetailTitle">Chi tiết đánh giá Tour</h3><button type="button" class="review-detail-close" aria-label="Đóng" onclick="closeReviewDetail()">×</button></div>
+            <div class="review-detail-body">
+                <div class="review-detail-field"><label>Tên Tour</label><input id="detailTourName" readonly></div>
+                <div class="review-detail-field"><label>Thời lượng</label><input id="detailDuration" readonly></div>
+                <div class="review-detail-field"><label>Khách hàng</label><input id="detailCustomer" readonly></div>
+                <div class="review-detail-field"><label>Số điện thoại</label><input id="detailPhone" readonly></div>
+                <div class="review-detail-field"><label>Số sao</label><input id="detailStars" readonly></div>
+                <div class="review-detail-field"><label>Ngày đánh giá</label><input id="detailDate" readonly></div>
+                <div class="review-detail-field"><label>Trạng thái</label><input id="detailStatus" readonly></div>
+                <div class="review-detail-field full"><label>Nội dung đánh giá</label><textarea id="detailContent" readonly></textarea></div>
+            </div>
+            <div class="review-detail-footer"><button type="submit" class="review-detail-done">Đóng</button></div>
+        </form>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toastNotif" class="toast-notif">
+        <span>✅</span>
+        <span id="toastMsg">Thao tác thành công!</span>
+    </div>
+
+    <script>
+        const reviewsDataset = [
+            {
+                id: 1,
+                tourName: 'Tour Một ngày xanh',
+                duration: '1 ngày',
+                tourImg: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=100&h=100&fit=crop',
+                custName: 'Nguyễn Văn A',
+                custPhone: '0901 234 567',
+                custAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&h=60&fit=crop',
+                content: 'Tour rất tuyệt vời, lịch trình hợp lý, hướng dẫn viên nhiệt tình, món ăn ngon.',
+                stars: 5,
+                starsText: '★★★★★',
+                date: '20/08/2026 10:30',
+                status: 'show',
+                statusName: 'Hiển thị'
+            },
+            {
+                id: 2,
+                tourName: 'Khám phá miệt vườn',
+                duration: '2 ngày 1 đêm',
+                tourImg: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=100&h=100&fit=crop',
+                custName: 'Trần Thị B',
+                custPhone: '0902 345 678',
+                custAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop',
+                content: 'Trải nghiệm rất thú vị, không gian trong lành, sẽ giới thiệu cho bạn bè.',
+                stars: 4,
+                starsText: '★★★★☆',
+                date: '19/08/2026 16:45',
+                status: 'show',
+                statusName: 'Hiển thị'
+            },
+            {
+                id: 3,
+                tourName: 'Trải nghiệm sông nước',
+                duration: '1 ngày',
+                tourImg: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=100&h=100&fit=crop',
+                custName: 'Lê Hoàng C',
+                custPhone: '0903 456 789',
+                custAvatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=60&h=60&fit=crop',
+                content: 'Đi thuyền rất thích, nhưng thời gian ở một số điểm hơi ngắn.',
+                stars: 3,
+                starsText: '★★★☆☆',
+                date: '18/08/2026 09:15',
+                status: 'show',
+                statusName: 'Hiển thị'
+            },
+            {
+                id: 4,
+                tourName: 'Cồn Phụng - Cù Lao',
+                duration: '1 ngày',
+                tourImg: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=100&h=100&fit=crop',
+                custName: 'Phạm Minh D',
+                custPhone: '0904 567 890',
+                custAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&h=60&fit=crop',
+                content: 'Hướng dẫn viên vui vẻ, am hiểu địa phương.',
+                stars: 5,
+                starsText: '★★★★★',
+                date: '17/08/2026 14:20',
+                status: 'show',
+                statusName: 'Hiển thị'
+            },
+            {
+                id: 5,
+                tourName: 'Du lịch sinh thái',
+                duration: '3 ngày 2 đêm',
+                tourImg: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=100&h=100&fit=crop',
+                custName: 'Võ Thị E',
+                custPhone: '0905 678 901',
+                custAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&h=60&fit=crop',
+                content: '<span style="color:#DC2626;">Dịch vụ quá tệ, đồ ăn dở, hướng dẫn viên không quan tâm khách!!!</span>',
+                stars: 1,
+                starsText: '★☆☆☆☆',
+                date: '16/08/2026 11:05',
+                status: 'hidden',
+                statusName: 'Đã ẩn'
+            }
+        ];
+
+        // Bổ sung dữ liệu để toàn bộ 1.256 đánh giá đều có thể mở bằng phân trang.
+        const reviewTemplates = [...reviewsDataset];
+        const customerNames = ['Nguyễn Văn', 'Trần Thị', 'Lê Hoàng', 'Phạm Minh', 'Võ Thị'];
+        const reviewContents = [
+            'Chuyến đi thú vị, lịch trình hợp lý và phục vụ chu đáo.',
+            'Không gian xanh mát, trải nghiệm rất đáng nhớ.',
+            'Hướng dẫn viên nhiệt tình và am hiểu địa phương.',
+            'Dịch vụ tốt, gia đình tôi sẽ quay lại lần sau.',
+            'Ẩm thực ngon và các điểm tham quan hấp dẫn.'
+        ];
+        while (reviewsDataset.length < 1256) {
+            const id = reviewsDataset.length + 1;
+            const template = reviewTemplates[(id - 1) % reviewTemplates.length];
+            const stars = 1 + (id % 5);
+            const day = String(1 + ((id * 7) % 28)).padStart(2, '0');
+            reviewsDataset.push({
+                ...template,
+                id,
+                custName: customerNames[(id - 1) % customerNames.length] + ' ' + id,
+                custPhone: '09' + String(10000000 + id).slice(-8),
+                content: reviewContents[(id - 1) % reviewContents.length],
+                stars,
+                starsText: '★'.repeat(stars) + '☆'.repeat(5 - stars),
+                date: day + '/08/2026 ' + String(8 + (id % 10)).padStart(2, '0') + ':00',
+                status: id % 17 === 0 ? 'hidden' : 'show',
+                statusName: id % 17 === 0 ? 'Đã ẩn' : 'Hiển thị'
+            });
+        }
+
+        let reviewsPerPage = 10;
+        let currentReviewsPage = 1;
+        let filteredReviewsDataset = [...reviewsDataset];
+
+        const violationsDataset = [
+            {
+                id: 1,
+                content: 'Dịch vụ quá tệ, lừa đảo khách hàng!',
+                violationType: 'Ngôn từ xúc phạm',
+                custName: 'Võ Thị E',
+                custPhone: '0905 678 901',
+                custAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&h=60&fit=crop',
+                date: '16/08/2026 11:05',
+                status: 'hidden',
+                statusName: 'Đã ẩn'
+            },
+            {
+                id: 2,
+                content: 'Hướng dẫn viên không có kiến thức, giải thích sai hoàn toàn.',
+                violationType: 'Thông tin sai lệch',
+                custName: 'Nguyễn Văn F',
+                custPhone: '0906 789 012',
+                custAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop',
+                date: '15/08/2026 10:20',
+                status: 'processing',
+                statusName: 'Đang xử lý'
+            },
+            {
+                id: 3,
+                content: 'Địa điểm rất bẩn, rác khắp nơi, không nên đi.',
+                violationType: 'Nội dung không phù hợp',
+                custName: 'Trần Thị G',
+                custPhone: '0907 890 123',
+                custAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop',
+                date: '14/08/2026 09:45',
+                status: 'hidden',
+                statusName: 'Đã ẩn'
+            }
+        ];
+
+        function renderReviewsTable(data = filteredReviewsDataset) {
+            const tbody = document.getElementById('reviewsTableBody');
+            if (!tbody) return;
+
+            filteredReviewsDataset = data;
+            const totalPages = Math.max(1, Math.ceil(data.length / reviewsPerPage));
+            currentReviewsPage = Math.min(Math.max(1, currentReviewsPage), totalPages);
+            const startIndex = (currentReviewsPage - 1) * reviewsPerPage;
+            const pageData = data.slice(startIndex, startIndex + reviewsPerPage);
+
+            let html = '';
+            pageData.forEach((item, idx) => {
+                const badgeClass = item.status === 'show' ? 'badge-status-show' : 'badge-status-hidden';
+                html += '<tr>' +
+                    '<td style="color:#6B7280; font-weight:700;">' + (startIndex + idx + 1) + '</td>' +
+                    '<td>' +
+                        '<div class="tour-cell-box">' +
+                            '<img src="' + item.tourImg + '" class="tour-thumb-img" alt="thumb">' +
+                            '<div>' +
+                                '<div class="tour-title-name">' + item.tourName + '</div>' +
+                                '<div class="tour-duration-sub">' + item.duration + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td>' +
+                        '<div class="customer-cell-box">' +
+                            '<img src="' + item.custAvatar + '" class="cust-avatar-img" alt="avatar">' +
+                            '<div>' +
+                                '<div class="cust-name-text">' + item.custName + '</div>' +
+                                '<div class="cust-phone-sub">' + item.custPhone + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td style="max-width:240px; font-size:12px; color:#374151;">' + item.content + '</td>' +
+                    '<td><span class="stars-gold">' + item.starsText + '</span></td>' +
+                    '<td style="color:#4B5563; font-size:11.5px;">' + item.date + '</td>' +
+                    '<td><span class="' + badgeClass + '">' + item.statusName + '</span></td>' +
+                    '<td style="text-align:center;">' +
+                        '<div class="action-btns-group">' +
+                            '<button class="action-icon-btn view" title="Xem" onclick="viewReviewDetail(' + item.id + ')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>' +
+                            '<button class="action-icon-btn dots" title="Thao tác" onclick="showToast(\'Thao tác đánh giá #\' + ' + item.id + ')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></button>' +
+                        '</div>' +
+                    '</td>' +
+                '</tr>';
+            });
+
+            tbody.innerHTML = html;
+            renderReviewsPagination(data.length, startIndex, pageData.length);
+        }
+
+        function renderReviewsPagination(totalItems, startIndex, visibleCount) {
+            const pagination = document.getElementById('reviewsPagination');
+            const info = document.getElementById('paginationInfo');
+            if (!pagination || !info) return;
+
+            const totalPages = Math.max(1, Math.ceil(totalItems / reviewsPerPage));
+            info.textContent = totalItems
+                ? 'Hiển thị ' + (startIndex + 1) + ' - ' + (startIndex + visibleCount) + ' trong ' + totalItems.toLocaleString('vi-VN') + ' đánh giá'
+                : 'Không có đánh giá phù hợp';
+
+            const pages = [1, totalPages, currentReviewsPage - 1, currentReviewsPage, currentReviewsPage + 1]
+                .filter(page => page >= 1 && page <= totalPages)
+                .filter((page, index, list) => list.indexOf(page) === index)
+                .sort((a, b) => a - b);
+            let html = '<button class="page-btn" ' + (currentReviewsPage === 1 ? 'disabled' : '') + ' onclick="goToReviewsPage(' + (currentReviewsPage - 1) + ')">&lt;</button>';
+            pages.forEach((page, index) => {
+                if (index && page - pages[index - 1] > 1) html += '<span style="padding:0 4px;color:#9CA3AF;">...</span>';
+                html += '<button class="page-btn ' + (page === currentReviewsPage ? 'active' : '') + '" onclick="goToReviewsPage(' + page + ')">' + page + '</button>';
+            });
+            html += '<button class="page-btn" ' + (currentReviewsPage === totalPages ? 'disabled' : '') + ' onclick="goToReviewsPage(' + (currentReviewsPage + 1) + ')">&gt;</button>';
+            pagination.innerHTML = html;
+        }
+
+        function goToReviewsPage(page) {
+            const totalPages = Math.max(1, Math.ceil(filteredReviewsDataset.length / reviewsPerPage));
+            if (page < 1 || page > totalPages || page === currentReviewsPage) return;
+            currentReviewsPage = page;
+            renderReviewsTable(filteredReviewsDataset);
+        }
+
+        function changeReviewsPageSize(value) {
+            reviewsPerPage = Number(value) || 10;
+            currentReviewsPage = 1;
+            renderReviewsTable(filteredReviewsDataset);
+        }
+
+        function renderViolationsTable() {
+            const tbody = document.getElementById('violationsTableBody');
+            if (!tbody) return;
+
+            let html = '';
+            violationsDataset.forEach((item, idx) => {
+                const badgeClass = item.status === 'hidden' ? 'badge-status-hidden' : 'badge-status-processing';
+                html += '<tr>' +
+                    '<td style="color:#6B7280; font-weight:700;">' + (idx + 1) + '</td>' +
+                    '<td style="font-weight:600; color:#111827;">' + item.content + '</td>' +
+                    '<td><span style="background:#FFF7ED; color:#EA580C; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:700;">' + item.violationType + '</span></td>' +
+                    '<td>' +
+                        '<div class="customer-cell-box">' +
+                            '<img src="' + item.custAvatar + '" class="cust-avatar-img" alt="avatar">' +
+                            '<div>' +
+                                '<div class="cust-name-text">' + item.custName + '</div>' +
+                                '<div class="cust-phone-sub">' + item.custPhone + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td style="color:#4B5563; font-size:11.5px;">' + item.date + '</td>' +
+                    '<td><span class="' + badgeClass + '">' + item.statusName + '</span></td>' +
+                    '<td style="text-align:center;">' +
+                        '<div style="display:flex; align-items:center; justify-content:center; gap:4px;">' +
+                            '<button class="btn-action-small view" onclick="showToast(\'👁 Xem chi tiết vi phạm\')">👁 Xem</button>' +
+                            '<button class="btn-action-small show" onclick="toggleShowViolation(' + item.id + ')">✓ Hiển thị</button>' +
+                            '<button class="btn-action-small delete" onclick="deleteViolation(' + item.id + ')">🗑 Xóa</button>' +
+                        '</div>' +
+                    '</td>' +
+                '</tr>';
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function filterFeedback() {
+            const status = document.getElementById('filterStatusSelect').value;
+            const stars = document.getElementById('filterStarsSelect').value;
+
+            const filtered = reviewsDataset.filter(item => {
+                const matchStatus = (status === 'all') || item.status === status;
+                const matchStars = (stars === 'all') || item.stars === parseInt(stars);
+                return matchStatus && matchStars;
+            });
+
+            currentReviewsPage = 1;
+            renderReviewsTable(filtered);
+        }
+
+        function switchMainTab(tabKey, btnEl) {
+            if (tabKey === 'tour') window.location.href = 'danh-gia.html';
+            else if (tabKey === 'guide') window.location.href = 'danh-gia-huong-dan-vien.html';
+            else if (tabKey === 'place') window.location.href = 'danh-gia-dia-diem.html';
+            else if (tabKey === 'feedback') window.location.href = 'phan-hoi-khach-hang.html';
+            else if (tabKey === 'report') window.location.href = 'bao-cao-noi-dung.html';
+        }
+
+        function viewReviewDetail(id) {
+            const item = reviewsDataset.find(r => r.id === id);
+            if (!item) return;
+            document.getElementById('detailTourName').value = item.tourName || '';
+            document.getElementById('detailDuration').value = item.duration || '';
+            document.getElementById('detailCustomer').value = item.custName || '';
+            document.getElementById('detailPhone').value = item.custPhone || '';
+            document.getElementById('detailStars').value = (item.stars || 0) + '/5 - ' + (item.starsText || '');
+            document.getElementById('detailDate').value = item.date || '';
+            document.getElementById('detailStatus').value = item.statusName || '';
+            document.getElementById('detailContent').value = String(item.content || '').replace(/<[^>]*>/g, '');
+            document.getElementById('reviewDetailModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeReviewDetail(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('reviewDetailModal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function toggleShowViolation(id) {
+            const item = violationsDataset.find(v => v.id === id);
+            if (item) {
+                item.status = 'show';
+                item.statusName = 'Đã khôi phục';
+                renderViolationsTable();
+                showToast('✓ Đã khôi phục hiển thị đánh giá!');
+            }
+        }
+
+        function deleteViolation(id) {
+            const idx = violationsDataset.findIndex(v => v.id === id);
+            if (idx !== -1) {
+                if (confirm('Bạn có chắc chắn muốn xóa vĩnh viễn đánh giá này?')) {
+                    violationsDataset.splice(idx, 1);
+                    renderViolationsTable();
+                    showToast('🗑 Đã xóa vĩnh viễn đánh giá vi phạm!');
+                }
+            }
+        }
+
+        function exportFeedbackExcel() {
+            showToast('📥 Đang xuất báo cáo 1.256 đánh giá ra file Excel...');
+        }
+
+        function toggleSidebarDropdown(submenuId, parentEl) {
+            const submenu = document.getElementById(submenuId);
+            if (!submenu) return;
+            const isHidden = (submenu.style.display === 'none' || !submenu.style.display);
+            submenu.style.display = isHidden ? 'flex' : 'none';
+            const chevron = parentEl ? parentEl.querySelector('.chevron-toggle-btn') : null;
+            if (chevron) chevron.textContent = isHidden ? '⌃' : '⌄';
+        }
+
+        function openSettingsModal() {
+            showToast('⚙️ Hệ thống quản trị Bến Tre phiên bản 2026 - Đang hoạt động bình thường!');
+        }
+
+        let toastTimeout;
+        function showToast(msg) {
+            const t = document.getElementById('toastNotif');
+            document.getElementById('toastMsg').textContent = msg;
+            t.style.display = 'flex';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderReviewsTable();
+            renderViolationsTable();
+        });
+    </script>
+    <script src="../assets/js/api-client.js?v=20260903-2"></script>
+</body>
+</html>

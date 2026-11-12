@@ -1,0 +1,2396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự kiện - Bến Tre Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-bg: #FFFFFF;
+            --sidebar-border: #E5E7EB;
+            --sidebar-active-bg: #064E3B;
+            --sidebar-active-sub: #E8FAF0;
+            --sidebar-active-text: #065F46;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --primary-emerald: #059669;
+            --primary-dark: #064E3B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13px;
+        }
+
+        /* SIDEBAR STYLING */
+        .sidebar {
+            width: 255px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            padding: 20px 18px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .brand-logo-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 2px solid #059669;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+            overflow: hidden;
+        }
+        .brand-logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .brand-title-wrap {
+            display: flex;
+            flex-direction: column;
+        }
+        .brand-title {
+            font-size: 17px;
+            font-weight: 900;
+            color: #064E3B;
+            letter-spacing: -0.3px;
+            line-height: 1.1;
+        }
+        .brand-sub {
+            font-size: 11.5px;
+            color: #059669;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .sidebar-nav {
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .sidebar-item-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        .sidebar-item-link:hover {
+            background: #F1F5F9;
+            color: #0F172A;
+        }
+        .sidebar-item-link.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF;
+        }
+        .sidebar-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-icon-svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+            flex-shrink: 0;
+            stroke: currentColor;
+        }
+
+        .sidebar-sub-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 4px 0 6px 14px;
+        }
+        .sidebar-sub-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: #64748B;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 12.5px;
+            transition: all 0.15s;
+        }
+        .sidebar-sub-item:hover {
+            background: #F1F5F9;
+            color: #0F172A;
+        }
+        .sidebar-sub-item.active {
+            background: #E8FAF0;
+            color: #065F46;
+            font-weight: 700;
+        }
+        .sidebar-sub-item.active .sidebar-sub-icon-svg {
+            stroke: #065F46;
+        }
+        .sidebar-sub-icon-svg {
+            width: 15px;
+            height: 15px;
+            stroke-width: 2;
+        }
+
+        .sidebar-bottom-banner {
+            margin-top: auto;
+            padding: 12px;
+        }
+        .sidebar-banner-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        /* MAIN WRAPPER */
+        .main-wrapper {
+            margin-left: 250px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #F8FAFC;
+        }
+
+        /* TOP NAVBAR (EXACT MATCH WITH DAT TOUR) */
+        .top-navbar {
+            height: 70px;
+            min-height: 70px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            box-sizing: border-box;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -0.4px;
+            line-height: 1.2;
+        }
+
+        .page-sub {
+            font-size: 13px;
+            color: #64748B;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        /* CONTENT CONTAINER */
+        .content-container {
+            padding: 20px 28px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 4 STAT CARDS AT TOP */
+        .stats-top-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card-clean {
+            background: #FFFFFF;
+            border: 1.5px solid rgba(16, 185, 129, 0.25);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(5, 150, 105, 0.1), 0 1px 3px rgba(0,0,0,0.02);
+            transition: all 0.25s ease;
+        }
+        .stat-card-clean:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(5, 150, 105, 0.2), 0 2px 6px rgba(0,0,0,0.04);
+            border-color: #059669;
+        }
+
+        .stat-card-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+            text-align: center;
+        }
+        .stat-card-num-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 3px;
+        }
+        .stat-card-num {
+            font-size: 34px;
+            font-weight: 900;
+            color: #064E3B;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+        .stat-growth-tag {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #059669;
+            background: #E8FAF0;
+            padding: 2px 7px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        /* 2 COLUMNS MAIN LAYOUT */
+        .layout-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 430px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* LEFT MAIN CARD: TABLE & LIST */
+        .card-table-main {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* CATEGORY FILTER TABS & SEARCH */
+        .toolbar-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pills-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .pill-tab {
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #475569;
+            background: #F1F5F9;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .pill-tab:hover {
+            background: #E2E8F0;
+            color: #0F172A;
+        }
+        .pill-tab.active {
+            background: #059669;
+            color: #FFFFFF;
+            border-color: #059669;
+        }
+
+        .search-box-wrap {
+            position: relative;
+            min-width: 220px;
+        }
+        .search-input-news {
+            width: 100%;
+            height: 36px;
+            border-radius: 20px;
+            border: 1px solid #E2E8F0;
+            padding: 0 14px 0 34px;
+            font-size: 12.5px;
+            background: #FFFFFF;
+            outline: none;
+            transition: all 0.15s;
+        }
+        .search-input-news:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+        .search-icon-pos {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            pointer-events: none;
+        }
+
+        /* BATCH ACTION BAR */
+        .batch-toolbar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F8FAFC;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid #EEF2F6;
+        }
+        .batch-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .batch-selected-count {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #475569;
+            margin-right: 6px;
+        }
+        .btn-batch-action {
+            height: 32px;
+            padding: 0 12px;
+            border-radius: 8px;
+            border: 1px solid #CBD5E1;
+            background: #FFFFFF;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-batch-action:hover {
+            background: #F1F5F9;
+            border-color: #94A3B8;
+        }
+        .btn-batch-action.delete:hover {
+            background: #FEF2F2;
+            border-color: #EF4444;
+            color: #DC2626;
+        }
+
+        .btn-primary-add {
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            height: 36px;
+            padding: 0 16px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(6, 78, 59, 0.2);
+            transition: all 0.15s;
+        }
+        .btn-primary-add:hover {
+            background: #047857;
+            transform: translateY(-1px);
+        }
+
+        /* DATA TABLE */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .news-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .news-table th {
+            background: #F8FAFC;
+            color: #64748B;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 12px 14px;
+            border-bottom: 1px solid #E2E8F0;
+            white-space: nowrap;
+        }
+        .news-table td {
+            padding: 14px;
+            border-bottom: 1px solid #F1F5F9;
+            vertical-align: middle;
+            font-size: 12.5px;
+        }
+        .news-table tr:hover td {
+            background: #F8FAFC;
+        }
+
+        .custom-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: #059669;
+            cursor: pointer;
+        }
+
+        .news-thumb-img {
+            width: 64px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            display: block;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .news-title-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            max-width: 280px;
+        }
+        .news-main-title {
+            font-weight: 700;
+            color: #0F172A;
+            font-size: 13px;
+            line-height: 1.3;
+        }
+        .news-main-excerpt {
+            color: #64748B;
+            font-size: 11.5px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* BADGES */
+        .badge-cat-dulich { background: #E8FAF0; color: #059669; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 11.5px; display: inline-block; white-space: nowrap; }
+        .badge-cat-benvung { background: #E8FAF0; color: #059669; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 11.5px; display: inline-block; white-space: nowrap; }
+        .badge-cat-suckhoe { background: #F5F3FF; color: #7C3AED; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 11.5px; display: inline-block; white-space: nowrap; }
+        .badge-cat-vanhoa { background: #FEF3C7; color: #B45309; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 11.5px; display: inline-block; white-space: nowrap; }
+
+        .badge-type-tintuc { background: #EFF6FF; color: #2563EB; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 11.5px; display: inline-block; white-space: nowrap; }
+        .badge-type-sukien { background: #FFF7ED; color: #EA580C; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 11.5px; display: inline-block; white-space: nowrap; }
+
+        .badge-status-approved { color: #059669; font-weight: 700; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-status-pending { color: #0284C7; font-weight: 700; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-status-rejected { color: #8B5CF6; font-weight: 700; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px; }
+
+        .date-cell-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .time-sub {
+            color: #94A3B8;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .action-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .action-icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #E2E8F0;
+            background: #FFFFFF;
+            color: #64748B;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .action-icon-btn:hover {
+            border-color: #059669;
+            color: #059669;
+            background: #E8FAF0;
+        }
+        .action-icon-btn.delete:hover {
+            border-color: #EF4444;
+            color: #EF4444;
+            background: #FEF2F2;
+        }
+
+        /* PAGINATION */
+        .pagination-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            border-top: 1px solid #F1F5F9;
+        }
+        .pagination-info {
+            font-size: 12px;
+            color: #64748B;
+        }
+        .pagination-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .page-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+            background: #FFFFFF;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .page-btn:hover {
+            border-color: #059669;
+            color: #059669;
+        }
+        .page-btn.active {
+            background: #064E3B;
+            color: #FFFFFF;
+            border-color: #064E3B;
+        }
+
+        /* RIGHT COLUMN: 3 CARDS */
+        .right-cards-col {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* CARD 1: QUICK MANAGEMENT (QUẢN LÝ NHANH) */
+        .card-quick-mgmt {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            padding: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .card-header-clean {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .card-header-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0F172A;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-header-title::before {
+            content: "";
+            width: 4px;
+            height: 15px;
+            background: #059669;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .quick-grid-2cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .quick-item-btn {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: left;
+        }
+        .quick-item-btn:hover {
+            border-color: #059669;
+            background: #F8FAFC;
+            transform: translateY(-1px);
+        }
+        .quick-icon-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        .quick-icon-circle.green { background: #059669; }
+        .quick-icon-circle.blue { background: #2563EB; }
+        .quick-icon-circle.red { background: #EF4444; }
+        .quick-icon-circle.purple { background: #8B5CF6; }
+        .quick-icon-circle.orange { background: #F97316; }
+        .quick-icon-circle.teal { background: #0D9488; }
+
+        .quick-text-box {
+            display: flex;
+            flex-direction: column;
+        }
+        .quick-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0F172A;
+            line-height: 1.2;
+        }
+        .quick-sub {
+            font-size: 10.5px;
+            color: #94A3B8;
+            margin-top: 2px;
+        }
+
+        /* CARD 2: CATEGORIES (DANH MỤC) */
+        .card-categories {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            padding: 18px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .cat-list-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .cat-row-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 10px;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+        .cat-row-item:hover {
+            background: #F1F5F9;
+        }
+        .cat-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cat-icon-round {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            flex-shrink: 0;
+        }
+        .cat-icon-round.green { background: #059669; }
+        .cat-icon-round.blue { background: #2563EB; }
+        .cat-icon-round.teal { background: #0D9488; }
+        .cat-icon-round.burgundy { background: #9F1239; }
+        .cat-icon-round.purple { background: #7C3AED; }
+
+        .cat-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1E293B;
+        }
+        .cat-item-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            color: #64748B;
+            font-weight: 600;
+        }
+        .cat-arrow {
+            font-size: 13px;
+            color: #94A3B8;
+        }
+
+        /* CARD 3: UPCOMING EVENTS & MINI CALENDAR */
+        .card-upcoming-events {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            padding: 22px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .view-all-link {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #059669;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+        .view-all-link:hover {
+            color: #047857;
+            text-decoration: underline;
+        }
+
+        .events-subgrid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 16px;
+            align-items: start;
+        }
+
+        /* ENLARGED INTERACTIVE CALENDAR */
+        .mini-calendar-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 14px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .cal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+        .cal-month-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #0F172A;
+            letter-spacing: -0.2px;
+        }
+        .cal-arrow-btn {
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: 1px solid #CBD5E1;
+            background: #FFFFFF;
+            color: #334155;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.15s;
+        }
+        .cal-arrow-btn:hover {
+            background: #059669;
+            color: #FFFFFF;
+            border-color: #059669;
+        }
+
+        .cal-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            width: 100%;
+            text-align: center;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #64748B;
+            margin-bottom: 8px;
+        }
+        .cal-days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            width: 100%;
+            gap: 3px;
+            text-align: center;
+        }
+        .cal-day {
+            font-size: 11.5px;
+            color: #334155;
+            height: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.15s;
+        }
+        .cal-day.empty {
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .cal-day:hover {
+            background: #E8FAF0;
+            color: #065F46;
+        }
+        .cal-day.has-event::after {
+            content: "";
+            position: absolute;
+            bottom: 2px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #059669;
+        }
+        .cal-day.active-day {
+            background: #059669 !important;
+            color: #FFFFFF !important;
+            font-weight: 800 !important;
+            border-radius: 50% !important;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35);
+        }
+        .cal-day.active-day::after {
+            background: #FFFFFF !important;
+        }
+
+        /* TIMELINE EVENTS LIST */
+        .events-timeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-height: 290px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .event-timeline-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            position: relative;
+            padding-left: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #F1F5F9;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .event-timeline-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .event-timeline-item:hover {
+            transform: translateX(2px);
+        }
+        .event-timeline-item::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+        .event-timeline-item.green::before { background: #059669; box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2); }
+        .event-timeline-item.blue::before { background: #2563EB; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
+        .event-timeline-item.purple::before { background: #8B5CF6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); }
+        .event-timeline-item.orange::before { background: #F97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2); }
+
+        .event-item-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0F172A;
+            line-height: 1.3;
+        }
+        .event-item-date {
+            font-size: 11.5px;
+            color: #64748B;
+            font-weight: 600;
+        }
+        .event-item-time {
+            font-size: 11px;
+            color: #94A3B8;
+        }
+        .event-item-tag {
+            display: inline-block;
+            margin-top: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 12px;
+            padding: 3px 10px;
+            width: fit-content;
+        }
+        .event-item-tag.sukien { background: #F5F3FF; color: #7C3AED; }
+        .event-item-tag.dulich { background: #EFF6FF; color: #2563EB; }
+        .event-item-tag.vanhoa { background: #FEF3C7; color: #B45309; }
+        .event-item-tag.suckhoe { background: #E8FAF0; color: #059669; }
+
+        /* MODAL POPUPS */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 620px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            animation: modalFadeIn 0.2s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F8FAFC;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0F172A;
+        }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #64748B;
+            padding: 4px;
+            border-radius: 6px;
+        }
+        .modal-close-btn:hover { background: #E2E8F0; color: #0F172A; }
+        .modal-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #334155;
+        }
+        .form-input, .form-select, .form-textarea {
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid #CBD5E1;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.15s;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+        }
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .modal-footer {
+            padding: 14px 24px;
+            border-top: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #F8FAFC;
+        }
+        .btn-cancel {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #CBD5E1;
+            background: #FFF;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .btn-submit {
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            background: #059669;
+            color: #FFF;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast-box {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0F172A;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 2000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .toast-box.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    
+        
+        /* EXACT PIXEL-MATCHED DARK GREEN SIDEBAR */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Rich Dark Emerald Green */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: none !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Vibrant Emerald Green Pill */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        .sidebar-bottom-banner {
+            margin-top: auto !important;
+            padding: 14px !important;
+        }
+        .sidebar-banner-img {
+            width: 100% !important;
+            height: 160px !important;
+            object-fit: cover !important;
+            border-radius: 12px !important;
+            display: block !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+        }
+
+        
+        .main-wrapper, .main-content, .admin-main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container {
+            margin-left: 0 !important;
+        }
+    
+
+    
+        /* ======================================================= */
+        /* MASTER UNIFIED DARK GREEN SIDEBAR (CHUẨN 100% ĐỒNG BỘ)  */
+        /* ======================================================= */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Xanh lá đậm chuẩn */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 999 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: 1px solid rgba(0, 0, 0, 0.15) !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+            background: transparent !important;
+            border: none !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Xanh ngọc nổi bật chuẩn */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        /* KHẮC PHỤC TRIỆT ĐỂ THỤT LỀ & KHOẢNG TRẮNG */
+        .main-wrapper, .main-content, .admin-main, .main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container, .main-wrapper .content-container {
+            margin-left: 0 !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <!-- BRAND HEADER -->
+        <a href="dashboard.html" class="sidebar-brand">
+            <div class="brand-logo-circle">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre">
+            </div>
+            <div class="brand-title-wrap">
+                <div class="brand-title-main">HỆ SINH THÁI DU LỊCH</div>
+                <div class="brand-sub-main">VÀ CHĂM SÓC SỨC KHỎE XANH TẠI BẾN TRE</div>
+            </div>
+        </a>
+
+        <!-- MENU ITEMS -->
+        <nav class="sidebar-nav">
+            <!-- 1. Tổng quan -->
+            <a href="dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Tổng quan</span>
+                </div>
+            </a>
+
+            <!-- 2. Du lịch -->
+            <a href="dia-diem.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    <span>Du lịch</span>
+                </div>
+            </a>
+
+            <!-- 3. Đặt tour -->
+            <a href="dat-tour.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Đặt tour</span>
+                </div>
+            </a>
+
+            <!-- 4. Người dùng -->
+            <a href="nguoi-dung.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Người dùng</span>
+                </div>
+            </a>
+
+            <!-- 5. Chăm sóc sức khỏe -->
+            <a href="co-so-y-te.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span>Chăm sóc sức khỏe</span>
+                </div>
+            </a>
+
+            <!-- 6. Tin tức & sự kiện -->
+            <a href="tin-tuc.html" class="sidebar-item-link active">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span>Tin tức & sự kiện</span>
+                </div>
+            </a>
+
+            <!-- 7. Đánh giá -->
+            <a href="danh-gia.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Đánh giá</span>
+                </div>
+            </a>
+        </nav>
+
+        <!-- BOTTOM LOGOUT BUTTON -->
+        <div style="margin-top: auto; padding: 14px 14px 16px;">
+            <a href="../khach-hang/dang-nhap.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #FFFFFF; color: #DC2626; font-weight: 700; font-size: 13px; padding: 10px; border-radius: 10px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.15s ease;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span>Đăng xuất</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar">
+            <div class="header-left">
+                <h1 class="page-title">Tin tức & sự kiện</h1>
+                <p class="page-sub">Quản lý các tin tức, sự kiện, danh mục và nội dung truyền thông trên địa bàn tỉnh Bến Tre</p>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT CONTAINER -->
+        <main class="content-container">
+
+            <!-- 4 STAT CARDS AT TOP -->
+            <div class="stats-top-grid">
+                <!-- 1. Tổng tin tức -->
+                <div class="stat-card-clean">
+                    <span class="stat-card-label">Tổng tin tức</span>
+                    <div class="stat-card-num-row">
+                        <span class="stat-card-num" id="statTotalNews">44</span>
+                        <span class="stat-growth-tag">↑ 12%</span>
+                    </div>
+                </div>
+
+                <!-- 2. Tổng sự kiện -->
+                <div class="stat-card-clean">
+                    <span class="stat-card-label">Tổng sự kiện</span>
+                    <div class="stat-card-num-row">
+                        <span class="stat-card-num" id="statTotalEvents">14</span>
+                        <span class="stat-growth-tag">↑ 8%</span>
+                    </div>
+                </div>
+
+                <!-- 3. Chờ duyệt -->
+                <div class="stat-card-clean">
+                    <span class="stat-card-label">Chờ duyệt</span>
+                    <div class="stat-card-num-row">
+                        <span class="stat-card-num" id="statPendingCount" style="color: #8B5CF6;">5</span>
+                    </div>
+                </div>
+
+                <!-- 4. Đã duyệt -->
+                <div class="stat-card-clean">
+                    <span class="stat-card-label">Đã duyệt</span>
+                    <div class="stat-card-num-row">
+                        <span class="stat-card-num" id="statApprovedCount">44</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2 COLUMNS MAIN LAYOUT -->
+            <div class="layout-main-grid">
+
+                <!-- LEFT COLUMN: TABLE AND NEWS ITEMS -->
+                <div class="card-table-main">
+                    <!-- FILTER TABS & SEARCH -->
+                    <div class="toolbar-top-row">
+                        <div class="filter-pills-wrap" id="categoryFilterWrap">
+                            <button class="pill-tab" onclick="setCategoryFilter('all', this)">Tất cả</button>
+                            <button class="pill-tab" onclick="setCategoryFilter('dulich', this)">Du lịch</button>
+                            <button class="pill-tab" onclick="setCategoryFilter('benvung', this)">Du lịch bền vững</button>
+                            <button class="pill-tab" onclick="setCategoryFilter('suckhoe', this)">Sức khỏe</button>
+                            <button class="pill-tab" onclick="setCategoryFilter('vanhoa', this)">Văn hóa</button>
+                            <button class="pill-tab active" onclick="setCategoryFilter('sukien', this)">Sự kiện</button>
+                        </div>
+
+                        <div class="search-box-wrap">
+                            <svg class="search-icon-pos" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="searchInput" class="search-input-news" placeholder="Tìm kiếm tiêu đề, nội dung..." onkeyup="handleSearch(event)">
+                        </div>
+                    </div>
+
+                    <!-- BATCH ACTION BAR -->
+                    <div class="batch-toolbar-row">
+                        <div class="batch-left">
+                            <input type="checkbox" id="selectAllCheckbox" class="custom-checkbox" onchange="toggleSelectAll(this)">
+                            <span class="batch-selected-count" id="selectedCountLabel">Đã chọn: 0</span>
+                            <button class="btn-batch-action" onclick="batchApprove()">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Duyệt
+                            </button>
+                            <button class="btn-batch-action" onclick="batchReject()">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                Từ chối duyệt
+                            </button>
+                            <button class="btn-batch-action delete" onclick="batchDelete()">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                Xóa
+                            </button>
+                        </div>
+
+                        <button class="btn-primary-add" onclick="openAddModal()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Thêm tin
+                        </button>
+                    </div>
+
+                    <!-- DATA TABLE -->
+                    <div class="table-responsive">
+                        <table class="news-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 32px;"><input type="checkbox" id="headerCheckbox" class="custom-checkbox" onchange="toggleSelectAll(this)"></th>
+                                    <th style="width: 76px;">Ảnh</th>
+                                    <th>Tiêu đề</th>
+                                    <th>Danh mục</th>
+                                    <th>Loại</th>
+                                    <th>Ngày đăng</th>
+                                    <th>Trạng thái</th>
+                                    <th style="text-align: right; width: 100px;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="newsTableBody">
+                                <!-- Rendered dynamically by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PAGINATION FOOTER -->
+                    <div class="pagination-footer">
+                        <div class="pagination-info" id="paginationInfo">
+                            Hiển thị 1 – 6 trong tổng 48 tin tức và sự kiện
+                        </div>
+                        <div class="pagination-nav">
+                            <button class="page-btn" onclick="prevPage()">&lt;</button>
+                            <button class="page-btn active" onclick="setPage(1)">1</button>
+                            <button class="page-btn" onclick="setPage(2)">2</button>
+                            <button class="page-btn" onclick="setPage(3)">3</button>
+                            <button class="page-btn" onclick="setPage(4)">4</button>
+                            <button class="page-btn" onclick="nextPage()">&gt;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: 3 CARDS -->
+                <div class="right-cards-col">
+
+                    <!-- LỊCH SỰ KIỆN SẮP TỚI -->
+                    <div class="card-upcoming-events">
+                        <div class="card-header-clean">
+                            <span class="card-header-title">Lịch sự kiện sắp tới</span>
+                            <span class="view-all-link" onclick="resetCalendarFilter()">Xem tất cả ›</span>
+                        </div>
+                        <div class="events-subgrid">
+                            <!-- Interactive Calendar Widget -->
+                            <div class="mini-calendar-box">
+                                <div class="cal-header">
+                                    <button class="cal-arrow-btn" onclick="changeCalMonth(-1)" title="Tháng trước">‹</button>
+                                    <span class="cal-month-title" id="calMonthTitle">Tháng 8/2026</span>
+                                    <button class="cal-arrow-btn" onclick="changeCalMonth(1)" title="Tháng sau">›</button>
+                                </div>
+                                <div class="cal-weekdays">
+                                    <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+                                </div>
+                                <div class="cal-days-grid" id="calDaysGrid">
+                                    <!-- Rendered dynamically via JavaScript -->
+                                </div>
+                            </div>
+
+                            <!-- Timeline List -->
+                            <div class="events-timeline-list" id="eventsTimelineList">
+                                <!-- Rendered dynamically via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL THÊM / SỬA TIN TỨC & SỰ KIỆN -->
+    <div class="modal-overlay" id="newsModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span class="modal-title" id="modalFormTitle">Thêm bài viết / sự kiện mới</span>
+                <button class="modal-close-btn" onclick="closeNewsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editItemIndex" value="-1">
+                <div class="form-group">
+                    <label class="form-label">Tiêu đề bài viết / sự kiện *</label>
+                    <input type="text" id="formTitle" class="form-input" placeholder="Nhập tiêu đề hấp dẫn...">
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Danh mục *</label>
+                        <select id="formCategory" class="form-select">
+                            <option value="dulich">Du lịch</option>
+                            <option value="benvung">Du lịch bền vững</option>
+                            <option value="suckhoe">Sức khỏe</option>
+                            <option value="vanhoa">Văn hóa</option>
+                            <option value="sukien">Sự kiện</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loại nội dung *</label>
+                        <select id="formType" class="form-select">
+                            <option value="Tin tức">Tin tức</option>
+                            <option value="Sự kiện">Sự kiện</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Ngày đăng / diễn ra</label>
+                        <input type="text" id="formDate" class="form-input" value="26/08/2026 09:00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Trạng thái phê duyệt</label>
+                        <select id="formStatus" class="form-select">
+                            <option value="Đã duyệt">Đã duyệt</option>
+                            <option value="Chờ duyệt">Chờ duyệt</option>
+                            <option value="Từ chối">Từ chối</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Link ảnh đại diện (Thumbnail)</label>
+                    <input type="text" id="formImage" class="form-input" value="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=300&auto=format&fit=crop&q=80">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tóm tắt ngắn gọn</label>
+                    <textarea id="formExcerpt" class="form-textarea" rows="2" placeholder="Tóm tắt nội dung 1-2 câu..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeNewsModal()">Hủy bỏ</button>
+                <button class="btn-submit" onclick="saveNewsItem()">Lưu bài viết</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL XEM CHI TIẾT -->
+    <div class="modal-overlay" id="viewDetailModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span class="modal-title" id="viewModalTitle">Chi tiết tin tức / sự kiện</span>
+                <button class="modal-close-btn" onclick="closeViewModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-submit" onclick="closeViewModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST BOX -->
+    <div class="toast-box" id="toastNotification">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="toastMessage">Thao tác thành công!</span>
+    </div>
+
+    <script>
+        // DATA STORE FOR 48 ITEMS (Page 1-4)
+        const newsItems = [
+            {
+                id: 1,
+                title: "Khám phá vẻ đẹp sông nước Bến Tre cùng tour trải nghiệm mới",
+                excerpt: "Tour du lịch sinh thái kết hợp trải nghiệm văn hóa địa phương vừa được ra mắt...",
+                category: "dulich",
+                categoryName: "Du lịch",
+                type: "Tin tức",
+                date: "25/08/2026",
+                time: "10:30",
+                status: "Đã duyệt",
+                image: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=300&auto=format&fit=crop&q=80",
+                selected: false
+            },
+            {
+                id: 2,
+                title: "Bến Tre đạt giải thưởng \"Điểm đến du lịch bền vững tiêu biểu\"",
+                excerpt: "Tại Hội chợ Du lịch Quốc tế, Bến Tre vinh dự là một trong những địa phương ...",
+                category: "benvung",
+                categoryName: "Du lịch bền vững",
+                type: "Tin tức",
+                date: "24/08/2026",
+                time: "16:45",
+                status: "Đã duyệt",
+                image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=300&auto=format&fit=crop&q=80",
+                selected: false
+            },
+            {
+                id: 3,
+                title: "Ngày hội Sức khỏe – Sống xanh cùng thiên nhiên",
+                excerpt: "Sự kiện sẽ diễn ra tại công viên Đồng Khởi với nhiều hoạt động thể chất và chăm sóc...",
+                category: "suckhoe",
+                categoryName: "Sức khỏe",
+                type: "Sự kiện",
+                date: "22/08/2026",
+                time: "09:20",
+                status: "Chờ duyệt",
+                image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=300&auto=format&fit=crop&q=80",
+                selected: false
+            },
+            {
+                id: 4,
+                title: "Lễ hội Dừa Bến Tre năm 2026",
+                excerpt: "Với nhiều hoạt động văn hóa, ẩm thực và trải nghiệm đặc sắc, lễ hội hứa hẹn ...",
+                category: "vanhoa",
+                categoryName: "Văn hóa",
+                type: "Sự kiện",
+                date: "20/08/2026",
+                time: "14:10",
+                status: "Đã duyệt",
+                image: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=300&auto=format&fit=crop&q=80",
+                selected: false
+            },
+            {
+                id: 5,
+                title: "Top 5 địa điểm du lịch xanh không thể bỏ lỡ khi đến Bến Tre",
+                excerpt: "Cùng khám phá những điểm đến thân thiện với môi trường, mang lại trải nghiệm ý ngh...",
+                category: "benvung",
+                categoryName: "Du lịch bền vững",
+                type: "Tin tức",
+                date: "18/08/2026",
+                time: "11:35",
+                status: "Đã duyệt",
+                image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&auto=format&fit=crop&q=80",
+                selected: false
+            },
+            {
+                id: 6,
+                title: "Chương trình khám sức khỏe miễn phí cho người dân",
+                excerpt: "Chương trình diễn ra tại Trạm Y tế phường Bến Tre, từ ngày 15 – 17/8/2026...",
+                category: "suckhoe",
+                categoryName: "Sức khỏe",
+                type: "Sự kiện",
+                date: "15/08/2026",
+                time: "08:50",
+                status: "Từ chối",
+                image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=300&auto=format&fit=crop&q=80",
+                selected: false
+            },
+            // Additional generated mock records for pages 2, 3, 4
+            {
+                id: 7,
+                title: "Hội thảo chuyển đổi số trong du lịch nông nghiệp Bến Tre",
+                excerpt: "Nâng cao năng lực ứng dụng công nghệ và tiếp thị số cho các hợp tác xã du lịch sinh thái...",
+                category: "dulich",
+                categoryName: "Du lịch",
+                type: "Tin tức",
+                date: "14/08/2026",
+                time: "14:00",
+                status: "Đã duyệt",
+                image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=300&auto=format&fit=crop&q=80",
+                selected: false
+            },
+            {
+                id: 8,
+                title: "Giải chạy Marathon Vượt sông Tiền Bến Tre 2026",
+                excerpt: "Thu hút hơn 3.000 vận động viên trong nước và quốc tế tham gia cung đường dừa xanh...",
+                category: "sukien",
+                categoryName: "Sự kiện",
+                type: "Sự kiện",
+                date: "12/08/2026",
+                time: "05:30",
+                status: "Đã duyệt",
+                image: "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?w=300&auto=format&fit=crop&q=80",
+                selected: false
+            }
+        ];
+
+        let currentCategory = 'sukien';
+        let currentSearchQuery = '';
+        let currentPage = 1;
+        const pageSize = 6;
+
+        function renderTable() {
+            const tableBody = document.getElementById('newsTableBody');
+            
+            // Filter
+            let filtered = newsItems.filter(item => {
+                const matchCat = (currentCategory === 'all') || 
+                                 (currentCategory === 'dulich' && (item.category === 'dulich')) ||
+                                 (currentCategory === 'benvung' && (item.category === 'benvung')) ||
+                                 (currentCategory === 'suckhoe' && (item.category === 'suckhoe')) ||
+                                 (currentCategory === 'vanhoa' && (item.category === 'vanhoa')) ||
+                                 (currentCategory === 'sukien' && (item.type === 'Sự kiện' || item.category === 'sukien'));
+
+                const matchSearch = !currentSearchQuery || 
+                                    item.title.toLowerCase().includes(currentSearchQuery.toLowerCase()) ||
+                                    item.excerpt.toLowerCase().includes(currentSearchQuery.toLowerCase());
+
+                return matchCat && matchSearch;
+            });
+
+            // Pagination slice
+            const total = filtered.length;
+            const startIndex = (currentPage - 1) * pageSize;
+            const pageItems = filtered.slice(startIndex, startIndex + pageSize);
+
+            // Update stats
+            updateStatsCount();
+
+            // Render HTML
+            if (pageItems.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#94A3B8;">Không tìm thấy bài viết hoặc sự kiện nào phù hợp.</td></tr>';
+                document.getElementById('paginationInfo').innerText = 'Hiển thị 0 trong tổng ' + total + ' tin tức và sự kiện';
+                return;
+            }
+
+            let html = '';
+            pageItems.forEach((item, idx) => {
+                const globalIndex = newsItems.findIndex(x => x.id === item.id);
+                
+                // Category badge class
+                let catClass = 'badge-cat-dulich';
+                if (item.category === 'benvung') catClass = 'badge-cat-benvung';
+                else if (item.category === 'suckhoe') catClass = 'badge-cat-suckhoe';
+                else if (item.category === 'vanhoa') catClass = 'badge-cat-vanhoa';
+
+                // Type badge
+                let typeClass = item.type === 'Sự kiện' ? 'badge-type-sukien' : 'badge-type-tintuc';
+
+                // Status badge
+                let statusHtml = '';
+                if (item.status === 'Đã duyệt') {
+                    statusHtml = '<span class="badge-status-approved"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Đã duyệt</span>';
+                } else if (item.status === 'Chờ duyệt') {
+                    statusHtml = '<span class="badge-status-pending">Chờ duyệt</span>';
+                } else {
+                    statusHtml = '<span class="badge-status-rejected">Từ chối</span>';
+                }
+
+                html += `
+                <tr>
+                    <td>
+                        <input type="checkbox" class="custom-checkbox row-select-box" ${item.selected ? 'checked' : ''} onchange="toggleItemSelect(${globalIndex}, this.checked)">
+                    </td>
+                    <td>
+                        <img src="${item.image}" class="news-thumb-img" alt="${item.title}">
+                    </td>
+                    <td>
+                        <div class="news-title-cell">
+                            <span class="news-main-title">${item.title}</span>
+                            <span class="news-main-excerpt">${item.excerpt}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="${catClass}">${item.categoryName}</span>
+                    </td>
+                    <td>
+                        <span class="${typeClass}">${item.type}</span>
+                    </td>
+                    <td>
+                        <div class="date-cell-wrap">
+                            <span>${item.date}</span>
+                            <span class="time-sub">${item.time}</span>
+                        </div>
+                    </td>
+                    <td>
+                        ${statusHtml}
+                    </td>
+                    <td>
+                        <div class="action-btn-group" style="justify-content: flex-end;">
+                            <button class="action-icon-btn" title="Chỉnh sửa" onclick="editItem(${globalIndex})">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                            </button>
+                            <button class="action-icon-btn" title="Xem chi tiết" onclick="viewItem(${globalIndex})">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                            <button class="action-icon-btn delete" title="Xóa" onclick="deleteSingleItem(${globalIndex})">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+
+            // Update pagination text
+            const endIdx = Math.min(startIndex + pageSize, total);
+            document.getElementById('paginationInfo').innerText = `Hiển thị ${startIndex + 1} – ${endIdx} trong tổng ${total} tin tức và sự kiện`;
+            updateSelectedCounter();
+        }
+
+        function setCategoryFilter(cat, btn) {
+            currentCategory = cat;
+            currentPage = 1;
+            
+            // Highlight tab button
+            const pills = document.querySelectorAll('.pill-tab');
+            pills.forEach(p => p.classList.remove('active'));
+            if (btn) {
+                btn.classList.add('active');
+            } else {
+                const matchBtn = Array.from(pills).find(p => p.getAttribute('onclick')?.includes(cat));
+                if (matchBtn) matchBtn.classList.add('active');
+            }
+
+            renderTable();
+            renderInteractiveCalendar();
+        }
+
+        function handleSearch(e) {
+            currentSearchQuery = document.getElementById('searchInput').value.trim();
+            currentPage = 1;
+            renderTable();
+        }
+
+        function toggleItemSelect(index, isChecked) {
+            if (newsItems[index]) {
+                newsItems[index].selected = isChecked;
+            }
+            updateSelectedCounter();
+        }
+
+        function toggleSelectAll(masterBox) {
+            const isChecked = masterBox.checked;
+            newsItems.forEach(item => item.selected = isChecked);
+            renderTable();
+        }
+
+        function updateSelectedCounter() {
+            const count = newsItems.filter(x => x.selected).length;
+            document.getElementById('selectedCountLabel').innerText = `Đã chọn: ${count}`;
+            const headerCheck = document.getElementById('headerCheckbox');
+            const selectAllCheck = document.getElementById('selectAllCheckbox');
+            if (headerCheck) headerCheck.checked = (count > 0 && count === newsItems.length);
+            if (selectAllCheck) selectAllCheck.checked = (count > 0 && count === newsItems.length);
+        }
+
+        function updateStatsCount() {
+            const totalNews = newsItems.filter(x => x.type === 'Tin tức').length + 39;
+            const totalEvents = newsItems.filter(x => x.type === 'Sự kiện').length + 11;
+            const pending = newsItems.filter(x => x.status === 'Chờ duyệt').length + 4;
+            const approved = newsItems.filter(x => x.status === 'Đã duyệt').length + 40;
+
+            document.getElementById('statTotalNews').innerText = totalNews;
+            document.getElementById('statTotalEvents').innerText = totalEvents;
+            document.getElementById('statPendingCount').innerText = pending;
+            document.getElementById('statApprovedCount').innerText = approved;
+        }
+
+        function setPage(page) {
+            currentPage = page;
+            const buttons = document.querySelectorAll('.pagination-nav .page-btn');
+            buttons.forEach(b => {
+                if (b.innerText == page) b.classList.add('active');
+                else if (!isNaN(parseInt(b.innerText))) b.classList.remove('active');
+            });
+            renderTable();
+        }
+
+        function prevPage() {
+            if (currentPage > 1) setPage(currentPage - 1);
+        }
+
+        function nextPage() {
+            if (currentPage < 4) setPage(currentPage + 1);
+        }
+
+        // BATCH ACTIONS
+        function batchApprove() {
+            const selected = newsItems.filter(x => x.selected);
+            if (selected.length === 0) {
+                showToast("Vui lòng chọn ít nhất 1 bài viết để duyệt!");
+                return;
+            }
+            selected.forEach(x => x.status = 'Đã duyệt');
+            renderTable();
+            showToast(`Đã duyệt thành công ${selected.length} mục đã chọn!`);
+        }
+
+        function batchReject() {
+            const selected = newsItems.filter(x => x.selected);
+            if (selected.length === 0) {
+                showToast("Vui lòng chọn ít nhất 1 bài viết để từ chối duyệt!");
+                return;
+            }
+            selected.forEach(x => x.status = 'Từ chối');
+            renderTable();
+            showToast(`Đã từ chối duyệt ${selected.length} mục đã chọn!`);
+        }
+
+        function batchDelete() {
+            const selected = newsItems.filter(x => x.selected);
+            if (selected.length === 0) {
+                showToast("Vui lòng chọn ít nhất 1 bài viết để xóa!");
+                return;
+            }
+            if (confirm(`Bạn có chắc chắn muốn xóa ${selected.length} bài viết đã chọn không?`)) {
+                for (let i = newsItems.length - 1; i >= 0; i--) {
+                    if (newsItems[i].selected) {
+                        newsItems.splice(i, 1);
+                    }
+                }
+                renderTable();
+                showToast(`Đã xóa thành công ${selected.length} mục!`);
+            }
+        }
+
+        function deleteSingleItem(index) {
+            if (confirm("Bạn có chắc chắn muốn xóa bài viết này không?")) {
+                const title = newsItems[index].title;
+                newsItems.splice(index, 1);
+                renderTable();
+                showToast(`Đã xóa: "${title.substring(0, 30)}..."`);
+            }
+        }
+
+        // MODAL OPERATIONS
+        function openAddModal(type = 'news') {
+            document.getElementById('editItemIndex').value = "-1";
+            document.getElementById('modalFormTitle').innerText = type === 'event' ? "Thêm sự kiện mới" : "Thêm tin tức mới";
+            document.getElementById('formTitle').value = "";
+            document.getElementById('formExcerpt').value = "";
+            document.getElementById('formType').value = type === 'event' ? "Sự kiện" : "Tin tức";
+            document.getElementById('formCategory').value = type === 'event' ? "sukien" : "dulich";
+            document.getElementById('formStatus').value = "Đã duyệt";
+            document.getElementById('newsModal').classList.add('active');
+        }
+
+        function quickEditFirst() {
+            if (newsItems.length > 0) {
+                editItem(0);
+            }
+        }
+
+        function editItem(index) {
+            const item = newsItems[index];
+            if (!item) return;
+            document.getElementById('editItemIndex').value = index;
+            document.getElementById('modalFormTitle').innerText = "Chỉnh sửa bài viết / sự kiện";
+            document.getElementById('formTitle').value = item.title;
+            document.getElementById('formExcerpt').value = item.excerpt;
+            document.getElementById('formType').value = item.type;
+            document.getElementById('formCategory').value = item.category;
+            document.getElementById('formDate').value = item.date + ' ' + item.time;
+            document.getElementById('formStatus').value = item.status;
+            document.getElementById('formImage').value = item.image;
+            document.getElementById('newsModal').classList.add('active');
+        }
+
+        function closeNewsModal() {
+            document.getElementById('newsModal').classList.remove('active');
+        }
+
+        function saveNewsItem() {
+            const title = document.getElementById('formTitle').value.trim();
+            if (!title) {
+                alert("Vui lòng nhập tiêu đề bài viết!");
+                return;
+            }
+
+            const category = document.getElementById('formCategory').value;
+            const categoryNames = {
+                dulich: "Du lịch",
+                benvung: "Du lịch bền vững",
+                suckhoe: "Sức khỏe",
+                vanhoa: "Văn hóa",
+                sukien: "Sự kiện"
+            };
+
+            const type = document.getElementById('formType').value;
+            const status = document.getElementById('formStatus').value;
+            const image = document.getElementById('formImage').value.trim() || "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=300";
+            const excerpt = document.getElementById('formExcerpt').value.trim() || title;
+            const editIdx = parseInt(document.getElementById('editItemIndex').value);
+
+            if (editIdx >= 0 && newsItems[editIdx]) {
+                newsItems[editIdx].title = title;
+                newsItems[editIdx].category = category;
+                newsItems[editIdx].categoryName = categoryNames[category] || "Du lịch";
+                newsItems[editIdx].type = type;
+                newsItems[editIdx].status = status;
+                newsItems[editIdx].image = image;
+                newsItems[editIdx].excerpt = excerpt;
+                showToast("Cập nhật bài viết thành công!");
+            } else {
+                const newItem = {
+                    id: Date.now(),
+                    title: title,
+                    excerpt: excerpt,
+                    category: category,
+                    categoryName: categoryNames[category] || "Du lịch",
+                    type: type,
+                    date: "25/08/2026",
+                    time: "11:00",
+                    status: status,
+                    image: image,
+                    selected: false
+                };
+                newsItems.unshift(newItem);
+                showToast("Thêm bài viết mới thành công!");
+            }
+
+            closeNewsModal();
+            renderTable();
+        }
+
+        function viewItem(index) {
+            const item = newsItems[index];
+            if (!item) return;
+
+            document.getElementById('viewModalTitle').innerText = item.title;
+            const body = document.getElementById('viewModalBody');
+            body.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <img src="${item.image}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px;" alt="${item.title}">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span class="badge-cat-dulich">${item.categoryName}</span>
+                        <span class="badge-type-tintuc">${item.type}</span>
+                        <span style="color: #64748B; font-size: 12px; margin-left: auto;">🕒 ${item.date} ${item.time}</span>
+                    </div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0F172A;">${item.title}</div>
+                    <p style="font-size: 13px; color: #475569; line-height: 1.6;">${item.excerpt}</p>
+                    <div style="background: #F8FAFC; padding: 12px; border-radius: 8px; border: 1px solid #E2E8F0; font-size: 12.5px;">
+                        <strong>Trạng thái hệ thống:</strong> <span style="color: #059669; font-weight: 700;">${item.status}</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('viewDetailModal').classList.add('active');
+        }
+
+        function closeViewModal() {
+            document.getElementById('viewDetailModal').classList.remove('active');
+        }
+
+        function openCategoryModal() {
+            showToast("Đang mở bảng quản lý danh mục bài viết & sự kiện!");
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        
+        // CALENDAR & EVENTS STORE (MULTI-MONTH DATA)
+        const calendarEventsDatabase = [
+            // Tháng 7/2026
+            { day: 15, month: 7, year: 2026, dateStr: "15/07/2026", timeStr: "08:00 - 17:00", title: "Khảo sát tour sinh thái Cồn Phụng", type: "dulich", tagText: "Du lịch", color: "blue" },
+            { day: 28, month: 7, year: 2026, dateStr: "28/07/2026", timeStr: "14:00 - 18:00", title: "Hội thảo liên kết du lịch Đồng bằng Sông Cửu Long", type: "sukien", tagText: "Sự kiện", color: "purple" },
+
+            // Tháng 8/2026
+            { day: 25, month: 8, year: 2026, dateStr: "25/08/2026", timeStr: "08:30 - 11:30", title: "Họp báo công bố tuần lễ Du lịch Bến Tre", type: "sukien", tagText: "Sự kiện", color: "orange" },
+            { day: 26, month: 8, year: 2026, dateStr: "26/08/2026", timeStr: "06:00 - 11:00", title: "Ngày hội Sức khỏe – Sống xanh", type: "suckhoe", tagText: "Sức khỏe", color: "green" },
+            { day: 28, month: 8, year: 2026, dateStr: "28/08/2026", timeStr: "07:00 - 12:00", title: "Tour trải nghiệm rừng dừa", type: "dulich", tagText: "Du lịch", color: "blue" },
+            { day: 30, month: 8, year: 2026, dateStr: "30/08/2026", timeStr: "17:00 - 22:00", title: "Lễ hội Dừa Bến Tre", type: "vanhoa", tagText: "Văn hóa", color: "purple" },
+
+            // Tháng 9/2026
+            { day: 2, month: 9, year: 2026, dateStr: "02/09/2026", timeStr: "07:00 - 21:00", title: "Chuỗi hoạt động chào mừng Quốc Khánh 2/9 tại Bến Tre", type: "vanhoa", tagText: "Văn hóa", color: "purple" },
+            { day: 12, month: 9, year: 2026, dateStr: "12/09/2026", timeStr: "06:00 - 12:00", title: "Giải việt dã xứ Dừa mở rộng 2026", type: "suckhoe", tagText: "Sức khỏe", color: "green" },
+            { day: 20, month: 9, year: 2026, dateStr: "20/09/2026", timeStr: "08:00 - 16:30", title: "Lễ hội Ẩm thực Bến Tre & Miền Tây", type: "dulich", tagText: "Du lịch", color: "blue" },
+
+            // Tháng 10/2026
+            { day: 10, month: 10, year: 2026, dateStr: "10/10/2026", timeStr: "09:00 - 17:00", title: "Diễn đàn Du lịch Xanh & Kinh tế Tuần hoàn", type: "sukien", tagText: "Sự kiện", color: "orange" },
+            { day: 25, month: 10, year: 2026, dateStr: "25/10/2026", timeStr: "07:30 - 11:30", title: "Chương trình chạy bộ vì môi trường sông Tiền", type: "suckhoe", tagText: "Sức khỏe", color: "green" },
+
+            // Tháng 11/2026
+            { day: 18, month: 11, year: 2026, dateStr: "18/11/2026", timeStr: "08:00 - 16:00", title: "Hội chợ Triển lãm Nông sản hữu cơ & Làng nghề", type: "vanhoa", tagText: "Văn hóa", color: "purple" }
+        ];
+
+        let calCurrentYear = 2026;
+        let calCurrentMonth = 8; // 8 = Tháng 8
+        let calSelectedDay = 25; // Default active day
+
+        function renderInteractiveCalendar() {
+            const monthTitle = document.getElementById('calMonthTitle');
+            const daysGrid = document.getElementById('calDaysGrid');
+            if (!monthTitle || !daysGrid) return;
+
+            monthTitle.innerText = `Tháng ${calCurrentMonth}/${calCurrentYear}`;
+
+            // Calculate days in month & start day of week (Monday = 0, Sunday = 6)
+            // Month in JS Date is 0-indexed: Month 8 is index 7
+            const firstDate = new Date(calCurrentYear, calCurrentMonth - 1, 1);
+            let startDay = firstDate.getDay(); // 0 is Sunday, 1 is Monday...
+            // Convert to Monday = 0, Tuesday = 1, ... Sunday = 6
+            startDay = (startDay === 0) ? 6 : startDay - 1;
+
+            const daysInMonth = new Date(calCurrentYear, calCurrentMonth, 0).getDate();
+
+            // Check which days have events in this month/year
+            const eventsInThisMonth = calendarEventsDatabase.filter(e => e.month === calCurrentMonth && e.year === calCurrentYear);
+            const eventDaySet = new Set(eventsInThisMonth.map(e => e.day));
+
+            let gridHtml = '';
+            // 1. Empty slots before start day
+            for (let i = 0; i < startDay; i++) {
+                gridHtml += '<span class="cal-day empty"></span>';
+            }
+
+            // 2. Day numbers
+            for (let d = 1; d <= daysInMonth; d++) {
+                const isSelected = (d === calSelectedDay);
+                const hasEvent = eventDaySet.has(d);
+
+                let classes = 'cal-day';
+                if (isSelected) classes += ' active-day';
+                if (hasEvent) classes += ' has-event';
+
+                gridHtml += `<span class="${classes}" onclick="selectCalDay(${d})">${d}</span>`;
+            }
+
+            daysGrid.innerHTML = gridHtml;
+            renderTimelineEvents();
+        }
+
+        function changeCalMonth(delta) {
+            calCurrentMonth += delta;
+            if (calCurrentMonth > 12) {
+                calCurrentMonth = 1;
+                calCurrentYear += 1;
+            } else if (calCurrentMonth < 1) {
+                calCurrentMonth = 12;
+                calCurrentYear -= 1;
+            }
+
+            // Set selected day to null or 1st day that has event in new month
+            const eventsInNewMonth = calendarEventsDatabase.filter(e => e.month === calCurrentMonth && e.year === calCurrentYear);
+            if (eventsInNewMonth.length > 0) {
+                calSelectedDay = eventsInNewMonth[0].day;
+            } else {
+                calSelectedDay = 1;
+            }
+
+            renderInteractiveCalendar();
+        }
+
+        function selectCalDay(day) {
+            calSelectedDay = day;
+            renderInteractiveCalendar();
+        }
+
+        function resetCalendarFilter() {
+            calSelectedDay = null;
+            renderInteractiveCalendar();
+        }
+
+        function renderTimelineEvents() {
+            const container = document.getElementById('eventsTimelineList');
+            if (!container) return;
+
+            let eventsToShow = [];
+            if (calSelectedDay !== null) {
+                // Show events for selected day first, or all month events if day has none
+                eventsToShow = calendarEventsDatabase.filter(e => e.year === calCurrentYear && e.month === calCurrentMonth && e.day === calSelectedDay);
+                if (eventsToShow.length === 0) {
+                    // Fallback to all events of this month
+                    eventsToShow = calendarEventsDatabase.filter(e => e.year === calCurrentYear && e.month === calCurrentMonth);
+                }
+            } else {
+                // Show all events in this month
+                eventsToShow = calendarEventsDatabase.filter(e => e.year === calCurrentYear && e.month === calCurrentMonth);
+            }
+
+            if (eventsToShow.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 24px 10px; color: #94A3B8; font-size: 12.5px;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <div>Chưa có sự kiện nào trong tháng ${calCurrentMonth}/${calCurrentYear}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            eventsToShow.forEach(ev => {
+                html += `
+                    <div class="event-timeline-item ${ev.color}">
+                        <span class="event-item-name">${ev.title}</span>
+                        <span class="event-item-date">${ev.dateStr}</span>
+                        <span class="event-item-time">${ev.timeStr}</span>
+                        <span class="event-item-tag ${ev.type}">${ev.tagText}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+    
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+        });
+    </script>
+    <script src="../assets/js/api-client.js?v=20260908-1"></script>
+</body>
+</html>

@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bến Tre Admin - Quản lý Hướng Dẫn Viên</title>
+    <style>
+        :root {
+            --sidebar-bg: #032216;
+            --sidebar-card: #063925;
+            --sidebar-active: #059669;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E7EB;
+            --text-dark: #111827;
+            --text-muted: #6B7280;
+            --primary-emerald: #10B981;
+            --primary-dark-green: #064E3B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13px;
+        }
+
+        /* STRICT VERTICAL DARK SIDEBAR */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #032216 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #E5E7EB !important;
+            border-right: 1px solid #064E3B !important;
+            scrollbar-width: thin;
+            scrollbar-color: #064E3B #032216;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #064E3B; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 16px 16px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #064E3B;
+            border: 2px solid #34D399;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.3px;
+            line-height: 1.1;
+        }
+
+        .brand-sub {
+            font-size: 10.5px;
+            color: #34D399;
+            font-weight: 600;
+        }
+
+        .sidebar-section-label {
+            font-size: 9.5px;
+            font-weight: 800;
+            color: #10B981;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 10px 14px 2px;
+        }
+
+        .sidebar-nav {
+            padding: 0 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nav-item {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 8px 10px !important;
+            border-radius: 8px !important;
+            color: #D1D5DB !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .nav-item:hover {
+            background: rgba(16, 185, 129, 0.15) !important;
+            color: #FFFFFF !important;
+        }
+
+        .nav-item.active {
+            background: #059669 !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3) !important;
+        }
+
+        .sidebar-user-box {
+            margin: 12px 10px 3px;
+            background: #063925;
+            border-radius: 10px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            cursor: pointer;
+        }
+
+        .sidebar-user-info { display: flex; align-items: center; gap: 8px; }
+        .sidebar-user-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid #10B981; }
+
+        .logout-btn {
+            color: #9CA3AF;
+            background: transparent;
+            border: none;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 10px;
+            margin: 0 10px;
+            border-radius: 6px;
+            transition: all 0.15s;
+        }
+        .logout-btn:hover { color: #EF4444; background: rgba(239, 68, 68, 0.1); }
+
+        .sidebar-eco-card {
+            margin: 8px 10px 14px;
+            background: linear-gradient(180deg, #064E3B 0%, #022C22 100%);
+            border-radius: 12px;
+            padding: 10px 10px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #047857;
+        }
+
+        .sidebar-eco-title { font-size: 12px; font-weight: 800; color: #FFFFFF; }
+        .sidebar-eco-sub { font-size: 10px; color: #A7F3D0; margin-top: 2px; line-height: 1.3; max-width: 130px; }
+        .sidebar-eco-img { position: absolute; right: -8px; bottom: -4px; width: 70px; height: 50px; object-fit: cover; border-radius: 6px; opacity: 0.85; }
+
+        /* MAIN CONTENT */
+        .main-wrapper {
+            margin-left: 250px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            height: 70px;
+            background: #FFFFFF;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .header-left { display: flex; flex-direction: column; }
+        .page-title { font-size: 18px; font-weight: 800; color: #111827; }
+        .page-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+        .header-right { display: flex; align-items: center; gap: 16px; }
+
+        .user-profile {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            cursor: pointer !important;
+        }
+
+        .user-avatar {
+            width: 38px !important;
+            height: 38px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid #10B981 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .user-info { display: flex !important; flex-direction: column !important; }
+        .user-name { font-size: 13px !important; font-weight: 700 !important; color: #111827 !important; line-height: 1.2 !important; }
+        .user-role { font-size: 11px !important; color: #6B7280 !important; line-height: 1.2 !important; }
+
+        /* CONTENT CONTAINER */
+        .content-container {
+            padding: 22px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* TABS HEADER */
+        .tabs-header-nav {
+            display: flex;
+            gap: 24px;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 0px;
+        }
+
+        .tab-btn-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 6px 12px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #064E3B;
+            cursor: pointer;
+            position: relative;
+            border: none;
+            background: transparent;
+        }
+
+        .tab-btn-item::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #064E3B;
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* STATUS PILLS BAR */
+        .status-pills-bar {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            border-bottom: 1px solid #F1F5F9;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .status-pill-tab {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #64748B;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px 6px;
+            position: relative;
+            transition: all 0.15s;
+        }
+
+        .status-pill-tab:hover { color: #111827; }
+
+        .status-pill-tab.active-orange {
+            color: #D97706 !important;
+            font-weight: 800 !important;
+        }
+        .status-pill-tab.active-orange::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #D97706;
+        }
+
+        .status-pill-tab.active-green {
+            color: #064E3B !important;
+            font-weight: 800 !important;
+        }
+        .status-pill-tab.active-green::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #064E3B;
+        }
+
+        /* FILTER BAR */
+        .filter-section-bar {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            flex-wrap: wrap;
+        }
+
+        .filter-controls-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .search-input-box {
+            display: flex;
+            align-items: center;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 7px 12px;
+            gap: 8px;
+            min-width: 220px;
+        }
+        .search-input-box input {
+            border: none;
+            outline: none;
+            font-size: 12.5px;
+            width: 100%;
+            background: transparent;
+        }
+
+        .filter-select {
+            padding: 7px 12px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #374151;
+            background: #FFFFFF;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-add-hdv {
+            background: #FFFFFF;
+            color: #059669;
+            border: 1px solid #10B981;
+            border-radius: 8px;
+            padding: 7px 16px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s;
+        }
+        .btn-add-hdv:hover { background: #ECFDF5; border-color: #047857; }
+
+        /* TWO COLUMN MAIN CONTENT */
+        .users-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        /* DATA TABLE */
+        .section-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            position: relative;
+            overflow: visible !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .table-responsive { width: 100%; overflow: visible; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left; }
+        .data-table th { background: #F9FAFB; padding: 12px 14px; font-weight: 700; color: #4B5563; border-bottom: 1px solid #E5E7EB; white-space: nowrap; }
+        .data-table td { padding: 11px 14px; border-bottom: 1px solid #F3F4F6; vertical-align: middle; }
+        .data-table tr:hover td { background: #F0FDF4; }
+        .data-table tr.selected td { background: #ECFDF5; }
+
+        .user-avatar-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid #E2E8F0;
+        }
+
+        .badge-status-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-status-pill.active { background: #DCFCE7; color: #15803D; }
+        .badge-status-pill.pending { background: #FFEDD5; color: #C2410C; }
+        .badge-status-pill.inactive { background: #F1F5F9; color: #64748B; }
+        .badge-status-pill.rejected { background: #FEE2E2; color: #DC2626; }
+
+        .btn-table-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid #E5E7EB;
+            background: #FFFFFF;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #4B5563;
+            transition: all 0.15s;
+        }
+        .btn-table-action:hover { background: #F3F4F6; color: #111827; }
+
+        .btn-action-approve {
+            background: #FFFFFF;
+            color: #059669;
+            border: 1px solid #10B981;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+        }
+        .btn-action-approve:hover { background: #ECFDF5; }
+
+        .btn-action-reject {
+            background: #FFFFFF;
+            color: #DC2626;
+            border: 1px solid #EF4444;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s;
+        }
+        .btn-action-reject:hover { background: #FEF2F2; }
+
+        /* PAGINATION BUTTONS */
+        .btn-table-sm {
+            padding: 0 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid #D1D5DB;
+            background: #FFFFFF;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            box-sizing: border-box;
+            outline: none;
+            user-select: none;
+        }
+        .btn-table-sm:hover:not(:disabled) {
+            background: #F3F4F6;
+            color: #111827;
+            border-color: #9CA3AF;
+        }
+        .btn-table-sm:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            background: #F9FAFB;
+            border-color: #E5E7EB;
+        }
+        .btn-table-sm.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            border-color: #064E3B !important;
+            font-weight: 800 !important;
+            box-shadow: 0 1px 3px rgba(6, 78, 59, 0.3);
+        }
+
+        /* RIGHT INSPECTOR CARD EXACT LAYOUT */
+        .inspect-card-user {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .inspect-header-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        /* TOP SECTION: AVATAR LEFT + CONTACTS RIGHT */
+        .inspect-top-flex {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .inspect-avatar-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #10B981;
+            flex-shrink: 0;
+        }
+
+        .inspect-top-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 11.5px;
+            color: #4B5563;
+        }
+
+        .inspect-name-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 2px;
+            flex-wrap: wrap;
+        }
+
+        .inspect-contact-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 4px;
+        }
+        .inspect-contact-line span {
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .inspect-contact-line strong {
+            color: #111827;
+            font-weight: 600;
+            text-align: right;
+            word-break: break-all;
+        }
+
+        /* CREDENTIALS CARD EXACT */
+        .inspect-credentials-box {
+            background: #FAFAFA;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            font-size: 12px;
+        }
+
+        .inspect-cred-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .inspect-cred-row .cred-label {
+            color: #4B5563;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .inspect-cred-row .cred-value {
+            color: #111827;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* BOTTOM OUTLINE BUTTONS */
+        .btn-inspect-action {
+            height: 36px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-inspect-action.green-outline {
+            background: #FFFFFF;
+            color: #10B981;
+            border: 1px solid #10B981;
+        }
+        .btn-inspect-action.green-outline:hover {
+            background: #ECFDF5;
+        }
+        .btn-inspect-action.red-outline {
+            background: #FFFFFF;
+            color: #EF4444;
+            border: 1px solid #EF4444;
+        }
+        .btn-inspect-action.red-outline:hover {
+            background: #FEF2F2;
+        }
+
+        /* TOAST */
+        .toast-notif {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            z-index: 200000;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+    
+        /* ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH 3) */
+        .sidebar {
+            width: 255px !important;
+            min-width: 255px !important;
+            max-width: 255px !important;
+            background: #FFFFFF !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #1F2937 !important;
+            border-right: 1px solid #E5E7EB !important;
+            scrollbar-width: thin;
+            scrollbar-color: #CBD5E1 #FFFFFF;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-logo-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 2px solid #059669;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+        }
+
+        .brand-title-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title-text {
+            font-size: 18px;
+            font-weight: 900;
+            color: #064E3B;
+            letter-spacing: -0.3px;
+            line-height: 1.1;
+        }
+
+        .brand-sub-text {
+            font-size: 12px;
+            color: #059669;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .sidebar-nav-list {
+            padding: 4px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-menu-btn {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            border: none;
+            background: transparent;
+        }
+
+        .sidebar-menu-btn:hover {
+            background: #F3F4F6 !important;
+            color: #111827 !important;
+        }
+
+        .sidebar-menu-btn.active-green-parent {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+        }
+
+        .menu-left-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-icon-svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .chevron-icon {
+            font-size: 11px;
+            transition: transform 0.2s;
+        }
+
+        .sidebar-submenu {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 4px 0 6px 8px;
+        }
+
+        .sidebar-sub-btn {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #4B5563 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+        }
+
+        .sidebar-sub-btn:hover {
+            background: #F3F4F6 !important;
+            color: #065F46 !important;
+        }
+
+        .sidebar-sub-btn.active-sub {
+            background: #E8FAF0 !important;
+            color: #065F46 !important;
+            font-weight: 700 !important;
+        }
+
+        .sidebar-sub-btn.active-sub .menu-icon-svg {
+            stroke: #065F46 !important;
+        }
+
+        .sidebar-bottom-banner {
+            margin-top: auto;
+            padding: 12px;
+        }
+
+        .sidebar-banner-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .main-wrapper {
+            margin-left: 255px !important;
+        }
+
+    
+        /* ========================================================
+           GLOBAL SIDEBAR OVERRIDE - CHUẨN 100% THEO ẢNH 3
+           TRIỆT TIÊU TOÀN BỘ GẠCH CHÂN XANH & LỖI GIAO DIỆN
+        ======================================================== */
+        aside.sidebar a, aside.sidebar div, aside.sidebar span {
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .sidebar-item-link:hover {
+            background: #F3F4F6 !important;
+            color: #111827 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-icon-svg {
+            width: 18px !important;
+            height: 18px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-arrow-icon {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-sub-container {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            padding: 4px 0 6px 8px !important;
+        }
+
+        .sidebar-sub-item {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #4B5563 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+        }
+
+        .sidebar-sub-item:hover {
+            background: #F3F4F6 !important;
+            color: #065F46 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-item.active {
+            background: #E8FAF0 !important;
+            color: #065F46 !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-icon-svg {
+            width: 16px !important;
+            height: 16px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .main-wrapper {
+            margin-left: 255px !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- DARK SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH MẪU 3) -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH MẪU 3) -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH 3 - KHÔNG LỖI GẠCH CHÂN) -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO YÊU CẦU MỚI NHẤT) -->
+    <aside class="sidebar" style="width:255px !important; min-width:255px !important; max-width:255px !important; background:#FFFFFF !important; display:flex !important; flex-direction:column !important; position:fixed !important; top:0 !important; bottom:0 !important; left:0 !important; z-index:100 !important; overflow-y:auto !important; color:#1F2937 !important; border-right:1px solid #E5E7EB !important; box-sizing:border-box !important;">
+        <!-- BRAND HEADER -->
+        <a href="../admin/dashboard.html" style="padding:22px 20px 18px; display:flex; align-items:center; gap:12px; text-decoration:none !important; color:inherit;">
+            <div style="width:44px; height:44px; border-radius:50%; background:#FFFFFF; border:2px solid #059669; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(5, 150, 105, 0.15);">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">
+            </div>
+            <div style="display:flex; flex-direction:column;">
+                <div style="font-size:18px; font-weight:900; color:#064E3B; letter-spacing:-0.3px; line-height:1.1;">BẾN TRE</div>
+                <div style="font-size:12px; color:#059669; font-weight:600; margin-top:2px;">Du lịch bền vững</div>
+            </div>
+        </a>
+
+        <!-- MENU ITEMS -->
+        <nav style="padding:4px 12px; display:flex; flex-direction:column; gap:4px; flex:1;">
+            <!-- 1. Tổng quan -->
+            <a href="../admin/dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Tổng quan</span>
+                </div>
+            </a>
+
+            <!-- 2. Du lịch (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link " onclick="toggleSidebarMenu('subDulichMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                        <span>Du lịch</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌄</span>
+                </div>
+                <div class="sidebar-sub-container" id="subDulichMenu" style="display:none;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <span>Địa điểm du lịch</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                        <span>Tour du lịch</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>Lịch trình</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span>Dịch vụ du lịch</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. Đặt tour -->
+            <a href="../admin/dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Đặt tour</span>
+                </div>
+            </a>
+
+            <!-- 4. Người dùng (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link active" onclick="toggleSidebarMenu('subNguoidungMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Người dùng</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌃</span>
+                </div>
+                <div class="sidebar-sub-container" id="subNguoidungMenu" style="display:flex;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Khách hàng</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item active">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                        <span>Hướng dẫn viên</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 5. Chăm sóc sức khỏe (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link " onclick="toggleSidebarMenu('subSuckhoeMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        <span>Chăm sóc sức khỏe</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌄</span>
+                </div>
+                <div class="sidebar-sub-container" id="subSuckhoeMenu" style="display:none;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><path d="M9 9h1"></path><path d="M9 13h1"></path></svg>
+                        <span>Cơ sở y tế</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>Dịch vụ sức khỏe</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>Hoạt động sức khỏe</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 6. Tin tức & sự kiện (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link " onclick="toggleSidebarMenu('subTintucMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Tin tức & sự kiện</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌄</span>
+                </div>
+                <div class="sidebar-sub-container" id="subTintucMenu" style="display:none;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        <span>Tin tức</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+                        <span>Sự kiện</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 7. Đánh giá -->
+            <a href="../admin/dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Đánh giá</span>
+                </div>
+            </a>
+        </nav>
+
+        <!-- BOTTOM SCENIC BANNER -->
+        <div style="margin-top:auto; padding:12px;">
+            <img src="https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=400&h=260&fit=crop" style="width:100%; height:180px; object-fit:cover; border-radius:12px; display:block; box-shadow:0 2px 8px rgba(0,0,0,0.06);" alt="Bến Tre Sông Nước">
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar">
+            <div class="header-left">
+                <h1 class="page-title">Hướng dẫn viên</h1>
+                <p class="page-sub">Quản lý và điều phối đội ngũ hướng dẫn viên du lịch Bến Tre</p>
+            </div>
+
+            <div class="header-right">
+                <div class="user-profile" onclick="showToast('Tài khoản: Admin Quản trị viên')">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="user-avatar" alt="Admin">
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                        <span class="user-role">Quản trị viên ▼</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT CONTAINER -->
+        <main class="content-container">
+
+            <!-- TABS HEADER -->
+            <div class="tabs-header-nav">
+                <button class="tab-btn-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Hướng dẫn viên
+                </button>
+            </div>
+
+            <!-- STATUS PILLS BAR -->
+            <div class="status-pills-bar">
+                <button class="status-pill-tab" id="pillTab_all" onclick="filterByStatusPill('all')">Tất cả (<span id="count_all">126</span>)</button>
+                <button class="status-pill-tab" id="pillTab_active" onclick="filterByStatusPill('active')">Đang hoạt động (<span id="count_active">96</span>)</button>
+                <button class="status-pill-tab" id="pillTab_inactive" onclick="filterByStatusPill('inactive')">Không hoạt động (<span id="count_inactive">12</span>)</button>
+                <button class="status-pill-tab active-orange" id="pillTab_pending" onclick="filterByStatusPill('pending')">Chờ duyệt (<span id="count_pending">18</span>)</button>
+                <button class="status-pill-tab" id="pillTab_rejected" onclick="filterByStatusPill('rejected')">Từ chối (<span id="count_rejected">2</span>)</button>
+            </div>
+
+            <!-- FILTER BAR -->
+            <section class="filter-section-bar">
+                <div class="filter-controls-left">
+                    <div class="search-input-box">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="filterHdvSearch" placeholder="Tìm kiếm hướng dẫn viên..." oninput="handleHdvFilter()">
+                    </div>
+
+                    <select class="filter-select" id="filterHdvStatusSelect" onchange="handleHdvFilter()">
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="pending" selected>Chờ duyệt</option>
+                        <option value="active">Đang hoạt động</option>
+                        <option value="inactive">Không hoạt động</option>
+                        <option value="rejected">Từ chối</option>
+                    </select>
+
+                    <select class="filter-select" id="filterHdvLangSelect" onchange="handleHdvFilter()">
+                        <option value="all">Tất cả ngôn ngữ</option>
+                        <option value="Tiếng Anh">Tiếng Anh</option>
+                        <option value="Tiếng Pháp">Tiếng Pháp</option>
+                        <option value="Tiếng Hàn">Tiếng Hàn</option>
+                        <option value="Tiếng Trung">Tiếng Trung</option>
+                        <option value="Tiếng Nhật">Tiếng Nhật</option>
+                    </select>
+                </div>
+
+                <button class="btn-add-hdv" onclick="openAddHdvModal()">
+                    <span style="font-size:15px; font-weight:800;">+</span> Thêm hướng dẫn viên
+                </button>
+            </section>
+
+            <!-- TWO COLUMNS GRID -->
+            <div class="users-main-grid">
+                
+                <!-- LEFT TABLE -->
+                <section class="section-card">
+                    <div class="table-responsive">
+                        <table class="data-table" id="tableHdv">
+                            <thead>
+                                <tr>
+                                    <th style="width:30px;">#</th>
+                                    <th>Hướng dẫn viên</th>
+                                    <th>Ngôn ngữ</th>
+                                    <th>Kinh nghiệm</th>
+                                    <th>Tour đã dẫn</th>
+                                    <th>Đánh giá</th>
+                                    <th>Trạng thái</th>
+                                    <th style="text-align:right;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hdvTableBody">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PAGINATION BAR -->
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 18px; border-top:1px solid #F1F5F9; font-size:12px; color:#64748B;">
+                        <div id="hdvPaginationCount">Hiển thị 1 - 5 trong 126 hướng dẫn viên</div>
+                        <div id="hdvPaginationButtons" style="display:flex; gap:6px; align-items:center;">
+                            <!-- Dynamic pagination buttons -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- RIGHT INSPECTOR CARD EXACT LAYOUT -->
+                <div class="inspect-card-user" id="hdvInspectCard">
+                    <div class="inspect-header-title">Hồ sơ hướng dẫn viên</div>
+                    
+                    <!-- TOP: AVATAR LEFT + CONTACTS RIGHT -->
+                    <div class="inspect-top-flex">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop" id="inspHdvAvatar" class="inspect-avatar-circle" alt="HDV">
+                        
+                        <div class="inspect-top-info">
+                            <div class="inspect-name-row">
+                                <strong style="font-size:14px; color:#111827;" id="inspHdvName">Nguyễn Hoàng Nam</strong>
+                                <span class="badge-status-pill pending" id="inspHdvStatusBadge" style="font-size:10.5px; padding:2px 7px;">Chờ duyệt</span>
+                            </div>
+
+                            <div class="inspect-contact-line">
+                                <span>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                    SĐT
+                                </span>
+                                <strong id="inspHdvPhone">0911 222 333</strong>
+                            </div>
+
+                            <div class="inspect-contact-line">
+                                <span>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                    Email
+                                </span>
+                                <strong id="inspHdvEmail">namguide@gmail.com</strong>
+                            </div>
+
+                            <div class="inspect-contact-line">
+                                <span>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                    Địa chỉ
+                                </span>
+                                <strong id="inspHdvAddr">TP. Bến Tre, Bến Tre</strong>
+                            </div>
+
+                            <div class="inspect-contact-line">
+                                <span>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    Ngày sinh
+                                </span>
+                                <strong id="inspHdvDob">08/08/1992</strong>
+                            </div>
+
+                            <div class="inspect-contact-line">
+                                <span>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    Ngày đăng ký
+                                </span>
+                                <strong id="inspHdvRegistered">18/08/2026</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CREDENTIALS BOX -->
+                    <div class="inspect-credentials-box">
+                        <div class="inspect-cred-row">
+                            <span class="cred-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                                Kinh nghiệm
+                            </span>
+                            <span class="cred-value" id="inspHdvExp">5 năm</span>
+                        </div>
+
+                        <div class="inspect-cred-row">
+                            <span class="cred-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                Chứng nhận
+                            </span>
+                            <span class="cred-value" id="inspHdvCerts">4</span>
+                        </div>
+
+                        <div class="inspect-cred-row">
+                            <span class="cred-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                                Tour đã dẫn
+                            </span>
+                            <span class="cred-value" style="display:flex; align-items:center; gap:6px;"><span id="inspHdvTours">56 tour</span> <a href="javascript:void(0)" onclick="openHdvTourHistoryModal()" style="color:#059669; font-weight:700; text-decoration:underline; font-size:11px;">(Xem lịch sử)</a></span>
+                        </div>
+
+                        <div class="inspect-cred-row">
+                            <span class="cred-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                Đánh giá
+                            </span>
+                            <span class="cred-value" style="color:#D97706;" id="inspHdvRating">★ 4.9 (32)</span>
+                        </div>
+
+                        <div class="inspect-cred-row">
+                            <span class="cred-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                Lịch làm việc
+                            </span>
+                            <span class="cred-value" onclick="openHdvScheduleModal()" style="cursor:pointer;" id="inspHdvScheduleLink">Xem lịch</span>
+                        </div>
+
+                        <div class="inspect-cred-row">
+                            <span class="cred-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                Trạng thái hoạt động
+                            </span>
+                            <span class="cred-value" id="inspHdvActiveStatusText">Chờ duyệt</span>
+                        </div>
+                    </div>
+
+                    <!-- BOTTOM OUTLINE ACTION BUTTONS -->
+                    <div style="margin-top:2px; display:flex; flex-direction:column; gap:8px;">
+                        <button class="btn-inspect-action" style="background:#ECFDF5; color:#064E3B; border:2px solid #10B981; width:100%; height:48px; min-height:48px; font-size:14px; font-weight:800; border-radius:10px; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 3px 6px rgba(16,185,129,0.15); cursor:pointer; transition:all 0.15s; line-height:1;" onclick="openHdvTourHistoryModal()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                            <span>Xem lịch sử các tour đã dẫn</span>
+                        </button>
+                        <div style="display:flex; gap:12px;" id="inspHdvActionButtons">
+                        <button class="btn-inspect-action green-outline" onclick="approveSelectedHdv()">Duyệt</button>
+                        <button class="btn-inspect-action red-outline" onclick="rejectSelectedHdv()">Từ chối</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL 1: THÊM HƯỚNG DẪN VIÊN -->
+    <div id="modalAddHdv" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#FFF; border-radius:14px; width:480px; max-width:94%; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2); animation:modalPop 0.2s ease-out; overflow:hidden;">
+            <div style="padding:16px 20px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:6px; background:#DCFCE7; color:#15803D;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    </span>
+                    <h3 style="font-size:15px; font-weight:800; color:#111827;">Thêm Hướng dẫn viên mới</h3>
+                </div>
+                <span style="cursor:pointer; font-size:18px; color:#9CA3AF;" onclick="closeModal('modalAddHdv')">✕</span>
+            </div>
+
+            <div style="padding:16px 20px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; font-size:12.5px;">
+                <div>
+                    <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Họ và tên HDV:</label>
+                    <input type="text" id="addHdvNameInput" placeholder="Ví dụ: Nguyễn Hoàng Nam" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Số điện thoại:</label>
+                        <input type="text" id="addHdvPhoneInput" placeholder="0911 222 333" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Email:</label>
+                        <input type="email" id="addHdvEmailInput" placeholder="namguide@gmail.com" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Ngôn ngữ:</label>
+                        <input type="text" id="addHdvLangInput" placeholder="Tiếng Anh, Tiếng Pháp" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Kinh nghiệm:</label>
+                        <input type="text" id="addHdvExpInput" placeholder="5 năm" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                    </div>
+                </div>
+                <div>
+                    <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Địa chỉ thường trú:</label>
+                    <input type="text" id="addHdvAddrInput" placeholder="TP. Bến Tre, Bến Tre" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                </div>
+            </div>
+
+            <div style="padding:14px 20px; border-top:1px solid #F1F5F9; background:#F8FAFC; display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn-table-sm" style="padding:6px 16px;" onclick="closeModal('modalAddHdv')">Hủy bỏ</button>
+                <button class="btn-table-sm" style="padding:6px 20px; background:#064E3B; color:#FFF; font-weight:800; border-color:#064E3B;" onclick="submitAddNewHdv()">+ Thêm HDV</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: SỬA HỒ SƠ HDV -->
+    <div id="modalEditHdv" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#FFF; border-radius:14px; width:480px; max-width:94%; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2); animation:modalPop 0.2s ease-out; overflow:hidden;">
+            <div style="padding:16px 20px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:6px; background:#DCFCE7; color:#15803D;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </span>
+                    <h3 style="font-size:15px; font-weight:800; color:#111827;">Sửa thông tin Hướng dẫn viên</h3>
+                </div>
+                <span style="cursor:pointer; font-size:18px; color:#9CA3AF;" onclick="closeModal('modalEditHdv')">✕</span>
+            </div>
+
+            <div style="padding:16px 20px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; font-size:12.5px;">
+                <div>
+                    <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Họ và tên HDV:</label>
+                    <input type="text" id="editHdvNameInput" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Số điện thoại:</label>
+                        <input type="text" id="editHdvPhoneInput" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Email:</label>
+                        <input type="email" id="editHdvEmailInput" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Ngôn ngữ:</label>
+                        <input type="text" id="editHdvLangInput" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Kinh nghiệm:</label>
+                        <input type="text" id="editHdvExpInput" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; box-sizing:border-box;">
+                    </div>
+                </div>
+                <div>
+                    <label style="display:block; font-weight:700; color:#374151; margin-bottom:4px;">Trạng thái hoạt động:</label>
+                    <select id="editHdvStatusSelect" style="width:100%; padding:8px 12px; border:1px solid #D1D5DB; border-radius:8px; font-size:12.5px; outline:none; background:#FFF; box-sizing:border-box;">
+                        <option value="pending">Chờ duyệt</option>
+                        <option value="active">Đang hoạt động</option>
+                        <option value="inactive">Không hoạt động</option>
+                        <option value="rejected">Từ chối</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="padding:14px 20px; border-top:1px solid #F1F5F9; background:#F8FAFC; display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn-table-sm" style="padding:6px 16px;" onclick="closeModal('modalEditHdv')">Hủy bỏ</button>
+                <button class="btn-table-sm" style="padding:6px 20px; background:#064E3B; color:#FFF; font-weight:800; border-color:#064E3B;" onclick="saveHdvEdit()">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: XEM LỊCH LÀM VIỆC -->
+    <div id="modalHdvSchedule" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#FFF; border-radius:14px; width:520px; max-width:94%; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2); animation:modalPop 0.2s ease-out; overflow:hidden;">
+            <div style="padding:16px 20px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+                <div>
+                    <h3 style="font-size:15px; font-weight:800; color:#111827;">Lịch làm việc & Dẫn tour</h3>
+                    <p style="font-size:11.5px; color:#6B7280;" id="schHdvNameSub">HDV: Nguyễn Hoàng Nam</p>
+                </div>
+                <span style="cursor:pointer; font-size:18px; color:#9CA3AF;" onclick="closeModal('modalHdvSchedule')">✕</span>
+            </div>
+
+            <div style="padding:16px 20px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:10px; font-size:12.5px;">
+                <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong style="color:#166534;">Tour Một ngày xanh (Đang phụ trách)</strong>
+                        <div style="font-size:11px; color:#15803D; margin-top:2px;">Ngày khởi hành: 20/08/2026 - 4 khách</div>
+                    </div>
+                    <span class="badge-status-pill active" style="font-size:10px;">Sắp diễn ra</span>
+                </div>
+
+                <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong style="color:#111827;">Khám phá miệt vườn Chợ Lách</strong>
+                        <div style="font-size:11px; color:#6B7280; margin-top:2px;">Ngày khởi hành: 25/08/2026 - 2 khách</div>
+                    </div>
+                    <span class="badge-status-pill pending" style="font-size:10px;">Đã lên lịch</span>
+                </div>
+
+                <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong style="color:#111827;">Cồn Phụng - Cù Lao Tứ Linh</strong>
+                        <div style="font-size:11px; color:#6B7280; margin-top:2px;">Ngày khởi hành: 30/08/2026 - 6 khách</div>
+                    </div>
+                    <span class="badge-status-pill pending" style="font-size:10px;">Đã lên lịch</span>
+                </div>
+            </div>
+
+            <div style="padding:14px 20px; border-top:1px solid #F1F5F9; background:#F8FAFC; display:flex; justify-content:flex-end;">
+                <button class="btn-table-sm" style="padding:6px 18px; background:#064E3B; color:#FFF; font-weight:800; border-color:#064E3B;" onclick="closeModal('modalHdvSchedule')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: XÓA HDV -->
+    <div id="modalDeleteHdv" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#FFF; border-radius:14px; width:400px; max-width:92%; padding:20px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2); animation:modalPop 0.2s ease-out;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:#FEE2E2; color:#DC2626;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </span>
+                <div>
+                    <h3 style="font-size:15px; font-weight:800; color:#DC2626;">Xóa Hướng dẫn viên</h3>
+                    <p style="font-size:11.5px; color:#6B7280;" id="delHdvNameSub">HDV: Nguyễn Hoàng Nam</p>
+                </div>
+            </div>
+
+            <p style="font-size:12.5px; color:#374151; line-height:1.4; margin-bottom:16px;">
+                Bạn có chắc chắn muốn xóa hồ sơ hướng dẫn viên này khỏi hệ thống?
+            </p>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn-table-sm" style="padding:6px 16px;" onclick="closeModal('modalDeleteHdv')">Hủy bỏ</button>
+                <button class="btn-table-sm" style="padding:6px 18px; background:#DC2626; color:#FFF; font-weight:800; border-color:#DC2626;" onclick="confirmDeleteHdv()">Xóa vĩnh viễn</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    
+    <!-- MODAL: LỊCH SỬ DẪN TOUR CỦA HDV -->
+    <div id="modalHdvTourHistory" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#FFF; border-radius:14px; width:720px; max-width:96%; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2); animation:modalPop 0.2s ease-out; overflow:hidden;">
+            <div style="padding:16px 20px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:#DCFCE7; color:#15803D;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                    </span>
+                    <div>
+                        <h3 style="font-size:15px; font-weight:800; color:#111827;">Lịch sử dẫn tour</h3>
+                        <p style="font-size:11.5px; color:#6B7280;" id="hdvTourHistTitleSub">HDV: Nguyễn Hoàng Nam (0911 222 333) - 56 tour đã dẫn</p>
+                    </div>
+                </div>
+                <span style="cursor:pointer; font-size:18px; color:#9CA3AF;" onclick="closeModal('modalHdvTourHistory')">✕</span>
+            </div>
+
+            <div style="padding:16px 20px; overflow-y:auto; flex:1;" id="hdvTourHistList">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div style="padding:14px 20px; border-top:1px solid #F1F5F9; background:#F8FAFC; display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size:12px; color:#6B7280;" id="hdvTourHistSummary">Tổng số: 56 tour - Đánh giá trung bình: ★ 4.9</div>
+                <button class="btn-table-sm" style="padding:6px 20px; background:#064E3B; color:#FFF; font-weight:800; border-color:#064E3B;" onclick="closeModal('modalHdvTourHistory')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-notif" id="toastNotif"><span id="toastIcon">✅</span><span id="toastMsg">Thành công!</span></div>
+
+    <!-- SCRIPT -->
+    <script>
+        let currentPillStatus = 'pending';
+        let selectedHdvId = 1;
+        let currentPage = 1;
+        const pageSize = 10;
+        let activeHdvActionId = null;
+
+        // Mockup dataset: EXACTLY matching image 1 & 2
+        const hdvDataset = [
+            { id: 1, name: 'Nguyễn Hoàng Nam', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop', languages: 'Tiếng Anh, Tiếng Pháp', exp: '5 năm', tours: '56 tour', rating: '4.9', certs: 4, status: 'pending', statusText: 'Chờ duyệt', phone: '0911 222 333', email: 'namguide@gmail.com', addr: 'TP. Bến Tre, Bến Tre', dob: '08/08/1992', registered: '18/08/2026' },
+            { id: 2, name: 'Trần Quốc Huy', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&h=120&fit=crop', languages: 'Tiếng Anh', exp: '3 năm', tours: '-', rating: '-', certs: 2, status: 'pending', statusText: 'Chờ duyệt', phone: '0912 345 678', email: 'huyguide@gmail.com', addr: 'Huyện Châu Thành, Bến Tre', dob: '14/03/1995', registered: '17/08/2026' },
+            { id: 3, name: 'Lê Thị Ngọc', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop', languages: 'Tiếng Anh, Tiếng Hàn', exp: '4 năm', tours: '32 tour', rating: '4.8', certs: 3, status: 'active', statusText: 'Đang hoạt động', phone: '0913 456 789', email: 'ngocguide@gmail.com', addr: 'Huyện Chợ Lách, Bến Tre', dob: '22/11/1994', registered: '10/05/2025' },
+            { id: 4, name: 'Phạm Văn Hải', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&h=120&fit=crop', languages: 'Tiếng Anh', exp: '2 năm', tours: '18 tour', rating: '4.6', certs: 2, status: 'active', statusText: 'Đang hoạt động', phone: '0914 567 890', email: 'haiguide@gmail.com', addr: 'Huyện Mỏ Cày Bắc, Bến Tre', dob: '05/09/1996', registered: '15/08/2025' },
+            { id: 5, name: 'Võ Minh Tâm', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&h=120&fit=crop', languages: 'Tiếng Anh, Tiếng Trung', exp: '6 năm', tours: '73 tour', rating: '5.0', certs: 5, status: 'active', statusText: 'Đang hoạt động', phone: '0915 678 901', email: 'tamguide@gmail.com', addr: 'Huyện Ba Tri, Bến Tre', dob: '19/04/1990', registered: '01/02/2024' }
+        ];
+
+        // Fill up to 126 items
+        const sampleNames = ['Đặng Thu Thảo', 'Bùi Gia Khiêm', 'Phan Thanh Thảo', 'Dương Hoài Nam', 'Lý Gia Hân', 'Lâm Tuấn Kiệt', 'Trương Gia Bảo', 'Ngô Kiến Huy', 'Hoàng Minh Quân', 'Đỗ Hải Đăng'];
+        const sampleAvatars = [
+            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop',
+            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop',
+            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&h=120&fit=crop',
+            'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&h=120&fit=crop'
+        ];
+        const sampleLangs = ['Tiếng Anh', 'Tiếng Anh, Tiếng Pháp', 'Tiếng Anh, Tiếng Hàn', 'Tiếng Anh, Tiếng Trung', 'Tiếng Anh, Tiếng Nhật'];
+
+        for (let i = 6; i <= 126; i++) {
+            const name = sampleNames[(i - 6) % sampleNames.length];
+            let status = 'active';
+            let statusText = 'Đang hoạt động';
+            
+            // Distribute: 18 pending, 12 inactive, 2 rejected, 94 active
+            if (i <= 21) {
+                status = 'pending';
+                statusText = 'Chờ duyệt';
+            } else if (i <= 33) {
+                status = 'inactive';
+                statusText = 'Không hoạt động';
+            } else if (i <= 35) {
+                status = 'rejected';
+                statusText = 'Từ chối';
+            }
+
+            const expNum = (i % 7) + 1;
+            const toursNum = status === 'pending' ? '-' : ((i * 11) % 80 + 10) + ' tour';
+            const ratingNum = status === 'pending' ? '-' : (4.5 + (i % 6) * 0.1).toFixed(1);
+
+            hdvDataset.push({
+                id: i,
+                name: name,
+                avatar: sampleAvatars[(i - 1) % sampleAvatars.length],
+                languages: sampleLangs[(i - 1) % sampleLangs.length],
+                exp: expNum + ' năm',
+                tours: toursNum,
+                rating: ratingNum,
+                certs: (i % 4) + 1,
+                status: status,
+                statusText: statusText,
+                phone: '091' + ((i % 9) + 1) + ' ' + ((i * 123) % 899 + 100) + ' ' + ((i * 456) % 899 + 100),
+                email: name.toLowerCase().replace(/[^a-z]/g, '') + i + '@gmail.com',
+                addr: 'TP. Bến Tre, Bến Tre',
+                dob: '15/06/199' + (i % 9),
+                registered: (10 + (i % 18)) + '/08/2026'
+            });
+        }
+
+        function updatePillCounts() {
+            const total = hdvDataset.length;
+            const activeCount = hdvDataset.filter(h => h.status === 'active').length;
+            const inactiveCount = hdvDataset.filter(h => h.status === 'inactive').length;
+            const pendingCount = hdvDataset.filter(h => h.status === 'pending').length;
+            const rejectedCount = hdvDataset.filter(h => h.status === 'rejected').length;
+
+            if (document.getElementById('count_all')) document.getElementById('count_all').textContent = total;
+            if (document.getElementById('count_active')) document.getElementById('count_active').textContent = activeCount;
+            if (document.getElementById('count_inactive')) document.getElementById('count_inactive').textContent = inactiveCount;
+            if (document.getElementById('count_pending')) document.getElementById('count_pending').textContent = pendingCount;
+            if (document.getElementById('count_rejected')) document.getElementById('count_rejected').textContent = rejectedCount;
+        }
+
+        function getFilteredHdv() {
+            const kw = (document.getElementById('filterHdvSearch') ? document.getElementById('filterHdvSearch').value : '').toLowerCase().trim();
+            const statusSelect = document.getElementById('filterHdvStatusSelect') ? document.getElementById('filterHdvStatusSelect').value : 'all';
+            const lang = document.getElementById('filterHdvLangSelect') ? document.getElementById('filterHdvLangSelect').value : 'all';
+
+            return hdvDataset.filter(h => {
+                if (currentPillStatus !== 'all' && h.status !== currentPillStatus) return false;
+                if (currentPillStatus === 'all' && statusSelect !== 'all' && h.status !== statusSelect) return false;
+                if (lang !== 'all' && !h.languages.includes(lang)) return false;
+
+                if (kw) {
+                    const matchName = h.name.toLowerCase().includes(kw);
+                    const matchPhone = h.phone.includes(kw);
+                    const matchEmail = h.email.toLowerCase().includes(kw);
+                    const matchLang = h.languages.toLowerCase().includes(kw);
+                    if (!matchName && !matchPhone && !matchEmail && !matchLang) return false;
+                }
+                return true;
+            });
+        }
+
+        window.renderHdvTable = function() {
+            const tbody = document.getElementById('hdvTableBody');
+            if (!tbody) return;
+
+            updatePillCounts();
+
+            const filtered = getFilteredHdv();
+            const totalItems = filtered.length;
+            const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, totalItems);
+            const pageSlice = filtered.slice(startIndex, endIndex);
+
+            let html = '';
+            if (pageSlice.length === 0) {
+                html = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#9CA3AF;">Không tìm thấy hướng dẫn viên nào phù hợp.</td></tr>';
+            } else {
+                pageSlice.forEach((h, idx) => {
+                    const isSelected = h.id === selectedHdvId ? 'selected' : '';
+                    const starsHtml = h.rating !== '-' 
+                        ? '<span style="color:#F59E0B; font-weight:700;">★★★ ' + h.rating + '</span>' 
+                        : '<span style="color:#9CA3AF;">-</span>';
+
+                    let actionsHtml = '';
+                    // Actions column simplified to [⋮] only
+                    actionsHtml = '';
+
+                    actionsHtml += '<button class="btn-table-action" onclick="toggleHdvActionMenu(' + h.id + ', event)" title="Thao tác">⋮</button>' +
+                        '<div id="hdvActionMenu_' + h.id + '" class="user-dropdown-menu" style="display:none; position:absolute; right:12px; top:36px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; box-shadow:0 10px 25px -5px rgba(0,0,0,0.2); z-index:9999; min-width:110px; text-align:left; overflow:hidden;">' +
+                            '<div onclick="openEditHdvModal(' + h.id + ')" style="padding:8px 12px; font-size:12px; font-weight:600; color:#374151; display:flex; align-items:center; gap:8px; cursor:pointer;" onmouseover="this.style.background=\'#F0FDF4\'; this.style.color=\'#059669\'" onmouseout="this.style.background=\'#FFF\'; this.style.color=\'#374151\'">' +
+                                '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
+                                'Sửa' +
+                            '</div>' +
+                            '<div onclick="openDeleteHdvModal(' + h.id + ')" style="padding:8px 12px; font-size:12px; font-weight:600; color:#DC2626; display:flex; align-items:center; gap:8px; cursor:pointer; border-top:1px solid #F1F5F9;" onmouseover="this.style.background=\'#FEF2F2\'; this.style.color=\'#B91C1C\'" onmouseout="this.style.background=\'#FFF\'; this.style.color=\'#DC2626\'">' +
+                                '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>' +
+                                'Xóa' +
+                            '</div>' +
+                        '</div>';
+
+                    html += '<tr class="' + isSelected + '" id="rowHdv_' + h.id + '" onclick="selectHdvRow(' + h.id + ')" style="cursor:pointer; transition:background 0.15s;">' +
+                        '<td style="color:#6B7280; font-weight:700;">' + (startIndex + idx + 1) + '</td>' +
+                        '<td>' +
+                            '<div style="display:flex; align-items:center; gap:10px;">' +
+                                '<img src="' + h.avatar + '" class="user-avatar-sm" alt="HDV">' +
+                                '<strong style="font-size:13px; color:#111827;">' + h.name + '</strong>' +
+                            '</div>' +
+                        '</td>' +
+                        '<td>' + h.languages + '</td>' +
+                        '<td>' + h.exp + '</td>' +
+                        '<td>' + h.tours + '</td>' +
+                        '<td>' + starsHtml + '</td>' +
+                        '<td><span class="badge-status-pill ' + h.status + '">' + h.statusText + '</span></td>' +
+                        '<td style="text-align:right; position:relative; overflow:visible; white-space:nowrap;">' +
+                            actionsHtml +
+                        '</td>' +
+                    '</tr>';
+                });
+            }
+
+            tbody.innerHTML = html;
+
+            if (pageSlice.length > 0) {
+                const isSelectedInPage = pageSlice.some(h => h.id === selectedHdvId);
+                if (!isSelectedInPage) {
+                    selectHdvRow(pageSlice[0].id);
+                }
+            }
+
+            renderHdvPaginationControls(totalItems, totalPages);
+        };
+
+        function renderHdvPaginationControls(totalItems, totalPages) {
+            const countEl = document.getElementById('hdvPaginationCount');
+            const container = document.getElementById('hdvPaginationButtons');
+            if (!container) return;
+
+            if (totalItems === 0) {
+                if (countEl) countEl.textContent = 'Không có kết quả';
+                container.innerHTML = '';
+                return;
+            }
+
+            const startIdx = (currentPage - 1) * pageSize + 1;
+            const endIdx = Math.min(currentPage * pageSize, totalItems);
+            if (countEl) countEl.textContent = 'Hiển thị ' + startIdx + ' - ' + endIdx + ' trong ' + totalItems.toLocaleString('vi-VN') + ' hướng dẫn viên';
+
+            let btnHtml = '';
+
+            // Prev Button
+            if (currentPage > 1) {
+                btnHtml += '<button class="btn-table-sm" onclick="goToHdvPage(' + (currentPage - 1) + ')">&lt;</button>';
+            } else {
+                btnHtml += '<button class="btn-table-sm" disabled>&lt;</button>';
+            }
+
+            // Smart pagination window
+            let pagesToShow = [];
+            if (totalPages <= 7) {
+                for (let i = 1; i <= totalPages; i++) pagesToShow.push(i);
+            } else {
+                if (currentPage <= 4) {
+                    pagesToShow = [1, 2, 3, 4, 5, '...', totalPages];
+                } else if (currentPage >= totalPages - 3) {
+                    pagesToShow = [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+                } else {
+                    pagesToShow = [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+                }
+            }
+
+            pagesToShow.forEach(p => {
+                if (p === '...') {
+                    btnHtml += '<span style="color:#9CA3AF; padding:0 4px; font-weight:700;">...</span>';
+                } else {
+                    const isActive = p === currentPage;
+                    const activeClass = isActive ? ' active' : '';
+                    btnHtml += '<button class="btn-table-sm' + activeClass + '" onclick="goToHdvPage(' + p + ')">' + p + '</button>';
+                }
+            });
+
+            // Next Button
+            if (currentPage < totalPages) {
+                btnHtml += '<button class="btn-table-sm" onclick="goToHdvPage(' + (currentPage + 1) + ')">&gt;</button>';
+            } else {
+                btnHtml += '<button class="btn-table-sm" disabled>&gt;</button>';
+            }
+
+            container.innerHTML = btnHtml;
+        }
+
+        window.goToHdvPage = function(page) {
+            const filtered = getFilteredHdv();
+            const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderHdvTable();
+            showToast('📄 Đang xem trang ' + currentPage + ' / ' + totalPages);
+        };
+
+        window.selectHdvRow = function(id) {
+            selectedHdvId = id;
+            document.querySelectorAll('#hdvTableBody tr').forEach(r => r.classList.remove('selected'));
+            const target = document.getElementById('rowHdv_' + id);
+            if (target) target.classList.add('selected');
+
+            const h = hdvDataset.find(item => item.id === id);
+            if (!h) return;
+
+            document.getElementById('inspHdvAvatar').src = h.avatar;
+            document.getElementById('inspHdvName').textContent = h.name;
+            
+            const badge = document.getElementById('inspHdvStatusBadge');
+            badge.className = 'badge-status-pill ' + h.status;
+            badge.textContent = h.statusText;
+
+            document.getElementById('inspHdvPhone').textContent = h.phone;
+            document.getElementById('inspHdvEmail').textContent = h.email;
+            document.getElementById('inspHdvAddr').textContent = h.addr;
+            document.getElementById('inspHdvDob').textContent = h.dob;
+            document.getElementById('inspHdvRegistered').textContent = h.registered;
+
+            document.getElementById('inspHdvExp').textContent = h.exp;
+            document.getElementById('inspHdvCerts').textContent = h.certs;
+            document.getElementById('inspHdvTours').textContent = h.tours !== '-' ? h.tours : '56 tour';
+            document.getElementById('inspHdvRating').textContent = h.rating !== '-' ? '★ ' + h.rating + ' (32)' : '★ 4.9 (32)';
+
+            const activeStatusEl = document.getElementById('inspHdvActiveStatusText');
+            activeStatusEl.textContent = h.statusText;
+
+            const btnContainer = document.getElementById('inspHdvActionButtons');
+            btnContainer.innerHTML = '<button class="btn-inspect-action green-outline" onclick="approveSelectedHdv()">Duyệt</button>' +
+                                     '<button class="btn-inspect-action red-outline" onclick="rejectSelectedHdv()">Từ chối</button>';
+        };
+
+        window.filterByStatusPill = function(status) {
+            currentPillStatus = status;
+            currentPage = 1;
+            
+            document.querySelectorAll('.status-pill-tab').forEach(t => {
+                t.className = 'status-pill-tab';
+            });
+
+            const activeTab = document.getElementById('pillTab_' + status);
+            if (activeTab) {
+                activeTab.className = status === 'pending' ? 'status-pill-tab active-orange' : 'status-pill-tab active-green';
+            }
+
+            const statusSelect = document.getElementById('filterHdvStatusSelect');
+            if (statusSelect) statusSelect.value = status;
+
+            renderHdvTable();
+        };
+
+        window.handleHdvFilter = function() {
+            currentPage = 1;
+            const statusSelect = document.getElementById('filterHdvStatusSelect').value;
+            currentPillStatus = statusSelect;
+
+            document.querySelectorAll('.status-pill-tab').forEach(t => {
+                t.className = 'status-pill-tab';
+            });
+            const activeTab = document.getElementById('pillTab_' + statusSelect);
+            if (activeTab) {
+                activeTab.className = statusSelect === 'pending' ? 'status-pill-tab active-orange' : 'status-pill-tab active-green';
+            }
+
+            renderHdvTable();
+        };
+
+        window.quickApproveHdv = function(id) {
+            const h = hdvDataset.find(item => item.id === id);
+            if (!h) return;
+            h.status = 'active';
+            h.statusText = 'Đang hoạt động';
+            renderHdvTable();
+            selectHdvRow(id);
+            showToast('✅ Đã phê duyệt hồ sơ HDV ' + h.name);
+        };
+
+        window.quickRejectHdv = function(id) {
+            const h = hdvDataset.find(item => item.id === id);
+            if (!h) return;
+            h.status = 'rejected';
+            h.statusText = 'Từ chối';
+            renderHdvTable();
+            selectHdvRow(id);
+            showToast('✖ Đã từ chối hồ sơ HDV ' + h.name);
+        };
+
+        window.approveSelectedHdv = function() {
+            quickApproveHdv(selectedHdvId);
+        };
+
+        window.rejectSelectedHdv = function() {
+            quickRejectHdv(selectedHdvId);
+        };
+
+        window.toggleHdvActionMenu = function(id, e) {
+            if (e) e.stopPropagation();
+            const allMenus = document.querySelectorAll('.user-dropdown-menu');
+            const targetMenu = document.getElementById('hdvActionMenu_' + id);
+            
+            allMenus.forEach(m => {
+                if (m !== targetMenu) m.style.display = 'none';
+            });
+
+            if (targetMenu) {
+                const isHidden = (targetMenu.style.display === 'none' || !targetMenu.style.display);
+                targetMenu.style.display = isHidden ? 'block' : 'none';
+            }
+        };
+
+        window.openAddHdvModal = function() {
+            document.getElementById('modalAddHdv').style.display = 'flex';
+        };
+
+        window.submitAddNewHdv = function() {
+            const name = document.getElementById('addHdvNameInput').value.trim();
+            if (!name) {
+                showToast('⚠️ Vui lòng nhập họ tên hướng dẫn viên!');
+                return;
+            }
+            const phone = document.getElementById('addHdvPhoneInput').value.trim() || '0911 222 333';
+            const email = document.getElementById('addHdvEmailInput').value.trim() || 'namguide@gmail.com';
+            const langs = document.getElementById('addHdvLangInput').value.trim() || 'Tiếng Anh, Tiếng Pháp';
+            const exp = document.getElementById('addHdvExpInput').value.trim() || '5 năm';
+            const addr = document.getElementById('addHdvAddrInput').value.trim() || 'TP. Bến Tre, Bến Tre';
+
+            const newHdv = {
+                id: hdvDataset.length + 1,
+                name: name,
+                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop',
+                languages: langs,
+                exp: exp,
+                tours: '-',
+                rating: '-',
+                certs: 2,
+                status: 'pending',
+                statusText: 'Chờ duyệt',
+                phone: phone,
+                email: email,
+                addr: addr,
+                dob: '10/10/1995',
+                registered: '25/08/2026'
+            };
+
+            hdvDataset.unshift(newHdv);
+            closeModal('modalAddHdv');
+            currentPillStatus = 'pending';
+            filterByStatusPill('pending');
+            selectHdvRow(newHdv.id);
+            showToast('🎉 Đã thêm hồ sơ HDV ' + name + ' (Đang chờ duyệt)');
+        };
+
+        window.openEditHdvModal = function(id) {
+            const h = hdvDataset.find(item => item.id === id);
+            if (!h) return;
+
+            activeHdvActionId = id;
+            document.querySelectorAll('.user-dropdown-menu').forEach(m => m.style.display = 'none');
+
+            document.getElementById('editHdvNameInput').value = h.name;
+            document.getElementById('editHdvPhoneInput').value = h.phone;
+            document.getElementById('editHdvEmailInput').value = h.email;
+            document.getElementById('editHdvLangInput').value = h.languages;
+            document.getElementById('editHdvExpInput').value = h.exp;
+            document.getElementById('editHdvStatusSelect').value = h.status;
+
+            document.getElementById('modalEditHdv').style.display = 'flex';
+        };
+
+        window.saveHdvEdit = function() {
+            const h = hdvDataset.find(item => item.id === activeHdvActionId);
+            if (!h) return;
+
+            h.name = document.getElementById('editHdvNameInput').value.trim() || h.name;
+            h.phone = document.getElementById('editHdvPhoneInput').value.trim() || h.phone;
+            h.email = document.getElementById('editHdvEmailInput').value.trim() || h.email;
+            h.languages = document.getElementById('editHdvLangInput').value.trim() || h.languages;
+            h.exp = document.getElementById('editHdvExpInput').value.trim() || h.exp;
+            
+            const newStatus = document.getElementById('editHdvStatusSelect').value;
+            h.status = newStatus;
+            h.statusText = newStatus === 'active' ? 'Đang hoạt động' : (newStatus === 'pending' ? 'Chờ duyệt' : (newStatus === 'rejected' ? 'Từ chối' : 'Không hoạt động'));
+
+            renderHdvTable();
+            selectHdvRow(h.id);
+            closeModal('modalEditHdv');
+            showToast('✅ Đã lưu cập nhật hồ sơ HDV ' + h.name);
+        };
+
+        window.openDeleteHdvModal = function(id) {
+            const h = hdvDataset.find(item => item.id === id);
+            if (!h) return;
+
+            activeHdvActionId = id;
+            document.querySelectorAll('.user-dropdown-menu').forEach(m => m.style.display = 'none');
+
+            document.getElementById('delHdvNameSub').textContent = 'HDV: ' + h.name + ' (' + h.phone + ')';
+            document.getElementById('modalDeleteHdv').style.display = 'flex';
+        };
+
+        window.confirmDeleteHdv = function() {
+            const idx = hdvDataset.findIndex(item => item.id === activeHdvActionId);
+            if (idx !== -1) {
+                const deletedName = hdvDataset[idx].name;
+                hdvDataset.splice(idx, 1);
+                closeModal('modalDeleteHdv');
+                renderHdvTable();
+                if (hdvDataset.length > 0) {
+                    selectHdvRow(hdvDataset[0].id);
+                }
+                showToast('🗑️ Đã xóa hướng dẫn viên ' + deletedName);
+            }
+        };
+
+        
+        window.openHdvTourHistoryModal = function(id) {
+            const hdvId = id || (typeof selectedHdvId !== 'undefined' ? selectedHdvId : (typeof selectedUserId !== 'undefined' ? selectedUserId : 1));
+            const h = hdvDataset.find(item => item.id === hdvId) || hdvDataset[0];
+            if (!h) return;
+
+            if (document.getElementById('hdvTourHistTitleSub')) {
+                document.getElementById('hdvTourHistTitleSub').textContent = 'HDV: ' + h.name + ' (' + h.phone + ') - ' + (h.tours !== '-' ? h.tours : '56 tour') + ' đã dẫn';
+            }
+            if (document.getElementById('hdvTourHistSummary')) {
+                document.getElementById('hdvTourHistSummary').textContent = 'Tổng số: ' + (h.tours !== '-' ? h.tours : '56 tour') + ' - Đánh giá trung bình: ★ ' + (h.rating !== '-' ? h.rating : '4.9');
+            }
+
+            const pastToursData = [
+                {
+                    title: 'Tour Một ngày xanh Bến Tre',
+                    date: '20/08/2026',
+                    pax: 4,
+                    code: 'TOUR-BT-001',
+                    rating: '5.0',
+                    feedback: 'HDV nhiệt tình, am hiểu tường tận văn hóa sông nước Bến Tre, thuyết minh rất cuốn hút!',
+                    cust: 'Nguyễn Văn A'
+                },
+                {
+                    title: 'Khám phá miệt vườn Chợ Lách & Thưởng thức trái cây',
+                    date: '15/07/2026',
+                    pax: 8,
+                    code: 'TOUR-CL-002',
+                    rating: '4.9',
+                    feedback: 'Hướng dẫn chu đáo, hỗ trợ các bác lớn tuổi trong đoàn rất tận tâm. Đoàn rất hài lòng!',
+                    cust: 'Trần Văn B'
+                },
+                {
+                    title: 'Cù Lao Thới Sơn - Cồn Phụng - Chèo xuồng ba lá',
+                    date: '02/06/2026',
+                    pax: 12,
+                    code: 'TOUR-CP-003',
+                    rating: '4.8',
+                    feedback: 'Chuyến đi vui vẻ, sắp xếp thời gian hợp lý, chụp ảnh cho đoàn rất đẹp.',
+                    cust: 'Lê Thị C'
+                },
+                {
+                    title: 'Trải nghiệm sông nước Hàm Luông ngắm hoàng hôn',
+                    date: '18/05/2026',
+                    pax: 6,
+                    code: 'TOUR-HL-004',
+                    rating: '5.0',
+                    feedback: 'Dịch vụ tuyệt vời, bạn HDV rất chuyên nghiệp và thân thiện.',
+                    cust: 'Phạm Văn D'
+                },
+                {
+                    title: 'Du lịch sinh thái nghỉ dưỡng Cồn Quy',
+                    date: '29/04/2026',
+                    pax: 5,
+                    code: 'TOUR-CQ-005',
+                    rating: '4.9',
+                    feedback: 'Rất ấn tượng với sự am hiểu ẩm thực địa phương của HDV.',
+                    cust: 'Võ Minh E'
+                }
+            ];
+
+            let listHtml = '<div style="display:flex; flex-direction:column; gap:14px;">';
+            pastToursData.forEach(t => {
+                listHtml += '<div style="background:#FFFFFF; border:1px solid #E5E7EB; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:8px; box-shadow:0 1px 3px rgba(0,0,0,0.03);">' +
+                    '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
+                        '<div>' +
+                            '<div style="display:flex; align-items:center; gap:8px;">' +
+                                '<strong style="font-size:14px; color:#111827;">' + t.title + '</strong>' +
+                                '<span style="font-size:11px; font-weight:800; color:#065F46; background:#D1FAE5; padding:2px 8px; border-radius:6px; border:1px solid #A7F3D0;">' + t.code + '</span>' +
+                            '</div>' +
+                            '<div style="font-size:12px; color:#6B7280; margin-top:5px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">' +
+                                '<span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:3px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Ngày khởi hành: <strong style="color:#1F2937;">' + t.date + '</strong></span>' +
+                                '<span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:3px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Đoàn: <strong style="color:#1F2937;">' + t.pax + ' khách</strong></span>' +
+                                '<span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:-2px; margin-right:3px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Trưởng đoàn: <strong style="color:#1F2937;">' + t.cust + '</strong></span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<span class="badge-status-pill active" style="font-size:11px; padding:3px 10px;">Đã hoàn thành</span>' +
+                    '</div>' +
+
+                    '<div style="background:#F8FAFC; border:1px solid #F1F5F9; border-radius:8px; padding:10px 12px; margin-top:2px; font-size:12px;">' +
+                        '<div style="display:flex; align-items:center; gap:6px; color:#D97706; font-weight:800;">' +
+                            '<svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="1" style="display:inline-block; vertical-align:-2px; margin-right:4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' + t.rating + ' / 5.0' +
+                            '<span style="font-weight:500; color:#64748B; margin-left:4px;">— Nhận xét của khách:</span>' +
+                        '</div>' +
+                        '<div style="color:#334155; font-style:italic; margin-top:3px; line-height:1.4;">“' + t.feedback + '”</div>' +
+                    '</div>' +
+                '</div>';
+            });
+            listHtml += '</div>';
+
+            document.getElementById('hdvTourHistList').innerHTML = listHtml;
+            document.getElementById('modalHdvTourHistory').style.display = 'flex';
+        };
+
+        window.openHdvScheduleModal = function() {
+            const h = hdvDataset.find(item => item.id === selectedHdvId);
+            if (h && document.getElementById('schHdvNameSub')) {
+                document.getElementById('schHdvNameSub').textContent = 'HDV: ' + h.name + ' (' + h.phone + ')';
+            }
+            document.getElementById('modalHdvSchedule').style.display = 'flex';
+        };
+
+        window.closeModal = function(id) {
+            const m = document.getElementById(id);
+            if (m) m.style.display = 'none';
+        };
+
+        function toggleDropdownMenu(submenuId, parentEl) {
+            const submenu = document.getElementById(submenuId);
+            if (!submenu) return;
+            const isHidden = (submenu.style.display === 'none' || !submenu.style.display);
+            submenu.style.display = isHidden ? 'flex' : 'none';
+            submenu.style.flexDirection = 'column';
+            const arrow = parentEl.querySelector('.menu-arrow-btn');
+            if (arrow) arrow.textContent = isHidden ? '▲' : '▼';
+        }
+
+        function handleLogout(e) {
+            if (e) e.preventDefault();
+            try {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('token');
+                sessionStorage.clear();
+            } catch(err) {}
+            showToast('👋 Đã đăng xuất! Đang chuyển về trang chủ...');
+            setTimeout(function() {
+                window.location.href = '../khach-hang/index.html';
+            }, 600);
+        }
+
+        let toastTimeout;
+        function showToast(msg) {
+            const t = document.getElementById('toastNotif');
+            document.getElementById('toastMsg').textContent = msg;
+            t.style.display = 'flex';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(function() {
+                t.style.display = 'none';
+            }, 3000);
+        }
+
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.user-dropdown-menu').forEach(m => m.style.display = 'none');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial view matches image 2 exactly
+            renderHdvTable();
+            selectHdvRow(1);
+        });
+    </script>
+    <script src="../assets/js/api-client.js?v=20260831-4"></script>
+</body>
+</html>

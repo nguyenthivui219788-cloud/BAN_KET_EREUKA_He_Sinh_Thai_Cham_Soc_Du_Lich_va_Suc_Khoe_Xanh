@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch trình Tour - Bến Tre Admin</title>
+    <style>
+        :root {
+            --sidebar-bg: #FFFFFF;
+            --sidebar-border: #E5E7EB;
+            --sidebar-active-bg: #064E3B;
+            --sidebar-active-sub: #E8FAF0;
+            --sidebar-active-text: #065F46;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-dark: #111827;
+            --text-muted: #64748B;
+            --primary-emerald: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13px;
+        }
+
+        /* ELEGANT WHITE SIDEBAR */
+        .sidebar {
+            width: 255px !important;
+            min-width: 255px !important;
+            max-width: 255px !important;
+            background: #FFFFFF !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #1F2937 !important;
+            border-right: 1px solid #E5E7EB !important;
+            scrollbar-width: thin;
+            scrollbar-color: #CBD5E1 #FFFFFF;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .sidebar-item-link:hover {
+            background: #F3F4F6 !important;
+            color: #111827 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-icon-svg {
+            width: 18px !important;
+            height: 18px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-arrow-icon {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-sub-container {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            padding: 4px 0 6px 8px !important;
+        }
+
+        .sidebar-sub-item {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #4B5563 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+        }
+
+        .sidebar-sub-item:hover {
+            background: #F3F4F6 !important;
+            color: #065F46 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-item.active {
+            background: #E8FAF0 !important;
+            color: #065F46 !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-icon-svg {
+            width: 16px !important;
+            height: 16px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        /* MAIN WRAPPER */
+        .main-wrapper {
+            margin-left: 255px !important;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #FAFAFB;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            height: 70px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #EDEDF2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .header-left { display: flex; flex-direction: column; }
+        .page-title { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.4px; }
+        .page-sub { font-size: 13px; color: #64748B; margin-top: 2px; }
+
+        .header-right { display: flex; align-items: center; gap: 20px; }
+
+        .notif-bell {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 17px;
+            transition: all 0.15s;
+        }
+        .notif-bell:hover { background: #F1F5F9; }
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #EF4444;
+            color: #FFF;
+            font-size: 10.5px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 1px 6px;
+            border: 2px solid #FFF;
+        }
+
+        .user-profile {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            cursor: pointer !important;
+        }
+
+        .user-avatar {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid #E2E8F0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .user-info { display: flex !important; flex-direction: column !important; }
+        .user-name { font-size: 13.5px !important; font-weight: 700 !important; color: #111827 !important; line-height: 1.2 !important; }
+        .user-role { font-size: 11.5px !important; color: #64748B !important; line-height: 1.2 !important; }
+
+        /* CONTENT CONTAINER */
+        .content-container {
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 4 STAT CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .stat-icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .stat-icon-circle.orange { background: #FFF7ED; color: #EA580C; }
+        .stat-icon-circle.green { background: #E8FAF2; color: #059669; }
+        .stat-icon-circle.blue { background: #EFF6FF; color: #2563EB; }
+        .stat-icon-circle.purple { background: #F5F3FF; color: #7C3AED; }
+
+        .stat-content { display: flex; flex-direction: column; }
+        .stat-label { font-size: 12.5px; color: #64748B; font-weight: 600; }
+        .stat-value { font-size: 26px; font-weight: 800; color: #111827; line-height: 1.1; margin: 3px 0; }
+        .stat-subtext { font-size: 11.5px; color: #64748B; font-weight: 500; }
+
+        /* 2 COLUMNS LAYOUT */
+        .layout-2cols {
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* EXACT SCHEDULE CARD (CHUẨN 100% THEO ẢNH 3 - media_1787747522540.png) */
+        .card-schedule-exact {
+            background: #FFFFFF;
+            border-radius: 20px;
+            border: 1px solid #E5E7EB;
+            padding: 24px 22px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .schedule-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .schedule-title-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .schedule-cal-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #FFF7ED;
+            border: 1.5px solid #FFEDD5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 2px 5px rgba(234, 88, 12, 0.1);
+        }
+
+        .schedule-title-text {
+            font-size: 19px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -0.3px;
+        }
+
+        .btn-add-schedule-orange {
+            background: #FFFFFF;
+            color: #EA580C;
+            border: 1.5px solid #FB923C;
+            padding: 7px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-add-schedule-orange:hover {
+            background: #FFF7ED;
+            border-color: #EA580C;
+        }
+
+        /* SCHEDULE TABLE (CHUẨN ẢNH 3) */
+        .schedule-exact-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .schedule-exact-table th {
+            text-align: left;
+            padding: 12px 10px;
+            color: #4B5563;
+            font-weight: 700;
+            border-bottom: 1px solid #F1F5F9;
+            font-size: 12.5px;
+        }
+
+        .schedule-exact-table td {
+            padding: 16px 10px;
+            border-bottom: 1px solid #F1F5F9;
+            color: #1F2937;
+            vertical-align: middle;
+        }
+
+        .time-box {
+            font-weight: 700;
+            color: #111827;
+            line-height: 1.3;
+            font-size: 12.5px;
+            white-space: nowrap;
+        }
+
+        .place-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #111827;
+            font-size: 13px;
+        }
+
+        .place-pin-icon {
+            font-size: 15px;
+            color: #64748B;
+            flex-shrink: 0;
+        }
+
+        .activity-text {
+            color: #374151;
+            font-size: 12.5px;
+            line-height: 1.35;
+        }
+
+        .schedule-bottom-link {
+            text-align: center;
+            padding-top: 10px;
+        }
+        .btn-see-all-orange {
+            color: #EA580C;
+            font-weight: 700;
+            font-size: 13.5px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-see-all-orange:hover {
+            color: #C2410C;
+            text-decoration: underline;
+        }
+
+        /* RIGHT DETAIL / TOUR SELECTOR CARD */
+        .card-tour-selector {
+            background: #FFFFFF;
+            border-radius: 20px;
+            border: 1px solid #E5E7EB;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .selector-title { font-size: 17px; font-weight: 800; color: #111827; }
+
+        .tour-select-dropdown {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1.5px solid #D1D5DB;
+            font-size: 13px;
+            font-weight: 700;
+            color: #111827;
+            outline: none;
+            background: #FFF;
+            cursor: pointer;
+        }
+
+        .tour-preview-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+        .tour-preview-img {
+            width: 140px;
+            height: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .tour-preview-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .preview-title { font-size: 16px; font-weight: 800; color: #064E3B; }
+        .preview-meta { font-size: 12px; color: #64748B; }
+
+        /* TOAST */
+        .toast-notif {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 99999;
+            animation: slideUp 0.2s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ELEGANT WHITE SIDEBAR -->
+    <aside class="sidebar">
+        <!-- BRAND HEADER -->
+        <a href="../admin/dashboard.html" style="padding:22px 20px 18px; display:flex; align-items:center; gap:12px; text-decoration:none !important; color:inherit;">
+            <div style="width:44px; height:44px; border-radius:50%; background:#FFFFFF; border:2px solid #059669; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(5, 150, 105, 0.15);">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">
+            </div>
+            <div style="display:flex; flex-direction:column;">
+                <div style="font-size:18px; font-weight:900; color:#064E3B; letter-spacing:-0.3px; line-height:1.1;">BẾN TRE</div>
+                <div style="font-size:12px; color:#059669; font-weight:600; margin-top:2px;">Du lịch bền vững</div>
+            </div>
+        </a>
+
+        <!-- MENU ITEMS -->
+        <nav style="padding:4px 12px; display:flex; flex-direction:column; gap:4px; flex:1;">
+            <!-- 1. Tổng quan -->
+            <a href="../admin/dashboard.html" class="sidebar-item-link">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Tổng quan</span>
+                </div>
+            </a>
+
+            <!-- 2. Du lịch (Dropdown - ACTIVE) -->
+            <div>
+                <div class="sidebar-item-link active" onclick="toggleSidebarMenu('subDulichMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                        <span>Du lịch</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌃</span>
+                </div>
+                <div class="sidebar-sub-container" id="subDulichMenu" style="display:flex;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <span>Địa điểm du lịch</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                        <span>Tour du lịch</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item active">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>Lịch trình</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span>Dịch vụ du lịch</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. Đặt tour -->
+            <a href="../admin/dashboard.html" class="sidebar-item-link">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Đặt tour</span>
+                </div>
+            </a>
+
+            <!-- 4. Người dùng (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link" onclick="toggleSidebarMenu('subNguoidungMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Người dùng</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌄</span>
+                </div>
+                <div class="sidebar-sub-container" id="subNguoidungMenu" style="display:none;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Khách hàng</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                        <span>Hướng dẫn viên</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 5. Chăm sóc sức khỏe (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link" onclick="toggleSidebarMenu('subSuckhoeMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        <span>Chăm sóc sức khỏe</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌄</span>
+                </div>
+                <div class="sidebar-sub-container" id="subSuckhoeMenu" style="display:none;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><path d="M9 9h1"></path><path d="M9 13h1"></path></svg>
+                        <span>Cơ sở y tế</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>Dịch vụ sức khỏe</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>Hoạt động sức khỏe</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 6. Tin tức & sự kiện (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link" onclick="toggleSidebarMenu('subTintucMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Tin tức & sự kiện</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌄</span>
+                </div>
+                <div class="sidebar-sub-container" id="subTintucMenu" style="display:none;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        <span>Tin tức</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+                        <span>Sự kiện</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 7. Đánh giá -->
+            <a href="../admin/dashboard.html" class="sidebar-item-link">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Đánh giá</span>
+                </div>
+            </a>
+        </nav>
+
+        <!-- BOTTOM SCENIC BANNER -->
+        <div style="margin-top:auto; padding:12px;">
+            <img src="https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=400&h=260&fit=crop" style="width:100%; height:180px; object-fit:cover; border-radius:12px; display:block; box-shadow:0 2px 8px rgba(0,0,0,0.06);" alt="Bến Tre Sông Nước">
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar">
+            <div class="header-left">
+                <h1 class="page-title">Quản lý Lịch trình Tour</h1>
+                <p class="page-sub">Chi tiết lịch trình từng mốc thời gian, địa điểm và hoạt động trải nghiệm</p>
+            </div>
+            <div class="header-right">
+                <div class="notif-bell" onclick="showToast('🔔 Bạn có 3 lịch trình mới cập nhật!')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span class="notif-badge">3</span>
+                </div>
+                <div class="user-profile" onclick="window.location.href='../admin/dashboard.html'">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" class="user-avatar" alt="Admin">
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                        <span class="user-role">Quản trị viên ▾</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT CONTAINER -->
+        <main class="content-container">
+            <!-- 4 STAT CARDS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon-circle orange">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-label">Tổng mốc lịch trình</span>
+                        <span class="stat-value">45</span>
+                        <span class="stat-subtext">Trên toàn bộ 24 gói tour</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-circle green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-label">Tour có lịch trình</span>
+                        <span class="stat-value">24</span>
+                        <span class="stat-subtext">Đã chuẩn hóa 100%</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-circle blue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-label">Điểm dừng chân</span>
+                        <span class="stat-value">38</span>
+                        <span class="stat-subtext">Địa danh sinh thái</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon-circle purple">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-label">Thời lượng TB</span>
+                        <span class="stat-value">8.5h</span>
+                        <span class="stat-subtext">Trải nghiệm phong phú</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2 COLUMNS LAYOUT -->
+            <div class="layout-2cols">
+                <!-- LEFT COLUMN: CARD LỊCH TRÌNH CHUẨN 100% THEO ẢNH 3 -->
+                <div class="card-schedule-exact">
+                    <!-- HEADER -->
+                    <div class="schedule-header">
+                        <div class="schedule-title-left">
+                            <div class="schedule-cal-icon">📅</div>
+                            <h2 class="schedule-title-text">Lịch trình</h2>
+                        </div>
+                        <button class="btn-add-schedule-orange" onclick="openAddScheduleModal()">
+                            <span>+</span>
+                            <span>Thêm mới</span>
+                        </button>
+                    </div>
+
+                    <!-- TABLE -->
+                    <table class="schedule-exact-table">
+                        <thead>
+                            <tr>
+                                <th style="width:105px;">Thời gian</th>
+                                <th style="width:145px;">Địa điểm</th>
+                                <th>Hoạt động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTableBody">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+
+                    <!-- BOTTOM LINK -->
+                    <div class="schedule-bottom-link">
+                        <a href="javascript:void(0)" class="btn-see-all-orange" onclick="showToast('📅 Đang xem toàn bộ 45 mốc lịch trình')">
+                            <span>Xem tất cả</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: TOUR INFO & SELECTOR -->
+                <div class="card-tour-selector">
+                    <div class="selector-header">
+                        <h3 class="selector-title">Chọn Tour du lịch</h3>
+                        <a href="../admin/dashboard.html" style="font-size:12.5px; color:#059669; font-weight:700; text-decoration:none;">Quản lý Tour →</a>
+                    </div>
+
+                    <select class="tour-select-dropdown" id="tourSelectBox" onchange="switchTourSchedule()">
+                        <option value="1">Tour Một ngày xanh Bến Tre (1 ngày)</option>
+                        <option value="2">Khám phá miệt vườn Chợ Lách (2N1Đ)</option>
+                        <option value="3">Trải nghiệm sông nước Ba Tri (1 ngày)</option>
+                        <option value="4">Du lịch sinh thái Cồn Phụng - Cù Lao (1 ngày)</option>
+                    </select>
+
+                    <div class="tour-preview-card">
+                        <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=300&h=200&fit=crop" class="tour-preview-img" alt="Tour img">
+                        <div class="tour-preview-info">
+                            <div class="preview-title" id="tourPreviewTitle">Tour Một ngày xanh Bến Tre</div>
+                            <div class="preview-meta" id="tourPreviewMeta">Thời lượng: 1 ngày &nbsp;|&nbsp; Khởi hành: Hàng ngày</div>
+                            <div style="font-size:12.5px; color:#374151; margin-top:4px;">
+                                Lịch trình tiêu chuẩn gồm 5 mốc hoạt động sinh thái sông nước đặc sắc nhất tại cù lao Bến Tre.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL THÊM LỊCH TRÌNH -->
+    <div id="modalAddSchedule" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#FFF; border-radius:16px; width:480px; max-width:94%; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2); overflow:hidden;">
+            <div style="padding:16px 20px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center; background:#FFF7ED;">
+                <h3 style="font-size:15px; font-weight:800; color:#EA580C;">+ Thêm mốc Lịch trình mới</h3>
+                <span style="cursor:pointer; font-size:18px; color:#9CA3AF;" onclick="closeModal('modalAddSchedule')">✕</span>
+            </div>
+            <div style="padding:18px 20px; display:flex; flex-direction:column; gap:12px; font-size:12.5px;">
+                <div>
+                    <label style="font-weight:700; display:block; margin-bottom:4px;">Khoảng thời gian *</label>
+                    <input type="text" id="addSchTime" style="width:100%; padding:8px 10px; border:1px solid #D1D5DB; border-radius:8px; outline:none;" placeholder="VD: 08:00 - 09:00">
+                </div>
+                <div>
+                    <label style="font-weight:700; display:block; margin-bottom:4px;">Địa điểm *</label>
+                    <input type="text" id="addSchPlace" style="width:100%; padding:8px 10px; border:1px solid #D1D5DB; border-radius:8px; outline:none;" placeholder="VD: Cồn Phụng">
+                </div>
+                <div>
+                    <label style="font-weight:700; display:block; margin-bottom:4px;">Hoạt động cụ thể *</label>
+                    <textarea id="addSchActivity" rows="3" style="width:100%; padding:8px 10px; border:1px solid #D1D5DB; border-radius:8px; outline:none; font-family:inherit;" placeholder="VD: Tham quan cồn Phụng, đi xuồng ba lá..."></textarea>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+                    <button onclick="closeModal('modalAddSchedule')" style="padding:8px 14px; background:#F3F4F6; border:1px solid #E5E7EB; border-radius:8px; cursor:pointer; font-weight:700;">Hủy</button>
+                    <button onclick="saveNewSchedule()" style="padding:8px 16px; background:#EA580C; color:#FFF; border:none; border-radius:8px; cursor:pointer; font-weight:700;">Lưu mốc lịch trình</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toastNotif" class="toast-notif">
+        <span>✅</span>
+        <span id="toastMsg">Thao tác thành công!</span>
+    </div>
+
+    <script>
+        const scheduleDataset = [
+            {
+                time: '08:00<br>- 09:00',
+                place: 'Cồn Phụng',
+                placeIcon: '📍',
+                activity: 'Tham quan cồn Phụng'
+            },
+            {
+                time: '09:30<br>- 11:00',
+                place: 'Làng dừa Tân Thạch',
+                placeIcon: '📍',
+                activity: 'Đi xuồng ba lá, trải nghiệm dừa'
+            },
+            {
+                time: '11:30<br>- 13:00',
+                place: 'Nhà hàng Bến Tre Xanh',
+                placeIcon: '🏨',
+                activity: 'Dùng bữa trưa, thưởng thức đặc sản'
+            },
+            {
+                time: '13:30<br>- 15:00',
+                place: 'Vườn trái cây Cái Mơn',
+                placeIcon: '📍',
+                activity: 'Tham quan vườn trái cây'
+            },
+            {
+                time: '15:30<br>- 16:30',
+                place: 'Chùa Vĩnh Tràng',
+                placeIcon: '📍',
+                activity: 'Tham quan, chụp ảnh'
+            }
+        ];
+
+        function renderScheduleTable() {
+            const tbody = document.getElementById('scheduleTableBody');
+            if (!tbody) return;
+
+            let html = '';
+            scheduleDataset.forEach((item, idx) => {
+                html += '<tr>' +
+                    '<td><div class="time-box">' + item.time + '</div></td>' +
+                    '<td>' +
+                        '<div class="place-box">' +
+                            '<span class="place-pin-icon">' + item.placeIcon + '</span>' +
+                            '<span>' + item.place + '</span>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td><div class="activity-text">' + item.activity + '</div></td>' +
+                '</tr>';
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function switchTourSchedule() {
+            const sel = document.getElementById('tourSelectBox');
+            showToast('📅 Đang tải lịch trình: ' + sel.options[sel.selectedIndex].text);
+        }
+
+        function openAddScheduleModal() {
+            document.getElementById('modalAddSchedule').style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.style.display = 'none';
+        }
+
+        function saveNewSchedule() {
+            const time = document.getElementById('addSchTime').value.trim();
+            const place = document.getElementById('addSchPlace').value.trim();
+            const act = document.getElementById('addSchActivity').value.trim();
+
+            if (!time || !place || !act) {
+                alert('Vui lòng nhập đầy đủ thông tin!');
+                return;
+            }
+
+            scheduleDataset.push({
+                time: time.replace(' - ', '<br>- '),
+                place: place,
+                placeIcon: '📍',
+                activity: act
+            });
+
+            closeModal('modalAddSchedule');
+            renderScheduleTable();
+            showToast('🎉 Đã thêm mốc lịch trình mới!');
+
+            document.getElementById('addSchTime').value = '';
+            document.getElementById('addSchPlace').value = '';
+            document.getElementById('addSchActivity').value = '';
+        }
+
+        function toggleSidebarMenu(menuId, btnEl) {
+            const menu = document.getElementById(menuId);
+            if (!menu) return;
+            const isHidden = (menu.style.display === 'none' || !menu.style.display);
+            menu.style.display = isHidden ? 'flex' : 'none';
+            const arrow = btnEl.querySelector('.sidebar-arrow-icon');
+            if (arrow) arrow.textContent = isHidden ? '⌃' : '⌄';
+        }
+
+        let toastTimeout;
+        function showToast(msg) {
+            const t = document.getElementById('toastNotif');
+            document.getElementById('toastMsg').textContent = msg;
+            t.style.display = 'flex';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderScheduleTable();
+        });
+    </script>
+    <script src="../assets/js/api-client.js?v=20260831-4"></script>
+</body>
+</html>

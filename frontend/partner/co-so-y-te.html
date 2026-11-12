@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chăm sóc sức khỏe - Bến Tre Admin</title>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --sidebar-bg: #FFFFFF;
+            --sidebar-border: #E5E7EB;
+            --sidebar-active-bg: #064E3B;
+            --sidebar-active-sub: #E8FAF0;
+            --sidebar-active-text: #065F46;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-dark: #111827;
+            --text-muted: #64748B;
+            --primary-emerald: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            font-size: 13px;
+        }
+
+        /* ELEGANT WHITE SIDEBAR (CHUẨN ẢNH 3) */
+        .sidebar {
+            width: 255px !important;
+            min-width: 255px !important;
+            max-width: 255px !important;
+            background: #FFFFFF !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #1F2937 !important;
+            border-right: 1px solid #E5E7EB !important;
+            scrollbar-width: thin;
+            scrollbar-color: #CBD5E1 #FFFFFF;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+
+        /* BRAND LOGO & TITLE */
+        .sidebar-brand {
+            padding: 22px 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-logo-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 2px solid #059669;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+        }
+
+        .brand-title-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title-text {
+            font-size: 18px;
+            font-weight: 900;
+            color: #064E3B;
+            letter-spacing: -0.3px;
+            line-height: 1.1;
+        }
+
+        .brand-sub-text {
+            font-size: 12px;
+            color: #059669;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* SIDEBAR NAVIGATION LIST */
+        .sidebar-nav-list {
+            padding: 4px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-menu-btn {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            border: none;
+            background: transparent;
+        }
+
+        .sidebar-menu-btn:hover {
+            background: #F3F4F6 !important;
+            color: #111827 !important;
+        }
+
+        .sidebar-menu-btn.active-green-parent {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+        }
+
+        .menu-left-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-icon-svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .chevron-icon {
+            font-size: 11px;
+            transition: transform 0.2s;
+        }
+
+        /* SUBMENU */
+        .sidebar-submenu {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 4px 0 6px 8px;
+        }
+
+        .sidebar-sub-btn {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #4B5563 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+        }
+
+        .sidebar-sub-btn:hover {
+            background: #F3F4F6 !important;
+            color: #065F46 !important;
+        }
+
+        .sidebar-sub-btn.active-sub {
+            background: #E8FAF0 !important;
+            color: #065F46 !important;
+            font-weight: 700 !important;
+        }
+
+        .sidebar-sub-btn.active-sub .menu-icon-svg {
+            stroke: #065F46 !important;
+        }
+
+        /* BOTTOM SCENIC BANNER */
+        .sidebar-bottom-banner {
+            margin-top: auto;
+            padding: 12px;
+        }
+
+        .sidebar-banner-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        /* MAIN WRAPPER */
+        .main-wrapper {
+            margin-left: 255px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #FAFAFB;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            height: 70px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #EDEDF2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .header-left { display: flex; flex-direction: column; }
+        .page-title { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.4px; }
+        .page-sub { font-size: 13px; color: #64748B; margin-top: 2px; }
+
+        .header-right { display: flex; align-items: center; gap: 20px; }
+
+        .notif-bell {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 17px;
+            transition: all 0.15s;
+        }
+        .notif-bell:hover { background: #F1F5F9; }
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #EF4444;
+            color: #FFF;
+            font-size: 10.5px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 1px 6px;
+            border: 2px solid #FFF;
+        }
+
+        .user-profile {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            cursor: pointer !important;
+        }
+
+        .user-avatar {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid #E2E8F0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .user-info { display: flex !important; flex-direction: column !important; }
+        .user-name { font-size: 13.5px !important; font-weight: 700 !important; color: #111827 !important; line-height: 1.2 !important; }
+        .user-role { font-size: 11.5px !important; color: #64748B !important; line-height: 1.2 !important; }
+
+        /* CONTENT CONTAINER */
+        .content-container {
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 4 STATS CARDS EXACT TO MOCKUP (BỎ XEM CHI TIẾT) */
+        .stats-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .stat-card-health {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 20px 20px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+        }
+        .stat-card-health:hover {
+            box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+            border-color: #CBD5E1;
+        }
+
+        .stat-card-top-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .stat-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .stat-icon-wrapper.green { background: #E6F7F0; color: #059669; }
+        .stat-icon-wrapper.blue { background: #EBF3FE; color: #2563EB; }
+        .stat-icon-wrapper.orange { background: #FFF4EB; color: #EA580C; }
+        .stat-icon-wrapper.purple { background: #F3EEFB; color: #7C3AED; }
+
+        .stat-top-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-card-title {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #374151;
+        }
+        .stat-big-number {
+            font-size: 26px;
+            font-weight: 900;
+            color: #111827;
+            line-height: 1.1;
+            margin-top: 2px;
+        }
+        .stat-big-unit {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6B7280;
+            margin-top: 1px;
+        }
+
+        .stat-breakdown-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 12.5px;
+            color: #4B5563;
+            padding-top: 4px;
+        }
+        .stat-breakdown-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-bullet-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stat-bullet-name::before {
+            content: "•";
+            color: #9CA3AF;
+            font-size: 14px;
+        }
+        .stat-bullet-val {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* TABS ROW (Cơ sở y tế | Dịch vụ sức khỏe | Hoạt động sức khỏe) */
+        .tabs-nav-bar {
+            display: flex;
+            gap: 32px;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 0px;
+            margin-top: 6px;
+        }
+
+        .tab-health-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #64748B;
+            padding: 8px 4px 12px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.15s;
+            text-decoration: none;
+            user-select: none;
+        }
+        .tab-health-btn:hover {
+            color: #059669;
+        }
+        .tab-health-btn.active {
+            color: #059669;
+            border-bottom-color: #059669;
+        }
+
+        /* MAIN TWO-COLUMN LAYOUT */
+        .health-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* LEFT CARD: TABLE OF HEALTH FACILITIES */
+        .card-health-table {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 22px 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card-table-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-table-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .btn-add-facility {
+            background: #FFFFFF;
+            color: #059669;
+            border: 1.5px solid #10B981;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-add-facility:hover {
+            background: #ECFDF5;
+        }
+
+        /* FILTER PILLS */
+        .filter-pills-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .health-pill {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #F8FAFC;
+            color: #4B5563;
+            border: 1px solid #E2E8F0;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .health-pill:hover {
+            background: #F1F5F9;
+            color: #111827;
+        }
+        .health-pill.active {
+            background: #E8FAF2;
+            color: #059669;
+            border-color: #A7F3D0;
+            font-weight: 700;
+        }
+
+        /* TABLE */
+        .health-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+        .health-data-table th {
+            text-align: left;
+            padding: 10px 12px;
+            background: #F8FAFC;
+            color: #64748B;
+            font-weight: 700;
+            border-bottom: 1px solid #E2E8F0;
+            font-size: 12px;
+        }
+        .health-data-table td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #F1F5F9;
+            color: #374151;
+            vertical-align: middle;
+        }
+        .health-data-table tr:hover td {
+            background: #F8FAFC;
+        }
+
+        .badge-type {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+        .badge-type.hospital { background: #EFF6FF; color: #2563EB; }
+        .badge-type.clinic { background: #F1F5F9; color: #475569; }
+        .badge-type.station { background: #F8FAFC; color: #64748B; border: 1px solid #E2E8F0; }
+        .badge-type.pharmacy { background: #F3F4F6; color: #4B5563; }
+
+        .badge-status {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+        .badge-status.active { background: #DCFCE7; color: #16A34A; }
+        .badge-status.inactive { background: #FEF3C7; color: #D97706; }
+
+        .action-icon-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid #D1D5DB;
+            background: #FFFFFF;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #6B7280;
+            transition: all 0.15s;
+        }
+        .action-icon-btn.edit { border-color: #A7F3D0; color: #059669; }
+        .action-icon-btn.edit:hover { background: #ECFDF5; }
+        .action-icon-btn.delete { border-color: #FECACA; color: #EF4444; }
+        .action-icon-btn.delete:hover { background: #FEF2F2; }
+
+        .view-all-table-link {
+            text-align: center;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #2563EB;
+            text-decoration: none;
+            padding-top: 6px;
+            display: block;
+        }
+        .view-all-table-link:hover { text-decoration: underline; }
+
+        /* RIGHT COLUMN */
+        .right-health-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* DONUT CHART CARD */
+        .card-chart-category {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 22px 20px 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .card-chart-title {
+            font-size: 15.5px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .donut-chart-wrapper {
+            position: relative;
+            width: 145px;
+            height: 145px;
+            margin: 0 auto;
+        }
+
+        .donut-center-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .donut-center-val {
+            font-size: 22px;
+            font-weight: 900;
+            color: #111827;
+            line-height: 1;
+        }
+        .donut-center-sub {
+            font-size: 11px;
+            color: #6B7280;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .chart-legend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            font-size: 12.5px;
+            color: #374151;
+            padding: 4px 4px 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .legend-dot-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .report-footer-link {
+            text-align: center;
+            border-top: 1px solid #F1F5F9;
+            padding-top: 10px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #2563EB;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .report-footer-link:hover { text-decoration: underline; }
+
+        /* UPCOMING ACTIVITY CARD */
+        .card-upcoming-event {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 20px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .event-top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .event-top-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .event-item-card {
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #FFFFFF;
+            transition: all 0.15s;
+        }
+        .event-item-card:hover {
+            border-color: #10B981;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .event-img {
+            width: 100%;
+            height: 95px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .event-info {
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .event-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #111827;
+        }
+        .event-loc, .event-time {
+            font-size: 11.5px;
+            color: #64748B;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .event-capacity {
+            font-size: 11.5px;
+            color: #059669;
+            font-weight: 700;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        /* TOAST NOTIF */
+        .toast-notif {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 99999;
+            animation: slideUp 0.2s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    
+        /* ========================================================
+           GLOBAL SIDEBAR OVERRIDE - CHUẨN 100% THEO ẢNH 3
+           TRIỆT TIÊU TOÀN BỘ GẠCH CHÂN XANH & LỖI GIAO DIỆN
+        ======================================================== */
+        aside.sidebar a, aside.sidebar div, aside.sidebar span {
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .sidebar-item-link:hover {
+            background: #F3F4F6 !important;
+            color: #111827 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-icon-svg {
+            width: 18px !important;
+            height: 18px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-arrow-icon {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-sub-container {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            padding: 4px 0 6px 8px !important;
+        }
+
+        .sidebar-sub-item {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #4B5563 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+        }
+
+        .sidebar-sub-item:hover {
+            background: #F3F4F6 !important;
+            color: #065F46 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-item.active {
+            background: #E8FAF0 !important;
+            color: #065F46 !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-icon-svg {
+            width: 16px !important;
+            height: 16px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .main-wrapper {
+            margin-left: 255px !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH 3) -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH MẪU 3) -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH MẪU 3) -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO ẢNH 3 - KHÔNG LỖI GẠCH CHÂN) -->
+        <!-- ELEGANT WHITE SIDEBAR (CHUẨN 100% THEO YÊU CẦU MỚI NHẤT) -->
+    <aside class="sidebar" style="width:255px !important; min-width:255px !important; max-width:255px !important; background:#FFFFFF !important; display:flex !important; flex-direction:column !important; position:fixed !important; top:0 !important; bottom:0 !important; left:0 !important; z-index:100 !important; overflow-y:auto !important; color:#1F2937 !important; border-right:1px solid #E5E7EB !important; box-sizing:border-box !important;">
+        <!-- BRAND HEADER -->
+        <a href="../admin/dashboard.html" style="padding:22px 20px 18px; display:flex; align-items:center; gap:12px; text-decoration:none !important; color:inherit;">
+            <div style="width:44px; height:44px; border-radius:50%; background:#FFFFFF; border:2px solid #059669; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(5, 150, 105, 0.15);">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">
+            </div>
+            <div style="display:flex; flex-direction:column;">
+                <div style="font-size:18px; font-weight:900; color:#064E3B; letter-spacing:-0.3px; line-height:1.1;">BẾN TRE</div>
+                <div style="font-size:12px; color:#059669; font-weight:600; margin-top:2px;">Du lịch bền vững</div>
+            </div>
+        </a>
+
+        <!-- MENU ITEMS -->
+        <nav style="padding:4px 12px; display:flex; flex-direction:column; gap:4px; flex:1;">
+            <!-- 1. Tổng quan -->
+            <a href="../admin/dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Tổng quan</span>
+                </div>
+            </a>
+
+            <!-- 2. Du lịch (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link " onclick="toggleSidebarMenu('subDulichMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                        <span>Du lịch</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌄</span>
+                </div>
+                <div class="sidebar-sub-container" id="subDulichMenu" style="display:none;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <span>Địa điểm du lịch</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                        <span>Tour du lịch</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>Lịch trình</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span>Dịch vụ du lịch</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3. Đặt tour -->
+            <a href="../admin/dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Đặt tour</span>
+                </div>
+            </a>
+
+            <!-- 4. Người dùng (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link " onclick="toggleSidebarMenu('subNguoidungMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Người dùng</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌄</span>
+                </div>
+                <div class="sidebar-sub-container" id="subNguoidungMenu" style="display:none;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Khách hàng</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                        <span>Hướng dẫn viên</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 5. Chăm sóc sức khỏe (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link active" onclick="toggleSidebarMenu('subSuckhoeMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        <span>Chăm sóc sức khỏe</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌃</span>
+                </div>
+                <div class="sidebar-sub-container" id="subSuckhoeMenu" style="display:flex;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item active">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><path d="M9 9h1"></path><path d="M9 13h1"></path></svg>
+                        <span>Cơ sở y tế</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>Dịch vụ sức khỏe</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>Hoạt động sức khỏe</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 6. Tin tức & sự kiện (Dropdown) -->
+            <div>
+                <div class="sidebar-item-link " onclick="toggleSidebarMenu('subTintucMenu', this)">
+                    <div class="sidebar-item-left">
+                        <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Tin tức & sự kiện</span>
+                    </div>
+                    <span class="sidebar-arrow-icon">⌄</span>
+                </div>
+                <div class="sidebar-sub-container" id="subTintucMenu" style="display:none;">
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        <span>Tin tức</span>
+                    </a>
+                    <a href="../admin/dashboard.html" class="sidebar-sub-item ">
+                        <svg class="sidebar-sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line></svg>
+                        <span>Sự kiện</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 7. Đánh giá -->
+            <a href="../admin/dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Đánh giá</span>
+                </div>
+            </a>
+        </nav>
+
+        <!-- BOTTOM SCENIC BANNER -->
+        <div style="margin-top:auto; padding:12px;">
+            <img src="https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=400&h=260&fit=crop" style="width:100%; height:180px; object-fit:cover; border-radius:12px; display:block; box-shadow:0 2px 8px rgba(0,0,0,0.06);" alt="Bến Tre Sông Nước">
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar">
+            <div class="header-left">
+                <h1 class="page-title">Chăm sóc sức khỏe</h1>
+                <p class="page-sub">Quản lý toàn bộ thông tin và hoạt động chăm sóc sức khỏe trên hệ thống</p>
+            </div>
+            <div class="header-right">
+                <div class="notif-bell" onclick="showToast('🔔 Bạn có 15 thông báo chăm sóc sức khỏe mới!')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span class="notif-badge">15</span>
+                </div>
+                <div class="user-profile" onclick="window.location.href='../admin/dashboard.html'">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" class="user-avatar" alt="Admin">
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                        <span class="user-role">Quản trị viên ▾</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT CONTAINER -->
+        <main class="content-container">
+            <!-- 4 STAT CARDS (BỎ XEM CHI TIẾT THEO YÊU CẦU CỦA BẠN) -->
+            <div class="stats-grid-4">
+                <!-- Card 1: Cơ sở y tế -->
+                <div class="stat-card-health">
+                    <div class="stat-card-top-row">
+                        <div class="stat-icon-wrapper green">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><path d="M9 9h1"></path><path d="M9 13h1"></path></svg>
+                        </div>
+                        <div class="stat-top-info">
+                            <span class="stat-card-title">Cơ sở y tế</span>
+                            <div class="stat-big-number">48</div>
+                            <div class="stat-big-unit">cơ sở</div>
+                        </div>
+                    </div>
+                    <ul class="stat-breakdown-list">
+                        <li><span class="stat-bullet-name">Bệnh viện</span> <span class="stat-bullet-val">8</span></li>
+                        <li><span class="stat-bullet-name">Phòng khám</span> <span class="stat-bullet-val">20</span></li>
+                        <li><span class="stat-bullet-name">Trạm y tế</span> <span class="stat-bullet-val">12</span></li>
+                        <li><span class="stat-bullet-name">Nhà thuốc</span> <span class="stat-bullet-val">8</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: Dịch vụ sức khỏe -->
+                <div class="stat-card-health">
+                    <div class="stat-card-top-row">
+                        <div class="stat-icon-wrapper blue">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                        </div>
+                        <div class="stat-top-info">
+                            <span class="stat-card-title">Dịch vụ sức khỏe</span>
+                            <div class="stat-big-number">36</div>
+                            <div class="stat-big-unit">dịch vụ</div>
+                        </div>
+                    </div>
+                    <ul class="stat-breakdown-list">
+                        <li><span class="stat-bullet-name">Hoạt động thể chất</span> <span class="stat-bullet-val">12</span></li>
+                        <li><span class="stat-bullet-name">Nghỉ dưỡng</span> <span class="stat-bullet-val">9</span></li>
+                        <li><span class="stat-bullet-name">Không gian xanh</span> <span class="stat-bullet-val">8</span></li>
+                        <li><span class="stat-bullet-name">Hoạt động thư giãn</span> <span class="stat-bullet-val">7</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 3: Hoạt động sức khỏe -->
+                <div class="stat-card-health">
+                    <div class="stat-card-top-row">
+                        <div class="stat-icon-wrapper orange">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M12 14l2 2 4-4"></path></svg>
+                        </div>
+                        <div class="stat-top-info">
+                            <span class="stat-card-title">Hoạt động sức khỏe</span>
+                            <div class="stat-big-number">72</div>
+                            <div class="stat-big-unit">hoạt động</div>
+                        </div>
+                    </div>
+                    <ul class="stat-breakdown-list">
+                        <li><span class="stat-bullet-name">Sắp diễn ra</span> <span class="stat-bullet-val">25</span></li>
+                        <li><span class="stat-bullet-name">Đang diễn ra</span> <span class="stat-bullet-val">5</span></li>
+                        <li><span class="stat-bullet-name">Đã kết thúc</span> <span class="stat-bullet-val">42</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 4: Tổng lượt tham gia -->
+                <div class="stat-card-health">
+                    <div class="stat-card-top-row">
+                        <div class="stat-icon-wrapper purple">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        </div>
+                        <div class="stat-top-info">
+                            <span class="stat-card-title">Tổng lượt tham gia</span>
+                            <div class="stat-big-number">1.256</div>
+                            <div class="stat-big-unit">lượt</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:#6B7280; padding-top:14px;">
+                        <span>Trong tháng này</span>
+                        <strong style="color:#10B981; font-weight:800;">↑ 18.6%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS ROW -->
+            <div class="tabs-nav-bar">
+                <a href="../admin/dashboard.html" class="tab-health-btn active">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path><path d="M9 9h1"></path><path d="M9 13h1"></path></svg>
+                    <span>Cơ sở y tế</span>
+                </a>
+                <a href="../admin/dashboard.html" class="tab-health-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                    <span>Dịch vụ sức khỏe</span>
+                </a>
+                <a href="../admin/dashboard.html" class="tab-health-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Hoạt động sức khỏe</span>
+                </a>
+            </div>
+
+            <!-- MAIN TWO-COLUMN LAYOUT -->
+            <div class="health-main-grid">
+                <!-- LEFT COLUMN: FACILITY TABLE -->
+                <div class="card-health-table">
+                    <div class="card-table-top">
+                        <h2 class="card-table-title">Cơ sở y tế</h2>
+                        <button class="btn-add-facility" onclick="openAddFacilityModal()">
+                            <span>+</span>
+                            <span>Thêm cơ sở</span>
+                        </button>
+                    </div>
+
+                    <!-- PILLS -->
+                    <div class="filter-pills-row">
+                        <button class="health-pill active" onclick="filterFacilities('all', this)">Tất cả (48)</button>
+                        <button class="health-pill" onclick="filterFacilities('hospital', this)">Bệnh viện (8)</button>
+                        <button class="health-pill" onclick="filterFacilities('clinic', this)">Phòng khám (20)</button>
+                        <button class="health-pill" onclick="filterFacilities('station', this)">Trạm y tế (12)</button>
+                        <button class="health-pill" onclick="filterFacilities('pharmacy', this)">Nhà thuốc (8)</button>
+                    </div>
+
+                    <!-- TABLE -->
+                    <table class="health-data-table">
+                        <thead>
+                            <tr>
+                                <th style="width:30px;">#</th>
+                                <th>Tên cơ sở</th>
+                                <th>Loại cơ sở</th>
+                                <th>Địa chỉ</th>
+                                <th>SĐT</th>
+                                <th>Trạng thái</th>
+                                <th style="width:80px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="healthTableBody">
+                            <!-- JS injected rows -->
+                        </tbody>
+                    </table>
+
+                    <a href="../admin/dashboard.html" class="view-all-table-link">Xem tất cả (48) →</a>
+                </div>
+
+                <!-- RIGHT COLUMN: DONUT CHART & UPCOMING ACTIVITY -->
+                <div class="right-health-col">
+                    <!-- DONUT CHART -->
+                    <div class="card-chart-category">
+                        <h3 class="card-chart-title">Phân loại cơ sở y tế</h3>
+                        <div class="donut-chart-wrapper">
+                            <canvas id="facilityDonutChart"></canvas>
+                            <div class="donut-center-text">
+                                <span class="donut-center-val">48</span>
+                                <span class="donut-center-sub">Tổng</span>
+                            </div>
+                        </div>
+
+                        <div class="chart-legend-list">
+                            <div class="legend-item">
+                                <div class="legend-dot-label">
+                                    <span class="legend-dot" style="background:#10B981;"></span>
+                                    <span>Bệnh viện: 8 (17%)</span>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot-label">
+                                    <span class="legend-dot" style="background:#2563EB;"></span>
+                                    <span>Phòng khám: 20 (42%)</span>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot-label">
+                                    <span class="legend-dot" style="background:#F59E0B;"></span>
+                                    <span>Trạm y tế: 12 (25%)</span>
+                                </div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot-label">
+                                    <span class="legend-dot" style="background:#8B5CF6;"></span>
+                                    <span>Nhà thuốc: 8 (16%)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="javascript:void(0)" onclick="showToast('📊 Đang tải báo cáo chi tiết phân loại y tế...')" class="report-footer-link">Xem báo cáo chi tiết →</a>
+                    </div>
+
+                    <!-- UPCOMING ACTIVITY -->
+                    <div class="card-upcoming-event">
+                        <div class="event-top-header">
+                            <h3 class="event-top-title">Hoạt động sắp diễn ra</h3>
+                            <a href="../admin/dashboard.html" style="font-size:12px; font-weight:700; color:#2563EB; text-decoration:none;">Xem tất cả →</a>
+                        </div>
+
+                        <div class="event-item-card">
+                            <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=400&h=180&fit=crop" class="event-img" alt="Đi bộ vì sức khỏe">
+                            <div class="event-info">
+                                <div class="event-name">Đi bộ vì sức khỏe</div>
+                                <div class="event-loc">
+                                    <strong>Địa điểm:</strong>
+                                    <span>Công viên Đồng Khởi, Bến Tre</span>
+                                </div>
+                                <div class="event-time">
+                                    <strong>Thời gian:</strong>
+                                    <span>25/08/2026 - 06:00</span>
+                                </div>
+                                <div class="event-capacity">
+                                    <strong>Số người:</strong>
+                                    <span>35/100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL THÊM CƠ SỞ Y TẾ -->
+    <div id="modalAddFacility" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#FFF; border-radius:14px; width:500px; max-width:94%; box-shadow:0 20px 25px -5px rgba(0,0,0,0.2); overflow:hidden;">
+            <div style="padding:16px 20px; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+                <h3 style="font-size:15px; font-weight:800; color:#111827;">Thêm cơ sở y tế mới</h3>
+                <span style="cursor:pointer; font-size:18px; color:#9CA3AF;" onclick="closeModal('modalAddFacility')">✕</span>
+            </div>
+            <div style="padding:18px 20px; display:flex; flex-direction:column; gap:12px; font-size:12.5px;">
+                <div>
+                    <label style="font-weight:700; display:block; margin-bottom:4px;">Tên cơ sở y tế *</label>
+                    <input type="text" id="addFacName" style="width:100%; padding:8px 10px; border:1px solid #D1D5DB; border-radius:8px; outline:none;" placeholder="VD: Bệnh viện Đa khoa Bến Tre">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div>
+                        <label style="font-weight:700; display:block; margin-bottom:4px;">Loại cơ sở *</label>
+                        <select id="addFacType" style="width:100%; padding:8px 10px; border:1px solid #D1D5DB; border-radius:8px; outline:none; background:#FFF;">
+                            <option value="hospital">Bệnh viện</option>
+                            <option value="clinic">Phòng khám</option>
+                            <option value="station">Trạm y tế</option>
+                            <option value="pharmacy">Nhà thuốc</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:700; display:block; margin-bottom:4px;">Số điện thoại *</label>
+                        <input type="text" id="addFacPhone" style="width:100%; padding:8px 10px; border:1px solid #D1D5DB; border-radius:8px; outline:none;" placeholder="0275 ...">
+                    </div>
+                </div>
+                <div>
+                    <label style="font-weight:700; display:block; margin-bottom:4px;">Địa chỉ *</label>
+                    <input type="text" id="addFacAddr" style="width:100%; padding:8px 10px; border:1px solid #D1D5DB; border-radius:8px; outline:none;" placeholder="Số nhà, đường, phường/xã, TP. Bến Tre">
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+                    <button onclick="closeModal('modalAddFacility')" style="padding:8px 14px; background:#F3F4F6; border:1px solid #E5E7EB; border-radius:8px; cursor:pointer; font-weight:700;">Hủy</button>
+                    <button onclick="saveNewFacility()" style="padding:8px 16px; background:#059669; color:#FFF; border:none; border-radius:8px; cursor:pointer; font-weight:700;">Lưu cơ sở</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastNotif" class="toast-notif">
+        <span>✅</span>
+        <span id="toastMsg">Thao tác thành công!</span>
+    </div>
+
+    <script>
+        const facilitiesData = [
+            { id: 1, name: 'Bệnh viện Đa khoa Bến Tre', type: 'hospital', typeName: 'Bệnh viện', addr: 'Số 1, Nguyễn Văn Tư, P.7, TP. Bến Tre', phone: '0275 3821 111', status: 'active', statusName: 'Hoạt động' },
+            { id: 2, name: 'Phòng khám Đa khoa Minh Tâm', type: 'clinic', typeName: 'Phòng khám', addr: '123A, Hùng Vương, P. An Hội, Bến Tre', phone: '0275 3822 222', status: 'active', statusName: 'Hoạt động' },
+            { id: 3, name: 'Trạm y tế phường Phú Khương', type: 'station', typeName: 'Trạm y tế', addr: 'Ấp 2, Phú Khương, TP. Bến Tre', phone: '0275 3866 333', status: 'active', statusName: 'Hoạt động' },
+            { id: 4, name: 'Nhà thuốc An Khang Bến Tre', type: 'pharmacy', typeName: 'Nhà thuốc', addr: '45A, Đồng Khởi, P. Phú Khương, Bến Tre', phone: '0275 3823 444', status: 'active', statusName: 'Hoạt động' },
+            { id: 5, name: 'Phòng khám Y học cổ truyền Bến Tre', type: 'clinic', typeName: 'Phòng khám', addr: '67, Nguyễn Huệ, P. Phú Tân, Bến Tre', phone: '0275 3825 555', status: 'inactive', statusName: 'Tạm ngưng' }
+        ];
+
+        let currentFilter = 'all';
+
+        function renderFacilityTable() {
+            const tbody = document.getElementById('healthTableBody');
+            if (!tbody) return;
+
+            const filtered = (currentFilter === 'all') ? facilitiesData : facilitiesData.filter(f => f.type === currentFilter);
+
+            let html = '';
+            filtered.forEach((item, idx) => {
+                const typeClass = item.type;
+                const statusClass = item.status;
+
+                html += '<tr>' +
+                    '<td style="color:#6B7280; font-weight:700;">' + (idx + 1) + '</td>' +
+                    '<td style="font-weight:700; color:#111827;">' + item.name + '</td>' +
+                    '<td><span class="badge-type ' + typeClass + '">' + item.typeName + '</span></td>' +
+                    '<td style="color:#4B5563;">' + item.addr + '</td>' +
+                    '<td style="color:#374151; font-weight:600;">' + item.phone + '</td>' +
+                    '<td><span class="badge-status ' + statusClass + '">' + item.statusName + '</span></td>' +
+                    '<td style="text-align:center;">' +
+                        '<button class="action-icon-btn edit" title="Sửa" onclick="editFacility(' + item.id + ')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button> ' +
+                        '<button class="action-icon-btn delete" title="Xóa" onclick="deleteFacility(' + item.id + ')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>' +
+                    '</td>' +
+                '</tr>';
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function filterFacilities(type, btnEl) {
+            currentFilter = type;
+            document.querySelectorAll('.health-pill').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            renderFacilityTable();
+        }
+
+        function editFacility(id) {
+            const f = facilitiesData.find(item => item.id === id);
+            if (!f) return;
+            const newName = prompt('Chỉnh sửa tên cơ sở y tế:', f.name);
+            if (newName && newName.trim()) {
+                f.name = newName.trim();
+                renderFacilityTable();
+                showToast('✏ Đã cập nhật thông tin ' + f.name);
+            }
+        }
+
+        function deleteFacility(id) {
+            const idx = facilitiesData.findIndex(item => item.id === id);
+            if (idx !== -1) {
+                if (confirm('Bạn có chắc chắn muốn xóa cơ sở y tế này?')) {
+                    const deleted = facilitiesData.splice(idx, 1)[0];
+                    renderFacilityTable();
+                    showToast('🗑 Đã xóa cơ sở: ' + deleted.name);
+                }
+            }
+        }
+
+        function openAddFacilityModal() {
+            document.getElementById('modalAddFacility').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            const m = document.getElementById(modalId);
+            if (m) m.style.display = 'none';
+        }
+
+        function saveNewFacility() {
+            const name = document.getElementById('addFacName').value.trim();
+            const type = document.getElementById('addFacType').value;
+            const phone = document.getElementById('addFacPhone').value.trim();
+            const addr = document.getElementById('addFacAddr').value.trim();
+
+            if (!name || !phone || !addr) {
+                alert('Vui lòng nhập đầy đủ các trường bắt buộc!');
+                return;
+            }
+
+            const typeNames = {
+                hospital: 'Bệnh viện',
+                clinic: 'Phòng khám',
+                station: 'Trạm y tế',
+                pharmacy: 'Nhà thuốc'
+            };
+
+            const newId = facilitiesData.length ? Math.max(...facilitiesData.map(f => f.id)) + 1 : 1;
+            facilitiesData.unshift({
+                id: newId,
+                name: name,
+                type: type,
+                typeName: typeNames[type] || 'Cơ sở',
+                addr: addr,
+                phone: phone,
+                status: 'active',
+                statusName: 'Hoạt động'
+            });
+
+            closeModal('modalAddFacility');
+            renderFacilityTable();
+            showToast('🎉 Đã thêm mới cơ sở y tế: ' + name);
+
+            document.getElementById('addFacName').value = '';
+            document.getElementById('addFacPhone').value = '';
+            document.getElementById('addFacAddr').value = '';
+        }
+
+        // INIT DONUT CHART
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFacilityTable();
+
+            const ctx = document.getElementById('facilityDonutChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Bệnh viện', 'Phòng khám', 'Trạm y tế', 'Nhà thuốc'],
+                        datasets: [{
+                            data: [8, 20, 12, 8],
+                            backgroundColor: ['#10B981', '#2563EB', '#F59E0B', '#8B5CF6'],
+                            borderWidth: 2,
+                            borderColor: '#FFFFFF'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '72%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ' ' + context.label + ': ' + context.raw + ' cơ sở';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        function toggleSidebarDropdown(submenuId, btnEl) {
+            const submenu = document.getElementById(submenuId);
+            if (!submenu) return;
+            const isHidden = (submenu.style.display === 'none' || !submenu.style.display);
+            submenu.style.display = isHidden ? 'flex' : 'none';
+            const chevron = btnEl.querySelector('.chevron-icon');
+            if (chevron) chevron.textContent = isHidden ? '⌃' : '⌄';
+        }
+
+        let toastTimeout;
+        function showToast(msg) {
+            const t = document.getElementById('toastNotif');
+            document.getElementById('toastMsg').textContent = msg;
+            t.style.display = 'flex';
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+    </script>
+    <script src="../assets/js/api-client.js?v=20260831-4"></script>
+</body>
+</html>

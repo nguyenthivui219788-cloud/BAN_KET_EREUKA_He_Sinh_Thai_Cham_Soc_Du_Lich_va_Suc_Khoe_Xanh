@@ -1,0 +1,2554 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Dịch vụ du lịch - Bến Tre Admin</title>
+    <style>
+        :root {
+            --sidebar-bg: #FFFFFF;
+            --sidebar-border: #E5E7EB;
+            --sidebar-active-bg: #064E3B;
+            --sidebar-active-sub: #E8FAF0;
+            --sidebar-active-text: #065F46;
+            --bg-page: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-dark: #111827;
+            --text-muted: #64748B;
+            --primary-emerald: #064E3B;
+            --primary-green: #059669;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+            font-size: 14px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 255px !important;
+            min-width: 255px !important;
+            max-width: 255px !important;
+            background: #FFFFFF !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #1F2937 !important;
+            border-right: 1px solid #E5E7EB !important;
+            scrollbar-width: thin;
+            scrollbar-color: #CBD5E1 #FFFFFF;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 10px 14px !important;
+            border-radius: 10px !important;
+            color: #374151 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            user-select: none !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .sidebar-item-link:hover {
+            background: #F3F4F6 !important;
+            color: #111827 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-link.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-icon-svg {
+            width: 18px !important;
+            height: 18px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-arrow-icon {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: inherit !important;
+        }
+
+        .sidebar-sub-container {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+            padding: 4px 0 6px 8px !important;
+        }
+
+        .sidebar-sub-item {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 9px 14px !important;
+            border-radius: 8px !important;
+            color: #4B5563 !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 12.5px !important;
+            transition: all 0.15s !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+            background: transparent !important;
+        }
+
+        .sidebar-sub-item:hover {
+            background: #F3F4F6 !important;
+            color: #065F46 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-item.active {
+            background: #E8FAF0 !important;
+            color: #065F46 !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+
+        .sidebar-sub-icon-svg {
+            width: 16px !important;
+            height: 16px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            color: inherit !important;
+        }
+
+        /* MAIN WRAPPER */
+        .main-wrapper {
+            margin-left: 250px !important;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #F8FAFC;
+        }
+
+        /* TOP NAVBAR */
+        .top-navbar {
+            height: 70px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #EDEDF2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .header-left { display: flex; flex-direction: column; }
+        .page-title { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.4px; }
+        .page-sub { font-size: 13px; color: #64748B; margin-top: 2px; }
+
+        .header-right { display: flex; align-items: center; gap: 20px; }
+
+        .notif-bell {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 17px;
+            transition: all 0.15s;
+        }
+        .notif-bell:hover { background: #F1F5F9; }
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #EF4444;
+            color: #FFF;
+            font-size: 10.5px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 1px 6px;
+            border: 2px solid #FFF;
+        }
+
+        .user-profile {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            cursor: pointer !important;
+        }
+
+        .user-avatar {
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid #E2E8F0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        .user-info { display: flex !important; flex-direction: column !important; }
+        .user-name { font-size: 13.5px !important; font-weight: 700 !important; color: #111827 !important; line-height: 1.2 !important; }
+        .user-role { font-size: 11.5px !important; color: #64748B !important; line-height: 1.2 !important; }
+
+        /* CONTENT CONTAINER */
+        .content-container {
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 4 TOP NAVIGATION TABS (HÀNG 1) */
+        .top-tourism-nav-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tourism-nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            background: #FFFFFF;
+            color: #374151;
+            border: 1.5px solid #E5E7EB;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .tourism-nav-btn:hover {
+            border-color: #059669;
+            color: #064E3B;
+            background: #F9FAFB;
+        }
+
+        .tourism-nav-btn.active {
+            background: #064E3B;
+            color: #FFFFFF;
+            border-color: #064E3B;
+            box-shadow: 0 2px 6px rgba(6, 78, 59, 0.2);
+        }
+
+        /* 4 STAT CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .stat-content { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .stat-label { font-size: 12.5px; color: #64748B; font-weight: 600; }
+        .stat-value { font-size: 34px; font-weight: 900; color: #111827; line-height: 1.05; margin: 2px 0 7px; letter-spacing: -0.6px; }
+        .stat-subtext { font-size: 11.5px; color: #64748B; font-weight: 500; }
+
+        /* EXACT SERVICES CARD (CHUẨN 100% THEO ẢNH USER) */
+        .card-services-exact {
+            background: #FFFFFF;
+            border-radius: 20px;
+            border: 1px solid #E5E7EB;
+            padding: 26px 28px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        /* HEADER */
+        .services-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .services-title-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .services-bag-icon-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #064E3B;
+        }
+
+        .services-title-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: #064E3B;
+            letter-spacing: -0.3px;
+        }
+
+        .btn-add-service-green {
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+        }
+        .btn-add-service-green:hover {
+            background: #065F46;
+            transform: translateY(-1px);
+        }
+        .btn-add-service-green:active {
+            transform: translateY(0);
+        }
+
+        /* FILTER TABS (NHÀ HÀNG, KHÁCH SẠN, ĐIỂM VUI CHƠI, DỊCH VỤ TRẢI NGHIỆM) */
+        .service-tabs-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .service-tab-btn {
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 600;
+            background: #FFFFFF;
+            color: #374151;
+            border: 1.5px solid #E5E7EB;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            user-select: none;
+        }
+
+        .service-tab-btn:hover {
+            border-color: #059669;
+            color: #064E3B;
+        }
+
+        .service-tab-btn.active {
+            background: #064E3B;
+            color: #FFFFFF;
+            border-color: #064E3B;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(6, 78, 59, 0.2);
+        }
+
+        /* 4 CARDS GRID (1 DÒNG HIỆN 4 DỊCH VỤ - HIỆN ĐẦY ĐỦ HẾT LUÔN) */
+        .services-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        @media (max-width: 1400px) {
+            .services-cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 992px) {
+            .services-cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 580px) {
+            .services-cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .service-item-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .service-item-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border-color: #CBD5E1;
+        }
+
+        .service-card-img-wrap {
+            width: 100%;
+            height: 165px;
+            overflow: hidden;
+            background: #F1F5F9;
+            position: relative;
+        }
+
+        .service-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .service-item-card:hover .service-card-img {
+            transform: scale(1.04);
+        }
+
+        .service-card-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .service-item-card:hover .service-card-actions {
+            opacity: 1;
+        }
+
+        .btn-card-action {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: all 0.15s;
+        }
+        .btn-card-action.edit { color: #2563EB; }
+        .btn-card-action.edit:hover { background: #EFF6FF; border-color: #3B82F6; }
+        .btn-card-action.delete { color: #EF4444; }
+        .btn-card-action.delete:hover { background: #FEF2F2; border-color: #DC2626; }
+
+        .service-card-body {
+            padding: 15px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .service-card-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #064E3B;
+            line-height: 1.3;
+            min-height: 38px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .service-card-info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4B5563;
+            font-size: 12.5px;
+        }
+
+        .service-card-info-icon {
+            width: 15px;
+            height: 15px;
+            stroke-width: 2;
+            color: #64748B;
+            flex-shrink: 0;
+        }
+
+        .service-card-badge {
+            background: #E8FAF0;
+            color: #065F46;
+            padding: 3px 12px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 700;
+            width: fit-content;
+            margin-top: auto;
+        }
+
+        /* MODAL POPUP */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            animation: fadeIn 0.15s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            width: 520px;
+            max-width: 96%;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-head {
+            padding: 18px 24px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F9FAFB;
+        }
+        .modal-head-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #064E3B;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-close-x {
+            cursor: pointer;
+            font-size: 20px;
+            color: #9CA3AF;
+            border: none;
+            background: transparent;
+            line-height: 1;
+            padding: 4px;
+        }
+        .modal-close-x:hover { color: #111827; }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+        }
+        .form-input, .form-select {
+            padding: 10px 14px;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 13.5px;
+            outline: none;
+            color: #111827;
+            font-family: inherit;
+            background: #FFFFFF;
+            transition: border-color 0.15s;
+        }
+        .form-input:focus, .form-select:focus {
+            border-color: #059669;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            padding: 9px 18px;
+            background: #FFFFFF;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #4B5563;
+            font-size: 13px;
+        }
+        .btn-cancel:hover { background: #F3F4F6; color: #111827; }
+
+        .btn-submit {
+            padding: 9px 20px;
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: background 0.15s;
+        }
+        .btn-submit:hover { background: #065F46; }
+
+        /* TOAST */
+        .toast-notif {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 99999;
+            animation: slideUp 0.2s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    
+        /* 2-COLUMN MAIN LAYOUT */
+        .tourism-main-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        @media (max-width: 1200px) {
+            .tourism-main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-table-wrap {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .diadiem-exact-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+
+        .diadiem-exact-table thead th {
+            background: #F9FAFB;
+            color: #4B5563;
+            font-weight: 700;
+            padding: 11px 13px;
+            border-bottom: 1px solid #E5E7EB;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        .diadiem-exact-table tbody tr {
+            border-bottom: 1px solid #F1F5F9;
+            cursor: pointer;
+            transition: background 0.12s;
+        }
+
+        .diadiem-exact-table tbody tr:hover { background: #F8FAFC; }
+        .diadiem-exact-table tbody tr.active-selected { background: #E8FAF0 !important; }
+
+        .diadiem-exact-table tbody td {
+            padding: 10px 13px;
+            vertical-align: middle;
+            color: #1F2937;
+            font-size: 13.5px;
+        }
+
+        /* INSPECTOR CARD */
+        .card-inspector-wrap {
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: sticky;
+            top: 86px;
+        }
+
+        .inspect-banner-img-wrap {
+            width: 100%;
+            height: 145px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            background: #E5E7EB;
+        }
+
+        .inspect-banner-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .inspect-img-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #064E3B;
+            color: #FFFFFF;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+
+        .inspect-heart-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .inspect-title-block { display: flex; flex-direction: column; gap: 2px; }
+        .inspect-main-title { font-size: 17px; font-weight: 900; color: #111827; letter-spacing: -0.3px; }
+        .inspect-sub-desc { font-size: 12px; color: #64748B; line-height: 1.3; }
+
+        .inspect-stats-3grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 8px 6px;
+            text-align: center;
+        }
+
+        .inspect-stat-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+        .inspect-stat-val { font-size: 13px; font-weight: 800; color: #111827; }
+        .inspect-stat-lbl { font-size: 10px; color: #64748B; font-weight: 600; }
+
+        .inspect-info-list { display: flex; flex-direction: column; gap: 7px; font-size: 12px; }
+        .inspect-info-row { display: flex; align-items: center; justify-content: space-between; color: #374151; }
+        .inspect-info-lbl { display: flex; align-items: center; gap: 5px; color: #64748B; font-weight: 600; }
+        .inspect-info-val { font-weight: 700; color: #111827; text-align: right; }
+
+        .inspect-map-box {
+            position: relative;
+            width: 100%;
+            height: 90px;
+            border-radius: 9px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid #CBD5E1;
+        }
+        .bentre-map-svg { width: 100%; height: 100%; display: block; }
+        .map-pulse-pin {
+            position: absolute;
+            top: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .pulse-circle {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.35);
+            animation: pulseRing 1.8s infinite;
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(0.6); opacity: 0.9; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+        .inspect-map-tag {
+            position: absolute;
+            bottom: 6px;
+            left: 8px;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+        .btn-inspect-map {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(6, 78, 59, 0.9);
+            color: #FFFFFF;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 10.5px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .inspect-gallery-section { display: flex; flex-direction: column; gap: 6px; }
+        .gallery-head-row { display: flex; justify-content: space-between; align-items: center; }
+        .gallery-title { font-size: 12px; font-weight: 800; color: #111827; }
+        .gallery-link-all { font-size: 11px; color: #059669; font-weight: 700; cursor: pointer; }
+        .gallery-thumbs-3grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .gallery-thumb-img { width: 100%; height: 52px; border-radius: 6px; object-fit: cover; }
+        .btn-inspect-details {
+            width: 100%;
+            padding: 10px;
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    
+    
+
+        /* FILTER PILLS & ACTION ROW */
+        .filter-sort-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .category-pills-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .category-pill-btn {
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            background: #FFFFFF;
+            color: #374151;
+            border: 1.5px solid #E5E7EB;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .category-pill-btn:hover {
+            border-color: #059669;
+            color: #064E3B;
+            background: #F9FAFB;
+        }
+
+        .category-pill-btn.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            border-color: #064E3B !important;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(6, 78, 59, 0.2);
+        }
+
+        .btn-add-tour, .btn-add-schedule-green, .btn-add-service-green {
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .btn-add-tour:hover, .btn-add-schedule-green:hover, .btn-add-service-green:hover {
+            background: #065F46;
+            transform: translateY(-1px);
+        }
+
+        /* FLOATING FORM & CONFIRM MODALS */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(3px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            animation: modalFadeIn 0.15s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            border-radius: 18px;
+            width: 580px;
+            max-width: 96%;
+            max-height: 90vh;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.25);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            animation: modalPopIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPopIn {
+            from { transform: scale(0.93) translateY(10px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-head {
+            padding: 18px 24px;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F9FAFB;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .modal-head-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #064E3B;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close-x {
+            cursor: pointer;
+            font-size: 22px;
+            color: #9CA3AF;
+            border: none;
+            background: transparent;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.15s;
+        }
+        .modal-close-x:hover { color: #111827; }
+
+        .modal-body {
+            padding: 22px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .modal-body .form-group-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .form-input, .form-select {
+            padding: 10px 14px;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 13.5px;
+            outline: none;
+            color: #111827;
+            font-family: inherit;
+            background: #FFFFFF;
+            transition: border-color 0.15s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #E5E7EB;
+            background: #F9FAFB;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            position: sticky;
+            bottom: 0;
+            z-index: 10;
+        }
+
+        .btn-cancel {
+            padding: 10px 20px;
+            background: #FFFFFF;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #4B5563;
+            font-size: 13.5px;
+            transition: background 0.15s;
+        }
+        .btn-cancel:hover { background: #F3F4F6; color: #111827; }
+
+        .btn-submit {
+            padding: 10px 22px;
+            background: #064E3B;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13.5px;
+            transition: background 0.15s;
+        }
+        .btn-submit:hover { background: #065F46; }
+
+        /* FLOATING DELETE CONFIRMATION MODAL */
+        .modal-confirm-card {
+            background: #FFFFFF;
+            border-radius: 18px;
+            width: 440px;
+            max-width: 95%;
+            padding: 28px 24px 24px;
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            animation: modalPopIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .confirm-icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #FEE2E2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+
+        .confirm-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .confirm-desc {
+            font-size: 14px;
+            color: #4B5563;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        .confirm-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-confirm-delete {
+            padding: 10px 24px;
+            background: #DC2626;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-confirm-delete:hover { background: #B91C1C; }
+
+    
+        /* ENLARGED ACTION BUTTONS (SỬA & XÓA PHÓNG TO RÕ NÉT) */
+        .btn-action-icon, .action-icon-btn {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 8px !important;
+            border: 1.5px solid #E5E7EB !important;
+            background: #FFFFFF !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03) !important;
+        }
+
+        .btn-action-icon.edit, .action-icon-btn.edit {
+            border-color: #93C5FD !important;
+            color: #2563EB !important;
+        }
+        .btn-action-icon.edit:hover, .action-icon-btn.edit:hover {
+            background: #EFF6FF !important;
+            border-color: #3B82F6 !important;
+            color: #1D4ED8 !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15) !important;
+        }
+
+        .btn-action-icon.delete, .action-icon-btn.delete {
+            border-color: #FCA5A5 !important;
+            color: #EF4444 !important;
+        }
+        .btn-action-icon.delete:hover, .action-icon-btn.delete:hover {
+            background: #FEF2F2 !important;
+            border-color: #DC2626 !important;
+            color: #B91C1C !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        .btn-action-icon svg, .action-icon-btn svg {
+            width: 17px !important;
+            height: 17px !important;
+            stroke-width: 2.2 !important;
+        }
+
+    
+        /* TABLE PAGINATION */
+        .table-pagination-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-top: 1px solid #E5E7EB;
+            background: #FFFFFF;
+            border-radius: 0 0 16px 16px;
+        }
+
+        .pagination-info-text {
+            font-size: 13px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .pagination-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .page-btn {
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
+            border-radius: 6px;
+            border: 1px solid #D1D5DB;
+            background: #FFFFFF;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: #059669;
+            color: #064E3B;
+            background: #ECFDF5;
+        }
+
+        .page-btn.active {
+            background: #064E3B !important;
+            color: #FFFFFF !important;
+            border-color: #064E3B !important;
+            box-shadow: 0 2px 4px rgba(6, 78, 59, 0.2);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+    
+        
+        /* EXACT PIXEL-MATCHED DARK GREEN SIDEBAR */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Rich Dark Emerald Green */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 100 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: none !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Vibrant Emerald Green Pill */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        .sidebar-bottom-banner {
+            margin-top: auto !important;
+            padding: 14px !important;
+        }
+        .sidebar-banner-img {
+            width: 100% !important;
+            height: 160px !important;
+            object-fit: cover !important;
+            border-radius: 12px !important;
+            display: block !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+        }
+
+        
+        .main-wrapper, .main-content, .admin-main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container {
+            margin-left: 0 !important;
+        }
+    
+
+    
+        /* ======================================================= */
+        /* MASTER UNIFIED DARK GREEN SIDEBAR (CHUẨN 100% ĐỒNG BỘ)  */
+        /* ======================================================= */
+        .sidebar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #044332 !important; /* Xanh lá đậm chuẩn */
+            display: flex !important;
+            flex-direction: column !important;
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 999 !important;
+            overflow-y: auto !important;
+            color: #FFFFFF !important;
+            border-right: 1px solid rgba(0, 0, 0, 0.15) !important;
+            scrollbar-width: thin;
+            scrollbar-color: #065F46 #044332;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: #065F46; border-radius: 4px; }
+
+        .sidebar-brand {
+            padding: 22px 18px 20px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-decoration: none !important;
+            color: inherit !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            margin-bottom: 12px !important;
+        }
+        .brand-logo-circle {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 50% !important;
+            background: #FFFFFF !important;
+            border: 2px solid #34D399 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+            overflow: hidden !important;
+        }
+        .brand-logo-circle img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        .brand-title-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+        .brand-title-main {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #FFFFFF !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+        .brand-sub-main {
+            font-size: 10px !important;
+            color: #6EE7B7 !important;
+            font-weight: 700 !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase !important;
+        }
+
+        .sidebar-nav {
+            padding: 0 14px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 8px !important;
+            overflow-y: auto !important;
+            flex: 1 !important;
+        }
+
+        .sidebar-item-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-decoration: none !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.18s ease !important;
+            cursor: pointer !important;
+            background: transparent !important;
+            border: none !important;
+        }
+        .sidebar-item-link:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+            color: #FFFFFF !important;
+        }
+        .sidebar-item-link.active {
+            background: #00A86B !important; /* Xanh ngọc nổi bật chuẩn */
+            color: #FFFFFF !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.35) !important;
+        }
+        .sidebar-item-link.active .sidebar-icon-svg {
+            stroke: #FFFFFF !important;
+        }
+        .sidebar-item-left {
+            display: flex !important;
+            align-items: center !important;
+            gap: 14px !important;
+        }
+        .sidebar-icon-svg {
+            width: 20px !important;
+            height: 20px !important;
+            stroke-width: 2 !important;
+            flex-shrink: 0 !important;
+            stroke: currentColor !important;
+        }
+
+        /* KHẮC PHỤC TRIỆT ĐỂ THỤT LỀ & KHOẢNG TRẮNG */
+        .main-wrapper, .main-content, .admin-main, .main {
+            margin-left: 250px !important;
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .main-wrapper main, .main-content main, .admin-main main, main.content-container, .content-container, .main-wrapper .content-container {
+            margin-left: 0 !important;
+        }
+
+    </style>
+</head>
+<body>
+
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+        <!-- ELEGANT WHITE SIDEBAR -->
+    <aside class="sidebar">
+        <!-- BRAND HEADER -->
+        <a href="dashboard.html" class="sidebar-brand">
+            <div class="brand-logo-circle">
+                <img src="../assets/images/logo-ben-tre-moi.png" alt="Logo Bến Tre">
+            </div>
+            <div class="brand-title-wrap">
+                <div class="brand-title-main">HỆ SINH THÁI DU LỊCH</div>
+                <div class="brand-sub-main">VÀ CHĂM SÓC SỨC KHỎE XANH TẠI BẾN TRE</div>
+            </div>
+        </a>
+
+        <!-- MENU ITEMS -->
+        <nav class="sidebar-nav">
+            <!-- 1. Tổng quan -->
+            <a href="dashboard.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    <span>Tổng quan</span>
+                </div>
+            </a>
+
+            <!-- 2. Du lịch -->
+            <a href="dia-diem.html" class="sidebar-item-link active">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                    <span>Du lịch</span>
+                </div>
+            </a>
+
+            <!-- 3. Đặt tour -->
+            <a href="dat-tour.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Đặt tour</span>
+                </div>
+            </a>
+
+            <!-- 4. Người dùng -->
+            <a href="nguoi-dung.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Người dùng</span>
+                </div>
+            </a>
+
+            <!-- 5. Chăm sóc sức khỏe -->
+            <a href="co-so-y-te.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    <span>Chăm sóc sức khỏe</span>
+                </div>
+            </a>
+
+            <!-- 6. Tin tức & sự kiện -->
+            <a href="tin-tuc.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <span>Tin tức & sự kiện</span>
+                </div>
+            </a>
+
+            <!-- 7. Đánh giá -->
+            <a href="danh-gia.html" class="sidebar-item-link ">
+                <div class="sidebar-item-left">
+                    <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Đánh giá</span>
+                </div>
+            </a>
+        </nav>
+
+        <!-- BOTTOM LOGOUT BUTTON -->
+        <div style="margin-top: auto; padding: 14px 14px 16px;">
+            <a href="../khach-hang/dang-nhap.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #FFFFFF; color: #DC2626; font-weight: 700; font-size: 13px; padding: 10px; border-radius: 10px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: all 0.15s ease;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span>Đăng xuất</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar">
+            <div class="header-left">
+                <h1 class="page-title">Quản lý</h1>
+                <p class="page-sub">Hệ thống đối tác nhà hàng ẩm thực, khách sạn, điểm vui chơi và dịch vụ trải nghiệm</p>
+            </div>
+            <div class="header-right">
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT CONTAINER -->
+                <!-- MAIN CONTENT CONTAINER -->
+        <main class="content-container">
+            <!-- 4 TOP NAVIGATION TABS (HÀNG 1) -->
+            <div class="top-tourism-nav-row">
+                <a href="dia-diem.html" class="tourism-nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span>Địa điểm du lịch</span>
+                </a>
+                <a href="tour.html" class="tourism-nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                    <span>Tour du lịch</span>
+                </a>
+                <a href="lich-trinh.html" class="tourism-nav-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Lịch trình</span>
+                </a>
+                <a href="dich-vu-du-lich.html" class="tourism-nav-btn active">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>Dịch vụ du lịch</span>
+                </a>
+            </div>
+
+            <!-- FILTER PILLS & ADD BUTTON (HÀNG 2) -->
+            <div class="filter-sort-row" style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px;">
+                <div class="category-pills-wrap">
+                    <button class="category-pill-btn active" onclick="filterByPill('all', this)">Tất cả (16)</button>
+                    <button class="category-pill-btn" onclick="filterByPill('homestay', this)">Lưu trú (6)</button>
+                    <button class="category-pill-btn" onclick="filterByPill('amthuc', this)">Ẩm thực (5)</button>
+                    <button class="category-pill-btn" onclick="filterByPill('tauthuyen', this)">Tàu thuyền (3)</button>
+                    <button class="category-pill-btn" onclick="filterByPill('langnghe', this)">Làng nghề (2)</button>
+                </div>
+
+                <button class="btn-add-tour" onclick="openAddServiceModal()"><span>+</span><span>Thêm dịch vụ mới</span></button>
+                    <span>+</span>
+                    <span>Thêm dịch vụ mới</span>
+                </button>
+            </div>
+
+            <!-- 2-COLUMN MAIN CONTENT LAYOUT -->
+            <div class="tourism-main-layout">
+                <!-- LEFT COLUMN: TABLE CARD -->
+                <div class="card-table-wrap">
+                    <div class="table-responsive">
+                        <table class="diadiem-exact-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-stt" style="width:40px; text-align:center; white-space:nowrap;">#</th>
+                                    <th style="white-space:nowrap; padding:12px 16px;">Tên dịch vụ</th>
+                                    <th style="text-align:center; white-space:nowrap; padding:12px 14px;">Phân loại</th>
+                                    <th style="white-space:nowrap; padding:12px 18px;">Đối tác liên kết</th>
+                                    <th style="white-space:nowrap; padding:12px 18px;">Đơn giá</th>
+                                    <th style="text-align:center; white-space:nowrap; padding:12px 14px;">Trạng thái</th>
+                                    <th style="text-align:center; white-space:nowrap; padding:12px 14px; width:90px;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="servicesTableBody">
+                                <!-- Injected dynamically via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PAGINATION ROW -->
+                    <div class="table-pagination-row">
+                        <div class="pagination-info-text" id="paginationInfo">Hiển thị 1 - 10 trong 16 dịch vụ</div>
+                        <div class="pagination-btn-group" id="paginationBtnGroup">
+                            <!-- Injected dynamically via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: DETAIL INSPECTOR CARD (HỒ SƠ DỊCH VỤ) -->
+                <div class="card-inspector-wrap" id="serviceInspectorCard">
+                    <!-- BANNER IMAGE -->
+                    <div class="inspect-banner-img-wrap">
+                        <img src="../assets/images/tour-mot-ngay-xanh-ben-tre.png" id="inspectImg" class="inspect-banner-img" alt="Service banner">
+                        <div class="inspect-img-badge" id="inspectBadge">🏡 Homestay & Lưu trú</div>
+                        <button class="inspect-heart-btn" onclick="toggleHeart(this)">❤️</button>
+                    </div>
+
+                    <!-- TITLE & SUBTITLE -->
+                    <div class="inspect-title-block">
+                        <h2 class="inspect-main-title" id="inspectTitle">Homestay Vườn Dừa Bến Tre</h2>
+                        <p class="inspect-sub-desc" id="inspectSub">Phòng máy lạnh, view rạch nước mát mẻ, vườn cây trĩu quả</p>
+                    </div>
+
+                    <!-- 3 STATS BOXES -->
+                    <div class="inspect-stats-3grid">
+                        <div class="inspect-stat-col">
+                            <span class="inspect-stat-val" style="color:#059669;" id="inspectComm">15%</span>
+                            <span class="inspect-stat-lbl">Chiết khấu</span>
+                        </div>
+                        <div class="inspect-stat-col" style="border-left:1px solid #E2E8F0; border-right:1px solid #E2E8F0;">
+                            <span class="inspect-stat-val" style="color:#D97706;" id="inspectRating">★ 4.9</span>
+                            <span class="inspect-stat-lbl">(188 đánh giá)</span>
+                        </div>
+                        <div class="inspect-stat-col">
+                            <span class="inspect-stat-val" style="color:#DC2626;" id="inspectPrice">450.000đ</span>
+                            <span class="inspect-stat-lbl">Đơn giá niêm yết</span>
+                        </div>
+                    </div>
+
+                    <!-- KEY-VALUE INFO -->
+                    <div class="inspect-info-list">
+                        <div class="inspect-info-row">
+                            <div class="inspect-info-lbl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                <span>Đối tác phụ trách</span>
+                            </div>
+                            <span class="inspect-info-val" id="inspectPartner">Anh Ba Dừa (Châu Thành)</span>
+                        </div>
+
+                        <div class="inspect-info-row">
+                            <div class="inspect-info-lbl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                <span>Hotline liên hệ</span>
+                            </div>
+                            <span class="inspect-info-val" id="inspectPhone">0275 3822 777</span>
+                        </div>
+
+                        <div class="inspect-info-row">
+                            <div class="inspect-info-lbl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                <span>Khu vực hoạt động</span>
+                            </div>
+                            <span class="inspect-info-val" id="inspectLocation">Châu Thành, Bến Tre</span>
+                        </div>
+
+                        <div class="inspect-info-row">
+                            <div class="inspect-info-lbl">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                <span>Tình trạng hợp đồng</span>
+                            </div>
+                            <span class="inspect-info-val" style="color:#059669;" id="inspectStatus">Liên kết tốt</span>
+                        </div>
+                    </div>
+
+                    <!-- MAP PREVIEW BOX -->
+                    <div class="inspect-map-box" onclick="openMapModal()">
+                        <svg class="bentre-map-svg" viewBox="0 0 320 100" preserveAspectRatio="none">
+                            <rect width="320" height="100" fill="#E6F2EB"/>
+                            <path d="M -10 25 C 60 20, 140 45, 330 35 L 330 55 C 160 65, 80 40, -10 45 Z" fill="#BFDBFE" opacity="0.85"/>
+                            <path d="M -10 65 C 80 60, 180 85, 330 75 L 330 90 C 180 100, 90 75, -10 80 Z" fill="#BFDBFE" opacity="0.7"/>
+                            <path d="M 110 30 C 140 28, 190 38, 220 34 C 180 48, 130 45, 110 30 Z" fill="#86EFAC" opacity="0.9"/>
+                            <path d="M 0 10 L 320 85" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M 160 0 L 160 100" stroke="#FFFFFF" stroke-width="2.5" stroke-dasharray="4,3"/>
+                        </svg>
+
+                        <div class="map-pulse-pin">
+                            <div class="pulse-circle"></div>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3" fill="#FFFFFF"></circle>
+                            </svg>
+                        </div>
+
+                        <div class="inspect-map-tag">
+                            <span style="color:#EF4444; font-size:12px;">📍</span>
+                            <span id="inspectMapText">Châu Thành, Bến Tre</span>
+                        </div>
+
+                        <button class="btn-inspect-map" onclick="event.stopPropagation(); openMapModal()">
+                            <span>Xem bản đồ 🗺️</span>
+                        </button>
+                    </div>
+
+                    <!-- GALLERY THUMBNAILS -->
+                    <div class="inspect-gallery-section">
+                        <div class="gallery-head-row">
+                            <span class="gallery-title">Hình ảnh cơ sở dịch vụ</span>
+                            
+                        </div>
+                        <div class="gallery-thumbs-3grid">
+                            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200&h=150&fit=crop" class="gallery-thumb-img" alt="thumb1">
+                            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&h=150&fit=crop" class="gallery-thumb-img" alt="thumb2">
+                            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=200&h=150&fit=crop" class="gallery-thumb-img" alt="thumb3">
+                        </div>
+                    </div>
+
+                    <!-- BOTTOM BUTTON -->
+                    <button class="btn-inspect-details" onclick="showToast('📋 Mở hợp đồng đối tác dịch vụ!')">
+                        <span>Quản lý hợp đồng đối tác →</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL THÊM / SỬA DỊCH VỤ -->
+    <div id="serviceModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-head">
+                <div class="modal-head-title">
+                    <span id="modalIcon">➕</span>
+                    <span id="modalTitle">Thêm dịch vụ du lịch</span>
+                </div>
+                <button class="modal-close-x" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editItemKey" value="">
+
+                <div class="form-group">
+                    <label class="form-label">Tên dịch vụ / Cơ sở *</label>
+                    <input type="text" id="inputName" class="form-input" placeholder="VD: Nhà hàng Dừa Nướng">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phân loại danh mục *</label>
+                    <select id="inputCategory" class="form-select">
+                        <option value="restaurant">Nhà hàng</option>
+                        <option value="hotel">Khách sạn</option>
+                        <option value="entertainment">Điểm vui chơi</option>
+                        <option value="experience">Dịch vụ trải nghiệm</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Địa chỉ / Vị trí *</label>
+                    <input type="text" id="inputLocation" class="form-input" placeholder="VD: Phường 7, Bến Tre">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Số điện thoại liên hệ *</label>
+                    <input type="text" id="inputPhone" class="form-input" placeholder="VD: 0275 3822 777">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Đường dẫn hình ảnh (URL)</label>
+                    <input type="text" id="inputImage" class="form-input" placeholder="https://images.unsplash.com/photo-...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+                <button class="btn-submit" onclick="saveService()">Lưu dịch vụ</button>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- MODAL THÊM / SỬA DỊCH VỤ DU LỊCH -->
+    
+
+    <!-- MODAL BẢN ĐỒ VỆ TINH FULL -->
+    <div id="mapModal" class="modal-overlay">
+        <div class="modal-map-card" style="background:#FFF; border-radius:16px; width:800px; max-width:96%; height:540px; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 20px 25px rgba(0,0,0,0.2);">
+            <div class="modal-map-head" style="padding:14px 20px; border-bottom:1px solid #E5E7EB; display:flex; justify-content:space-between; align-items:center; background:#F9FAFB;">
+                <div class="modal-map-title" style="font-size:15px; font-weight:800; color:#064E3B; display:flex; align-items:center; gap:8px;">
+                    <span>🗺️ Bản đồ Cơ sở Dịch vụ Bến Tre</span>
+                </div>
+                <button class="modal-close-x" onclick="closeMapModal()">✕</button>
+            </div>
+            <div class="modal-map-body" style="flex:1;">
+                <iframe class="modal-map-iframe" src="https://maps.google.com/maps?q=10.2431,106.3754&hl=vi&z=13&output=embed" style="width:100%; height:100%; border:none;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    
+    <!-- MODAL NỔI THÊM / SỬA DỊCH VỤ DU LỊCH -->
+    <div id="serviceFormModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-head">
+                <div class="modal-head-title">
+                    <span id="srvModalIcon">🏡</span>
+                    <span id="srvModalTitle">Chỉnh sửa dịch vụ du lịch</span>
+                </div>
+                <button class="modal-close-x" onclick="closeServiceModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editSrvId" value="">
+
+                <div class="form-group form-group-full">
+                    <label class="form-label">Tên dịch vụ / Cơ sở *</label>
+                    <input type="text" id="inputSrvName" class="form-input" placeholder="VD: Homestay Vườn Dừa Bến Tre">
+                </div>
+
+                <div class="form-group form-group-full">
+                    <label class="form-label">Mô tả tóm tắt dịch vụ *</label>
+                    <input type="text" id="inputSrvDesc" class="form-input" placeholder="VD: Phòng máy lạnh, view rạch nước mát mẻ, vườn cây trĩu quả">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phân loại danh mục *</label>
+                    <select id="selectSrvGroup" class="form-select">
+                        <option value="homestay">Lưu trú</option>
+                        <option value="amthuc">Ẩm thực</option>
+                        <option value="tauthuyen">Tàu thuyền</option>
+                        <option value="langnghe">Làng nghề</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Đối tác phụ trách *</label>
+                    <input type="text" id="inputSrvPartner" class="form-input" placeholder="VD: Anh Ba Dừa (Châu Thành)">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Hotline liên hệ *</label>
+                    <input type="text" id="inputSrvPhone" class="form-input" placeholder="VD: 0275 3822 777">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Đơn giá niêm yết *</label>
+                    <input type="text" id="inputSrvPrice" class="form-input" placeholder="VD: 450.000 VNĐ">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Mức chiết khấu hoa hồng</label>
+                    <input type="text" id="inputSrvComm" class="form-input" placeholder="VD: 15%">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tình trạng liên kết</label>
+                    <select id="selectSrvStatus" class="form-select">
+                        <option value="Liên kết tốt">Liên kết tốt</option>
+                        <option value="Đang xem xét">Đang xem xét</option>
+                    </select>
+                </div>
+
+                <div class="form-group form-group-full">
+                    <label class="form-label">Đường dẫn hình ảnh (URL)</label>
+                    <input type="text" id="inputSrvImg" class="form-input" placeholder="https://images.unsplash.com/photo-...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeServiceModal()">Hủy bỏ</button>
+                <button class="btn-submit" onclick="saveServiceForm()">Lưu dịch vụ</button>
+            </div>
+        </div>
+    </div>
+  
+
+    <!-- MODAL NỔI XÁC NHẬN XÓA DỮ LIỆU -->
+    <div id="deleteConfirmModal" class="modal-overlay">
+        <div class="modal-confirm-card">
+            <div class="confirm-icon-wrap">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </div>
+            <h3 class="confirm-title">Xác nhận xóa dữ liệu?</h3>
+            <p class="confirm-desc" id="deleteConfirmDesc">Bạn có chắc chắn muốn xóa mục này khỏi hệ thống không? Thao tác này không thể hoàn tác.</p>
+            <div class="confirm-actions">
+                <button class="btn-cancel" onclick="closeDeleteConfirmModal()">Hủy bỏ</button>
+                <button class="btn-confirm-delete" onclick="executeDeleteConfirm()">Xác nhận xóa</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastNotif" class="toast-notif">
+        <span>✅</span>
+        <span id="toastMsg">Thao tác thành công!</span>
+    </div>
+
+    
+    <script>
+        // DATASET 16 DỊCH VỤ DU LỊCH BẾN TRE CHUẨN
+        const servicesDataset = [
+            {
+                id: 1,
+                name: 'Homestay Vườn Dừa Bến Tre',
+                sub: 'Phòng bungalow máy lạnh, view rạch nước mát mẻ, vườn cây trĩu quả',
+                group: 'homestay',
+                groupName: 'Lưu trú',
+                location: 'Châu Thành, Bến Tre',
+                price: '450.000đ/đêm',
+                status: 'Hoạt động',
+                comm: '15%',
+                rating: '4.9',
+                reviews: '(188 đánh giá)',
+                phone: '0918 234 567',
+                time: 'Nhận 14:00 - Trả 12:00',
+                partner: 'HTX Du Lịch Xứ Dừa',
+                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=300&fit=crop'
+            },
+            {
+                id: 2,
+                name: 'Thuê tàu du lịch sông Tiền 30 chỗ',
+                sub: 'Tàu du lịch vỏ composite hiện đại, trang bị đầy đủ áo phao, nước dừa phục vụ',
+                group: 'tauthuyen',
+                groupName: 'Tàu thuyền',
+                location: 'Bến tàu Bến Tre',
+                price: '850.000đ/chuyến',
+                status: 'Hoạt động',
+                comm: '10%',
+                rating: '4.8',
+                reviews: '(142 đánh giá)',
+                phone: '0903 876 543',
+                time: '06:00 - 18:00',
+                partner: 'Đội Tàu Du Lịch Sông Tiền',
+                img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&h=300&fit=crop'
+            },
+            {
+                id: 3,
+                name: 'Set cơm ẩm thực dừa 6 món',
+                sub: 'Gỏi củ hũ dừa tôm thịt, cá tai tượng chiên xù, tôm hấp nước dừa, canh chua cá lóc',
+                group: 'amthuc',
+                groupName: 'Ẩm thực',
+                location: 'TP. Bến Tre',
+                price: '180.000đ/suất',
+                status: 'Hoạt động',
+                comm: '12%',
+                rating: '4.9',
+                reviews: '(230 đánh giá)',
+                phone: '0275 382 9999',
+                time: '09:00 - 21:00',
+                partner: 'Nhà Hàng Bến Tre Xanh',
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&h=300&fit=crop'
+            },
+            {
+                id: 4,
+                name: 'Trải nghiệm làm kẹo dừa truyền thống',
+                sub: 'Tự tay quậy kẹo, đổ khuôn và gói kẹo dừa mang về làm quà lưu niệm',
+                group: 'langnghe',
+                groupName: 'Làng nghề',
+                location: 'Mỏ Cày Nam',
+                price: '50.000đ/người',
+                status: 'Hoạt động',
+                comm: '20%',
+                rating: '4.7',
+                reviews: '(95 đánh giá)',
+                phone: '0977 123 456',
+                time: '07:30 - 17:00',
+                partner: 'Lò Kẹo Dừa Mỏ Cày',
+                img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=300&fit=crop'
+            },
+            {
+                id: 5,
+                name: 'Xe điện tham quan TP. Bến Tre',
+                sub: 'Tour xe điện 12 chỗ ngắm phố phường, công viên Đồng Khởi, bờ sông Bến Tre',
+                group: 'tauthuyen',
+                groupName: 'Tàu thuyền',
+                location: 'TP. Bến Tre',
+                price: '200.000đ/xe/giờ',
+                status: 'Hoạt động',
+                comm: '10%',
+                rating: '4.6',
+                reviews: '(112 đánh giá)',
+                phone: '0275 388 7766',
+                time: '07:00 - 22:00',
+                partner: 'Công Ty Xe Điện Bến Tre',
+                img: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=600&h=300&fit=crop'
+            },
+            {
+                id: 6,
+                name: 'Maison du Pays de Bến Tre Homestay',
+                sub: 'Kiến trúc nhà vườn mộc mạc, không gian yên bình, trải nghiệm làm nông dân',
+                group: 'homestay',
+                groupName: 'Lưu trú',
+                location: 'Giồng Trôm',
+                price: '650.000đ/đêm',
+                status: 'Hoạt động',
+                comm: '15%',
+                rating: '4.9',
+                reviews: '(160 đánh giá)',
+                phone: '0908 999 888',
+                time: 'Nhận 14:00 - Trả 12:00',
+                partner: 'Maison Du Pays',
+                img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&h=300&fit=crop'
+            },
+            {
+                id: 7,
+                name: 'Buffet Bánh Dân Gian Nam Bộ',
+                sub: 'Hơn 30 loại bánh truyền thống: Bánh xèo, bánh lá mơ, bánh đúc nước cốt dừa',
+                group: 'amthuc',
+                groupName: 'Ẩm thực',
+                location: 'Châu Thành',
+                price: '120.000đ/người',
+                status: 'Hoạt động',
+                comm: '15%',
+                rating: '4.8',
+                reviews: '(215 đánh giá)',
+                phone: '0939 123 789',
+                time: '08:00 - 16:00',
+                partner: 'KDL Làng Bánh Dân Gian',
+                img: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600&h=300&fit=crop'
+            },
+            {
+                id: 8,
+                name: 'Nghề dệt chiếu truyền thống Nhơn Thạnh',
+                sub: 'Tham quan xưởng dệt chiếu cói màu sắc rực rỡ và giao lưu cùng nghệ nhân địa phương',
+                group: 'langnghe',
+                groupName: 'Làng nghề',
+                location: 'TP. Bến Tre',
+                price: '40.000đ/người',
+                status: 'Hoạt động',
+                comm: '18%',
+                rating: '4.7',
+                reviews: '(80 đánh giá)',
+                phone: '0988 555 444',
+                time: '07:30 - 17:00',
+                partner: 'Làng Chiếu Nhơn Thạnh',
+                img: 'https://images.unsplash.com/photo-1528181304800-259b08848526?w=600&h=300&fit=crop'
+            },
+            {
+                id: 9,
+                name: 'Ben Tre Riverside Resort 4 Sao',
+                sub: 'Resort cao cấp bên bờ sông Hàm Luông, hồ bơi vô cực, phòng nghỉ sang trọng',
+                group: 'homestay',
+                groupName: 'Lưu trú',
+                location: 'TP. Bến Tre',
+                price: '1.350.000đ/đêm',
+                status: 'Hoạt động',
+                comm: '12%',
+                rating: '4.9',
+                reviews: '(320 đánh giá)',
+                phone: '0275 354 5454',
+                time: '24/24',
+                partner: 'Riverside Resort',
+                img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=300&fit=crop'
+            },
+            {
+                id: 10,
+                name: 'Mango Home Riverside Resort',
+                sub: 'Khu nghỉ dưỡng sinh thái phong cách Eco-friendly giữa vườn dừa Giồng Trôm',
+                group: 'homestay',
+                groupName: 'Lưu trú',
+                location: 'Giồng Trôm',
+                price: '850.000đ/đêm',
+                status: 'Hoạt động',
+                comm: '15%',
+                rating: '4.8',
+                reviews: '(140 đánh giá)',
+                phone: '0275 351 1958',
+                time: '24/24',
+                partner: 'Mango Home Bến Tre',
+                img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=300&fit=crop'
+            },
+            {
+                id: 11,
+                name: 'Vườn Cau Homestay & Spa',
+                sub: 'Trải nghiệm ngâm chân thảo mộc, massage thư giãn bên dòng kênh dừa nước',
+                group: 'homestay',
+                groupName: 'Lưu trú',
+                location: 'Châu Thành',
+                price: '550.000đ/đêm',
+                status: 'Hoạt động',
+                comm: '15%',
+                rating: '4.7',
+                reviews: '(92 đánh giá)',
+                phone: '0912 345 678',
+                time: '08:00 - 22:00',
+                partner: 'Vườn Cau Eco',
+                img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=300&fit=crop'
+            },
+            {
+                id: 12,
+                name: 'Ba Tri Beach Eco Lodge',
+                sub: 'Lodge nghỉ dưỡng ven biển ngắm bình minh biển Đông, hải sản tươi sống',
+                group: 'homestay',
+                groupName: 'Lưu trú',
+                location: 'Ba Tri',
+                price: '600.000đ/đêm',
+                status: 'Hoạt động',
+                comm: '15%',
+                rating: '4.8',
+                reviews: '(105 đánh giá)',
+                phone: '0933 222 111',
+                time: '24/24',
+                partner: 'Ba Tri Eco Lodge',
+                img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&h=300&fit=crop'
+            },
+            {
+                id: 13,
+                name: 'Lẩu mắm cá linh & rau đồng Bến Tre',
+                sub: 'Nước lẩu thơm lừng từ mắm đồng quê ăn kèm hơn 15 loại rau nhút, bông điên điển, kèo nèo',
+                group: 'amthuc',
+                groupName: 'Ẩm thực',
+                location: 'TP. Bến Tre',
+                price: '250.000đ/nồi',
+                status: 'Hoạt động',
+                comm: '10%',
+                rating: '4.9',
+                reviews: '(180 đánh giá)',
+                phone: '0275 381 2345',
+                time: '10:00 - 22:00',
+                partner: 'Quán Ẩm Thực Đồng Quê',
+                img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=300&fit=crop'
+            },
+            {
+                id: 14,
+                name: 'Nhà hàng Nổi Bến Tre sông Hàm Luông',
+                sub: 'Ẩm thực trên du thuyền ngắm hoàng hôn sông nước, đờn ca tài tử phục vụ tại bàn',
+                group: 'amthuc',
+                groupName: 'Ẩm thực',
+                location: 'TP. Bến Tre',
+                price: '220.000đ/suất',
+                status: 'Hoạt động',
+                comm: '12%',
+                rating: '4.8',
+                reviews: '(290 đánh giá)',
+                phone: '0275 382 2492',
+                time: '10:00 - 22:30',
+                partner: 'Nhà Hàng Nổi Hàm Luông',
+                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=300&fit=crop'
+            },
+            {
+                id: 15,
+                name: 'Bò tơ Ba Tri nướng ngói đặc sản',
+                sub: 'Thịt bò tơ tươi mềm ướp gia vị bí truyền nướng ngói than hồng thơm nức mũi',
+                group: 'amthuc',
+                groupName: 'Ẩm thực',
+                location: 'Ba Tri',
+                price: '190.000đ/phần',
+                status: 'Hoạt động',
+                comm: '10%',
+                rating: '4.8',
+                reviews: '(155 đánh giá)',
+                phone: '0979 666 888',
+                time: '11:00 - 22:00',
+                partner: 'Quán Bò Tơ Ba Tri',
+                img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&h=300&fit=crop'
+            },
+            {
+                id: 16,
+                name: 'Cano cao tốc du ngoạn cồn bãi sông Tiền',
+                sub: 'Trải nghiệm cảm giác mạnh lướt sóng sông Tiền tham quan tứ linh cồn Long Lân Quy Phụng',
+                group: 'tauthuyen',
+                groupName: 'Tàu thuyền',
+                location: 'Châu Thành',
+                price: '600.000đ/chuyến',
+                status: 'Hoạt động',
+                comm: '10%',
+                rating: '4.9',
+                reviews: '(175 đánh giá)',
+                phone: '0909 333 444',
+                time: '07:00 - 17:30',
+                partner: 'CLB Cano Sông Tiền',
+                img: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&h=300&fit=crop'
+            }
+        ];
+
+        let selectedServiceId = 1;
+        let currentFilter = 'all';
+        let currentSrvPage = 1;
+        const itemsPerPage = 10;
+
+        function filterByPill(key, btnEl) {
+            currentFilter = key;
+            currentSrvPage = 1;
+            document.querySelectorAll('.category-pill-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            renderServicesTable();
+        }
+
+        function updateServicePagination(totalItems) {
+            const container = document.getElementById('paginationBtnGroup');
+            const info = document.getElementById('paginationInfo');
+            if (!container || !info) return;
+
+            const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+            if (currentSrvPage > totalPages) currentSrvPage = totalPages;
+            if (currentSrvPage < 1) currentSrvPage = 1;
+
+            const startIdx = totalItems === 0 ? 0 : (currentSrvPage - 1) * itemsPerPage + 1;
+            const endIdx = Math.min(currentSrvPage * itemsPerPage, totalItems);
+            info.textContent = 'Hiển thị ' + startIdx + ' - ' + endIdx + ' trong ' + totalItems + ' dịch vụ';
+
+            let html = '';
+            if (totalPages > 1) {
+                html += '<button class="page-btn" onclick="goToServicePage(' + (currentSrvPage - 1) + ')" ' + (currentSrvPage === 1 ? 'disabled' : '') + '>‹</button>';
+            }
+            for (let i = 1; i <= totalPages; i++) {
+                html += '<button class="page-btn ' + (i === currentSrvPage ? 'active' : '') + '" onclick="goToServicePage(' + i + ')">' + i + '</button>';
+            }
+            if (totalPages > 1) {
+                html += '<button class="page-btn" onclick="goToServicePage(' + (currentSrvPage + 1) + ')" ' + (currentSrvPage === totalPages ? 'disabled' : '') + '>›</button>';
+            }
+            container.innerHTML = html;
+        }
+
+        function goToServicePage(page) {
+            const filtered = currentFilter === 'all' ? servicesDataset : servicesDataset.filter(s => s.group === currentFilter);
+            const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+            if (page < 1 || page > totalPages) return;
+            currentSrvPage = page;
+            renderServicesTable();
+        }
+
+        function renderServicesTable() {
+            const tbody = document.getElementById('servicesTableBody');
+            if (!tbody) return;
+
+            const filtered = currentFilter === 'all' ? servicesDataset : servicesDataset.filter(s => s.group === currentFilter);
+            const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+            if (currentSrvPage > totalPages) currentSrvPage = totalPages;
+            if (currentSrvPage < 1) currentSrvPage = 1;
+
+            const pageItems = filtered.slice((currentSrvPage - 1) * itemsPerPage, currentSrvPage * itemsPerPage);
+
+            let html = '';
+            pageItems.forEach((item, idx) => {
+                const isSelected = item.id === selectedServiceId;
+                const rowNum = (currentSrvPage - 1) * itemsPerPage + idx + 1;
+                html += '<tr class="' + (isSelected ? 'active-selected' : '') + '" onclick="selectService(' + item.id + ')">' +
+                    '<td style="text-align:center; vertical-align:middle; font-weight:800; color:#064E3B; white-space:nowrap; padding:12px 10px;">' + rowNum + '</td>' +
+                    '<td style="vertical-align:middle; white-space:nowrap; padding:12px 16px;">' +
+                        '<div style="font-weight:800; color:#111827; font-size:13.5px;">' + item.name + '</div>' +
+                        '<div style="font-size:11.5px; color:#6B7280; margin-top:2px;">' + (item.sub || item.groupName) + '</div>' +
+                    '</td>' +
+                    '<td style="text-align:center; vertical-align:middle; white-space:nowrap; padding:12px 14px;"><span class="badge-tag">' + item.groupName + '</span></td>' +
+                    '<td style="vertical-align:middle; font-weight:700; color:#374151; white-space:nowrap; padding:12px 18px;">' + (item.partner || item.location) + '</td>' +
+                    '<td style="vertical-align:middle; font-weight:800; color:#059669; white-space:nowrap; padding:12px 18px;">' + item.price + '</td>' +
+                    '<td style="text-align:center; vertical-align:middle; white-space:nowrap; padding:12px 14px;"><span class="badge-status-green">' + item.status + '</span></td>' +
+                    '<td style="text-align:center; vertical-align:middle; white-space:nowrap; padding:12px 10px;">' +
+                        '<div class="action-cell" style="justify-content:center;">' +
+                            '<button class="action-icon-btn edit" title="Sửa dịch vụ" onclick="event.stopPropagation(); editService(' + item.id + ')">' +
+                                '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>' +
+                            '</button>' +
+                            '<button class="action-icon-btn delete" title="Xóa dịch vụ" onclick="event.stopPropagation(); deleteService(' + item.id + ')">' +
+                                '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>' +
+                            '</button>' +
+                        '</div>' +
+                    '</td>' +
+                '</tr>';
+            });
+            tbody.innerHTML = html;
+            updateServicePagination(filtered.length);
+        }
+
+        
+        
+        let pendingSrvDeleteId = null;
+
+        function openAddServiceModal() {
+            document.getElementById('editSrvId').value = '';
+            document.getElementById('srvModalIcon').textContent = '➕';
+            document.getElementById('srvModalTitle').textContent = 'Thêm dịch vụ du lịch mới';
+            document.getElementById('inputSrvName').value = '';
+            document.getElementById('inputSrvDesc').value = '';
+            document.getElementById('selectSrvGroup').value = 'homestay';
+            document.getElementById('inputSrvPartner').value = '';
+            document.getElementById('inputSrvPhone').value = '0275 3822 888';
+            document.getElementById('inputSrvPrice').value = '350.000đ';
+            document.getElementById('inputSrvComm').value = '15%';
+            document.getElementById('selectSrvStatus').value = 'Liên kết tốt';
+            document.getElementById('inputSrvImg').value = '';
+            document.getElementById('serviceFormModal').style.display = 'flex';
+        }
+
+        function editService(id) {
+            const s = servicesDataset.find(x => x.id === id);
+            if (!s) return;
+            document.getElementById('editSrvId').value = s.id;
+            document.getElementById('srvModalIcon').textContent = '✏️';
+            document.getElementById('srvModalTitle').textContent = 'Chỉnh sửa dịch vụ: ' + s.name;
+            document.getElementById('inputSrvName').value = s.name;
+            document.getElementById('inputSrvDesc').value = s.desc;
+            document.getElementById('selectSrvGroup').value = s.group;
+            document.getElementById('inputSrvPartner').value = s.partner;
+            document.getElementById('inputSrvPhone').value = s.phone;
+            document.getElementById('inputSrvPrice').value = s.price;
+            document.getElementById('inputSrvComm').value = s.comm;
+            document.getElementById('selectSrvStatus').value = s.statusName;
+            document.getElementById('inputSrvImg').value = s.img || '';
+            document.getElementById('serviceFormModal').style.display = 'flex';
+        }
+
+        function closeServiceModal() {
+            document.getElementById('serviceFormModal').style.display = 'none';
+        }
+
+        function openMapModal() {
+            document.getElementById('mapModal').style.display = 'flex';
+        }
+
+        function closeMapModal() {
+            document.getElementById('mapModal').style.display = 'none';
+        }
+
+        function saveServiceForm() {
+            const editId = document.getElementById('editSrvId').value;
+            const name = document.getElementById('inputSrvName').value.trim();
+            const desc = document.getElementById('inputSrvDesc').value.trim();
+            const group = document.getElementById('selectSrvGroup').value;
+            const partner = document.getElementById('inputSrvPartner').value.trim();
+            const phone = document.getElementById('inputSrvPhone').value.trim();
+            const price = document.getElementById('inputSrvPrice').value.trim();
+            const comm = document.getElementById('inputSrvComm').value.trim();
+            const statusName = document.getElementById('selectSrvStatus').value;
+            let img = document.getElementById('inputSrvImg').value.trim();
+
+            if (!name || !partner || !price) {
+                alert('Vui lòng nhập đầy đủ Tên dịch vụ, Đối tác và Đơn giá!');
+                return;
+            }
+
+            if (price.includes('-') || (Number(price.replace(/[^0-9-]/g, '')) < 0)) {
+                if (typeof showNegativeValueWarning === 'function') showNegativeValueWarning();
+                alert('⚠️ Cảnh báo: Giá tiền và số lượng không được là số âm! Mọi giá trị phải lớn hơn hoặc bằng 0 (>= 0).');
+                document.getElementById('inputSrvPrice').focus();
+                return;
+            }
+
+            if (comm && comm.includes('-')) {
+                if (typeof showNegativeValueWarning === 'function') showNegativeValueWarning('⚠️ Cảnh báo: Mức chiết khấu không được là số âm! Mọi giá trị phải lớn hơn hoặc bằng 0 (>= 0).');
+                alert('⚠️ Cảnh báo: Mức chiết khấu không được là số âm! Mọi giá trị phải lớn hơn hoặc bằng 0 (>= 0).');
+                document.getElementById('inputSrvComm').focus();
+                return;
+            }
+
+            const formattedPrice = typeof formatPriceWithThousandDefault === 'function'
+                ? formatPriceWithThousandDefault(price)
+                : (price || '0 VNĐ');
+
+            if (!img) {
+                img = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop';
+            }
+
+            const grpMap = {
+                'homestay': 'Lưu trú',
+                'amthuc': 'Ẩm thực',
+                'tauthuyen': 'Tàu thuyền',
+                'langnghe': 'Làng nghề'
+            };
+
+            if (editId) {
+                const item = servicesDataset.find(x => x.id == editId);
+                if (item) {
+                    item.name = name;
+                    item.desc = desc;
+                    item.group = group;
+                    item.groupName = grpMap[group] || 'Khác';
+                    item.partner = partner;
+                    item.phone = phone;
+                    item.price = formattedPrice;
+                    item.comm = comm;
+                    item.statusName = statusName;
+                    item.img = img;
+                    selectService(item.id);
+                    showToast('🎉 Đã cập nhật thành công dịch vụ: ' + name);
+                }
+            } else {
+                const newId = servicesDataset.length ? Math.max(...servicesDataset.map(x => x.id)) + 1 : 1;
+                const newItem = {
+                    id: newId,
+                    name: name,
+                    desc: desc || 'Dịch vụ du lịch sinh thái Bến Tre',
+                    group: group,
+                    groupName: grpMap[group] || 'Khác',
+                    partner: partner,
+                    phone: phone || '0275 3822 888',
+                    price: formattedPrice,
+                    comm: comm || '15%',
+                    status: 'good',
+                    statusName: statusName,
+                    img: img
+                };
+                servicesDataset.unshift(newItem);
+                selectService(newId);
+                showToast('🎉 Đã thêm dịch vụ mới: ' + name);
+            }
+
+            closeServiceModal();
+            renderServicesTable();
+        }
+
+        function deleteService(id) {
+            const s = servicesDataset.find(x => x.id === id);
+            if (!s) return;
+            pendingSrvDeleteId = id;
+            document.getElementById('deleteConfirmDesc').textContent = 'Bạn có chắc chắn muốn xóa dịch vụ "' + s.name + '" khỏi hệ thống không?';
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+
+        function closeDeleteConfirmModal() {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+            pendingSrvDeleteId = null;
+        }
+
+        function executeDeleteConfirm() {
+            if (!pendingSrvDeleteId) return;
+            const idx = servicesDataset.findIndex(x => x.id === pendingSrvDeleteId);
+            if (idx !== -1) {
+                const deletedName = servicesDataset[idx].name;
+                servicesDataset.splice(idx, 1);
+                if (selectedServiceId === pendingSrvDeleteId && servicesDataset.length > 0) {
+                    selectedServiceId = servicesDataset[0].id;
+                    selectService(selectedServiceId);
+                }
+                renderServicesTable();
+                showToast('🗑️ Đã xóa thành công dịch vụ: ' + deletedName);
+            }
+            closeDeleteConfirmModal();
+        }
+  
+
+
+        function openAddServiceModal() {
+            showToast('➕ Mở giao diện thêm dịch vụ mới!');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderServicesTable();
+            selectService(1);
+        });
+    </script>
+
+    <script src="../assets/js/api-client.js?v=20260831-4"></script>
+</body>
+</html>
