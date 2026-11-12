@@ -40,7 +40,7 @@ BAN_KET_EREUKA_He_Sinh_Thai_Cham_Soc_Du_Lich_va_Suc_Khoe_Xanh/
 └── README.md                  # Tài liệu hướng dẫn sử dụng và mô tả dự án
 ```
 
-💻 3. Công nghệ sử dụng (Tech Stack)
+## 💻 3. Công nghệ sử dụng (Tech Stack)
 Dự án ứng dụng các công nghệ hiện đại, tối ưu cho việc phát triển web nhanh chóng và hiệu quả:
 
 Frontend:
@@ -65,7 +65,7 @@ Visual Studio Code (IDE phát triển chính).
 
 Git & GitHub (Quản lý phiên bản mã nguồn, phối hợp nhóm hiệu quả).
 
-✨ 4. Các tính năng cốt lõi (Key Features)
+## ✨ 4. Các tính năng cốt lõi (Key Features)
 🗺️ A. Hệ thống Khám phá Du lịch Xanh
 Tra cứu điểm đến sinh thái: Cung cấp thông tin chi tiết về các khu du lịch, nhà vườn, địa điểm nghỉ dưỡng thân thiện với môi trường.
 
@@ -83,7 +83,7 @@ Giao diện thiết kế theo phong cách tối giản, thân thiện với thi�
 
 Hệ thống phân quyền tài khoản cho người dùng trải nghiệm và ban tổ chức/quản trị viên kiểm duyệt thông tin.
 
-🚀 5. Hướng dẫn cài đặt và chạy dự án (Getting Started)
+## 🚀 5. Hướng dẫn cài đặt và chạy dự án (Getting Started)
 Để chạy thử nghiệm dự án trên máy tính cá nhân, bạn hãy thực hiện theo các bước sau:
 
 Yêu cầu hệ thống chuẩn bị sẵn:
@@ -129,7 +129,7 @@ Khởi chạy máy chủ:
 npm start
 ```
 
-👥 6. Nhóm tác giả & Lời cảm ơn
+## 👥 6. Nhóm tác giả & Lời cảm ơn
 Dự án được nghiên cứu và phát triển bởi đội ngũ sinh viên tham gia tranh tài tại vòng Bán kết giải thưởng Sinh Viên Nghiên Cứu Khoa Học - Eureka.
 
 Xin gửi lời cảm ơn chân thành đến Hội đồng Ban giám khảo, các thầy cô hướng dẫn đã tận tình hỗ trợ, đóng góp ý kiến để nhóm hoàn thiện hệ sinh thái này một cách trọn vẹn nhất.
